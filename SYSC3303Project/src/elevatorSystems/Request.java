@@ -13,17 +13,19 @@ public class Request {
 	private int floor;
 	private String floorButtons;
 	private int carButton;
-	private boolean completed;
+	private Progress status;
 	
 	public Request(String time, int floor, String floorButtons, int carButton) {
 		String[] timeArr = time.split(":");
 		this.time[0] = Integer.parseInt(timeArr[0]);
 		this.time[1] = Integer.parseInt(timeArr[1]);
-		this.time[2] = Integer.parseInt(timeArr[2]);
+		timeArr = timeArr[2].split(".");
+		this.time[2] = Integer.parseInt(timeArr[0]);
+		this.time[3] = Integer.parseInt(timeArr[1]);
 		this.floor = floor;
 		this.floorButtons = floorButtons;
 		this.carButton = carButton;
-		this.setCompleted(false);
+		this.setStatus(Progress.INCOMPLETE);
 	}
 
 	/**
@@ -57,15 +59,15 @@ public class Request {
 	/**
 	 * @return the completed
 	 */
-	public boolean isCompleted() {
-		return completed;
+	public Progress getStatus() {
+		return status;
 	}
 
 	/**
 	 * @param completed the completed to set
 	 */
-	public void setCompleted(boolean completed) {
-		this.completed = completed;
+	public void setStatus(Progress status) {
+		this.status = status;
 	}
 
 }
