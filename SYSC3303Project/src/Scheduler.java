@@ -17,6 +17,9 @@ public class Scheduler implements Runnable {
 	public synchronized Request getRequest() {
 		while(requests.isEmpty()) { //elevator wait until there are requests
 			try {
+				if(done) {
+					//TODO: notify the elevators they are complete
+				}
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
