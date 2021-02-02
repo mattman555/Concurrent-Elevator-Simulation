@@ -40,7 +40,6 @@ public class Elevator implements Runnable{
 							Thread.currentThread().getName()
 							+ " goes to floor " + elevatorCall.getFloor() + " to drop off a person");
 				 this.isDoorOpen = false;
-				 notifyAll();
 			 } else {
 				 this.isDoorOpen = true;
 				 System.out.println(
@@ -48,7 +47,6 @@ public class Elevator implements Runnable{
 							+ " goes to floor " + elevatorCall.getFloor() + " to pick up a person");
 				 this.isDoorOpen = false;
 				 createRequest(elevatorCall);
-				 notifyAll();
 			 }
 			 
 			 /*
