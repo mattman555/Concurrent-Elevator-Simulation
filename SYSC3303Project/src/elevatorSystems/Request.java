@@ -11,7 +11,7 @@ public class Request {
 
 	private int[] time;
 	private int floor;
-	private String floorButtons;
+	private Direction floorButtons;
 	private int carButton;
 	private Progress status;
 	
@@ -23,7 +23,7 @@ public class Request {
 		this.time[2] = Integer.parseInt(timeArr[0]);
 		this.time[3] = Integer.parseInt(timeArr[1]);
 		this.floor = floor;
-		this.floorButtons = floorButtons;
+		this.floorButtons = Direction.stringToDirection(floorButtons);
 		this.carButton = carButton;
 		this.setStatus(Progress.INCOMPLETE);
 	}
@@ -45,7 +45,7 @@ public class Request {
 	/**
 	 * @return the floorButtons
 	 */
-	public String getFloorButtons() {
+	public Direction getFloorButtons() {
 		return floorButtons;
 	}
 
