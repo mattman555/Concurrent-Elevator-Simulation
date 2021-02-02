@@ -1,3 +1,4 @@
+package elevatorSystems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +45,7 @@ public class Scheduler implements Runnable {
 	}
 	
 	public synchronized void addRequest(Request request) {
-		if (request.getCompleted())
+		if (request.isCompleted())
 			completedRequests.add(request);
 		else {
 			requests.add(request);
