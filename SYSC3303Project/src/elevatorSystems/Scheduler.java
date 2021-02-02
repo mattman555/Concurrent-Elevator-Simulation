@@ -45,7 +45,7 @@ public class Scheduler implements Runnable {
 	}
 	
 	public synchronized void addRequest(Request request) {
-		if (request.isCompleted())
+		if (request.getStatus().equals(Progress.COMPLETED))
 			completedRequests.add(request);
 		else {
 			requests.add(request);
