@@ -2,7 +2,8 @@ package elevatorSystems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.util.Pair;
+import java.util.Map;
+
 
 
 public class Scheduler implements Runnable {
@@ -10,7 +11,7 @@ public class Scheduler implements Runnable {
 	private List<Request> requests;
 	private List<ArrayList<Request>> requestBuckets;
 	private List<Request> completedRequests;
-	boolean sorted;
+	private boolean sorted;
 	private boolean done;
 	
 	public Scheduler() {
@@ -21,7 +22,7 @@ public class Scheduler implements Runnable {
 		this.done = false;
 	}
 	
-	public synchronized Pair<ArrayList<Request>, ArrayList<Integer>> getRequest() {
+	public synchronized Map.Entry<ArrayList<Request>, ArrayList<Integer>> getRequest() {
 		while(requests.isEmpty()) { //elevator wait until there are requests
 			try {
 				if(done) {
@@ -33,7 +34,7 @@ public class Scheduler implements Runnable {
 			}
 		}
 		ArrayList<Request> bucket = requestBuckets.remove(0);
-		return new Pair<ArrayList<Request>,ArrayList<Integer>>(bucket, floorRoute(bucket));
+		return  Map.entry(bucket, floorRoute(bucket));
 	}
 	
 	public synchronized Request getCompletedRequest() {
