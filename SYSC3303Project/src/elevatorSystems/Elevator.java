@@ -8,7 +8,7 @@ import java.util.Hashtable;
  * @author Jay McCracken 101066860
  * @version 3.00
  */
-public class Elevator2 implements Runnable{
+public class Elevator implements Runnable{
 	
 	private Scheduler scheduler;
 	private FloorSubsystem floorSystem;
@@ -19,7 +19,7 @@ public class Elevator2 implements Runnable{
 	private Hashtable<Integer, Boolean> lamp = new Hashtable<Integer, Boolean>();
 	private static boolean done = false;
 	
-	public Elevator2(Scheduler scheduler, FloorSubsystem floorSyste) {
+	public Elevator(Scheduler scheduler, FloorSubsystem floorSyste) {
 		this.floorSystem = floorSystem;
 		this.scheduler = scheduler;	
 		this.elevatorLocation = 1;	
