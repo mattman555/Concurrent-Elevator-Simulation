@@ -81,7 +81,7 @@ public class Scheduler implements Runnable {
 		int upperBound = initial.getCarButton();
 		for(int i = 1; i < requests.size(); i++) {
 			Request curr = requests.get(i);
-			if(curr.getTime()[2] - initial.getTime()[2] < 30) { // check time, outside of similarRequests since there are additional things to do if not
+			if(compareTime(initial, curr)) { // check if similar time
 				if(similarRequests(initial,curr,upperBound)) { // check if same direction and within bounds
 					currBucket.add(curr);
 					if(curr.getCarButton() > upperBound)
@@ -128,6 +128,14 @@ public class Scheduler implements Runnable {
 			}
 		}
     }
+	
+	private boolean compareTime(Request initial, Request curr) {
+		int[] currTime = curr.getTime();
+		int[] initialTime = initial.getTime();
+		int currTotal = currTime[0]*360 + currTime[1] * 60 + currTime[2];
+		int initialTotal = initialTime[0]*360 + initialTime[1] * 60 + initialTime[2];
+		return (currTotal - initialTotal <= 30);
+	}
 	
 	private boolean similarRequests(Request initial, Request curr, int upperBound) {
 		boolean sameDir = curr.getFloorButtons().equals(initial.getFloorButtons()); // compare directions of requests
