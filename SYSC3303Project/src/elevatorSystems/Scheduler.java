@@ -9,32 +9,48 @@ import java.util.Map;
 public class Scheduler implements Runnable {
 
 	private List<Request> requests;
-	private List<ArrayList<Request>> requestBuckets;
+	private List<RequestGroup> requestBuckets;
+	private RequestGroup inProgressBucket;
 	private List<Request> completedRequests;
 	private boolean sorted;
 	private boolean done;
 	
 	public Scheduler() {
 		this.requests = Collections.synchronizedList(new ArrayList<Request>());
-		this.requestBuckets = Collections.synchronizedList(new ArrayList<ArrayList<Request>>());
+		this.requestBuckets = Collections.synchronizedList(new ArrayList<RequestGroup>());
 		this.completedRequests = Collections.synchronizedList(new ArrayList<Request>());
 		this.sorted = false;
 		this.done = false;
 	}
 	
-	public synchronized Map.Entry<ArrayList<Request>, ArrayList<Integer>> getRequest() {
-		while(requests.isEmpty()) { //elevator wait until there are requests
+	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
+		while(requestBuckets.size() == 0 && inProgressBucket == null) { //elevator wait until there are requests
 			try {
-				if(done) {
+				if(done)
 					return null;
-				}
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		ArrayList<Request> bucket = requestBuckets.remove(0);
-		return  Map.entry(bucket, floorRoute(bucket));
+		if(inProgressBucket == null ) { // get a new bucket
+			inProgressBucket = requestBuckets.remove(0);
+		}
+		else { // at a destination floor, a request has been completed
+			inProgressBucket.removeFloorLamp(currLocation); //turn off floor lamp 
+			for(Request request: inProgressBucket.getRequests()) {
+				if(request.getCarButton() == currLocation) {
+					completedRequests.add(request);
+					requests.remove(request);
+				}
+			}
+		}
+		Integer destination = inProgressBucket.getNextDestination();
+		if(destination == null) { //finished its request group, do something, NOT COMPLETE YET
+			
+		}
+		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
+		return Map.entry(destination, direction);
 	}
 	
 	public synchronized Request getCompletedRequest() {
@@ -66,69 +82,45 @@ public class Scheduler implements Runnable {
 		for(Request request : requests) {
 			addRequest(request);
 		}
-		if(!sorted)
-			sortRequestsIntoBuckets();
+		if(!sorted) {
+			sortRequestsIntoGroups();
+			sorted = true;
+		}
+			
 	}
 	
 	/**
-	 * Sorts requests into buckets of similar requests 
+	 * Sorts requests into groups of similar requests 
 	 */
-	private void sortRequestsIntoBuckets() {
+	private void sortRequestsIntoGroups() {
 		if(requests.isEmpty())
 			return;
 		Request initial = requests.get(0);
-		ArrayList<Request> currBucket = new ArrayList<Request>();
-		currBucket.add(initial);
-		int upperBound = initial.getCarButton();
+		ArrayList<Request> currGroup = new ArrayList<Request>();
+		currGroup.add(initial);
 		for(int i = 1; i < requests.size(); i++) {
 			Request curr = requests.get(i);
 			if(compareTime(initial, curr)) { // check if similar time
-				if(similarRequests(initial,curr,upperBound)) { // check if same direction and within bounds
-					currBucket.add(curr);
-					if(curr.getCarButton() > upperBound)
-						upperBound = curr.getCarButton(); //set the new upperBound
+				if(similarRequests(initial,curr)) { // check if same direction and within bounds
+					currGroup.add(curr);
 				}
 			}
-			else { //not within time so add this bucket and make new bucket
-				requestBuckets.add((ArrayList<Request>) currBucket.clone()); //add curr bucket
+			else { //not within time so add this group and make new group
+				RequestGroup group = new RequestGroup((ArrayList<Request>) currGroup.clone());
+				requestBuckets.add(group); //add curr group
 				//make new bucket
-				currBucket.clear();
+				currGroup.clear();
 				initial = requests.get(i);
-				currBucket.add(initial);
-				upperBound = initial.getCarButton();
+				currGroup.add(initial);
 			}		
 		}
-		requestBuckets.add((ArrayList<Request>) currBucket.clone()); // after final bucket, add it
+		requestBuckets.add(new RequestGroup((ArrayList<Request>) currGroup.clone())); // after final group, add it
 	}
 	
-	private ArrayList<Integer> floorRoute(ArrayList<Request> requests) {
-		ArrayList<Integer> floors = new ArrayList<>();
-		for(int i = 0; i < requests.size(); i++) {
-			Request request = requests.get(i);
-			
-			if(!floors.contains(request.getFloor()))
-				floors.add(request.getFloor());
-			
-			if(!floors.contains(request.getCarButton())) //shouldn't add duplicate floors
-				floors.add(request.getCarButton());
-		}
-		bubbleSort(floors);
-		return floors;
+	public ArrayList<Integer> getRequestedLamps(){
+		return inProgressBucket.getFloorLamps();
 	}
 	
-	private void bubbleSort(ArrayList<Integer> arr) {
-		int n = arr.size();
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n-i-1; j++) {
-				if (arr.get(j) > arr.get(j+1)) { 
-					// swap arr[j] and arr[j + 1] 
-					int temp = arr.get(j); 
-					arr.set(j, arr.get(j + 1));
-					arr.set(j + 1, temp);
-                }
-			}
-		}
-    }
 	
 	private boolean compareTime(Request initial, Request curr) {
 		int[] currTime = curr.getTime();
@@ -138,21 +130,17 @@ public class Scheduler implements Runnable {
 		return (currTotal - initialTotal <= 30);
 	}
 	
-	private boolean similarRequests(Request initial, Request curr, int upperBound) {
+	private boolean similarRequests(Request initial, Request curr) {
 		boolean sameDir = curr.getFloorButtons().equals(initial.getFloorButtons()); // compare directions of requests
-		boolean withinBound = curr.getFloor() > initial.getFloor() && curr.getFloor() < upperBound; // see if the new request is between the original floor and the upper bound
-		return  sameDir && withinBound;
+		boolean sameFloor = curr.getFloor() == initial.getFloor(); // see if the new request is initiated on the same floor as the original floor 
+		return  sameDir && sameFloor;
 	}
 	
 	
 	@Override
 	public void run() {
 		while(!done) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			
 		}
 		
 	}
