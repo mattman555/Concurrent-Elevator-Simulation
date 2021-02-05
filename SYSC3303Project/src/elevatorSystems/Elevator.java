@@ -63,6 +63,14 @@ public class Elevator implements Runnable{
 	}
 	
 	/**
+	 * Check if the doors are currently open or not
+	 * @return a boolean value if doors open
+	 */
+	public boolean getIsDoorsOpen() {
+		return this.isDoorOpen;
+	}
+	
+	/**
 	 * updating the elevators current location
 	 * @param location is the floor that the elevator just stopped on
 	 */
