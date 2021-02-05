@@ -1,0 +1,59 @@
+package elevatorSystems;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+
+public class FloorSubsystem implements Runnable{
+	Request[] requestArr= new Request[1000]; 
+	
+	public Request[] readFile(){
+		String date, hour, direction, carButton; 
+		
+		String csvFile = "ExampleFile.csv";
+		BufferedReader br= null; 
+		String line = "";
+		String cvsSplitBy= ","; 
+		try {
+			br= new BufferedReader(new FileReader(csvFile));
+			int i=0; 
+			while ((line = br.readLine())!= null) {
+				String[] datos = line.split(cvsSplitBy);
+				System.out.println(datos[0] + ", " + datos[1] + ", " + datos[2] + ", " + datos[3] );
+			    date= datos[0];
+			    hour= datos[1];
+			    direction= datos[2];
+			    carButton= datos[3];
+			    
+			    if(i==0) {
+			    	date= date.substring(3,date.length());
+			    	
+			    }
+			    System.out.println(date);
+			    requestArr[i]= new Request(date,Integer.parseInt(hour), direction ,Integer.parseInt(carButton));
+				i++; 
+				
+				
+			}
+			
+			return requestArr;
+		}
+		catch (FileNotFoundException e) {
+		    e.printStackTrace();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		} finally {
+		    if (br != null) {
+		        try {
+		            br.close();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		    }
+	 }
+	     return requestArr;
+   }
+}
