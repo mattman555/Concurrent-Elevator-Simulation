@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 
 /**
  * Elevator Thread, keeps track of current location, grabs motor direction
- * and floor destination form scheduler.
+ * and floor destination from scheduler.
  * Keeps track on in car button lamps, turns on and off requested lamps.
  * 
  * @author Jay McCracken 101066860
