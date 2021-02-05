@@ -205,7 +205,7 @@ public class Scheduler implements Runnable {
 		
 		Scheduler scheduler = new Scheduler();
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
-		Thread floorSubsystemThread = new Thread(new FloorSubsystem(scheduler, 7),"Scheduler");
+		Thread floorSubsystemThread = new Thread(new FloorSubsystem(scheduler, 7),"FloorSubsystem");
 		Elevator elevator = new Elevator(scheduler);
 		scheduler.addElevator(elevator);
 		Thread elevatorThread = new Thread(elevator,"Elevator");
