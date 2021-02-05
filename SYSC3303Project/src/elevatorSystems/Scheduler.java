@@ -15,7 +15,7 @@ public class Scheduler implements Runnable {
 	private RequestGroup inProgressBucket;
 	private List<Request> completedRequests;
 	private boolean done;
-	Elevator elevator;
+	private Elevator elevator;
 	
 	/**
 	 * Constructor for the scheduler class
@@ -35,11 +35,18 @@ public class Scheduler implements Runnable {
 		this.elevator = elevator;
 	}
 	
+<<<<<<< Upstream, based on origin/main
 	/**
 	 * Returns the next destination and the direction in which that destination is based on the current location of the elevator
 	 * @param currLocation current location of the elevator
 	 * @return an entry(key-value pair) containing the floor to go to and the direction that floor is 
 	 */
+=======
+	public Elevator getElevator() {
+		return this.elevator;
+	}
+	
+>>>>>>> 9780fd5 Fix in request and scheduler
 	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
 		while(requestBuckets.size() == 0 && inProgressBucket == null) { //elevator wait until there are requests
 			try {
@@ -120,7 +127,7 @@ public class Scheduler implements Runnable {
 	 * Sorts requests into groups of similar requests. 
 	 * Similar requests are currently if the request originates from the same floor and is within 30 seconds from the first request in that group
 	 */
-	private void sortRequestsIntoGroups() {
+	public void sortRequestsIntoGroups() {
 		if(requests.isEmpty())
 			return;
 		Request initial = requests.get(0);
