@@ -27,7 +27,7 @@ public class FloorSubsystem implements Runnable{
 	public FloorSubsystem(Scheduler scheduler, int maxFloors) {
 		this.scheduler = scheduler;
 		this.MAX_FLOORS = maxFloors;
-		this.requests = Collections.synchronizedList(new ArrayList<Request>());
+		this.requests = new ArrayList<Request>();
 		this.lamp = new Hashtable<String, Boolean>();
 	}
 	
