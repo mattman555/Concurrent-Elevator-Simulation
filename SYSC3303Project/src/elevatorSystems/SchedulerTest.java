@@ -2,6 +2,9 @@ package elevatorSystems;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
@@ -28,27 +31,26 @@ class SchedulerTest {
 	@Test
 	void testAddElevator() {
 		scheduler.addElevator(elevatorMethods);
-		assertEquals(scheduler.getElevator(), elevatorMethods, "Should add the evelvator elevatorMethods");
+		assertEquals(elevatorMethods, scheduler.getElevator(), "Should add the evelvator elevatorMethods");
 	}
 	
-	@Test
-	void testRequest() {
-		scheduler.addElevator(elevatorMethods);
-		scheduler.addRequest(request1);
-		scheduler.sortRequestsIntoGroups();
-		Map.Entry<Integer, Direction> output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
-		
-		assertEquals(output, Map.entry(2, Direction.UP), "Should be going UP to floor 2");
-	}
 	
 	@Test
 	void testMultipleRequest() {
 		scheduler.addElevator(elevatorMethods);
-		scheduler.addRequest(request1);
-		scheduler.sortRequestsIntoGroups();
-		Map.Entry<Integer, Direction> output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
+		ArrayList<Request> requests = new ArrayList<Request>();
+		requests.add(request1);
+		requests.add(request2);
+		scheduler.addRequests(requests);
 		
-		assertEquals(output, Map.entry(2, Direction.UP), "Should be going UP to floor 2");
+		Map.Entry<Integer, Direction> output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
+		assertEquals(Map.entry(2, Direction.UP),output , "Should be going UP to floor 2");
+		
+		output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
+		assertEquals(Map.entry(7, Direction.UP), output, "Should be going UP to floor 7");
+	
+	    output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
+		assertEquals(Map.entry(3, Direction.DOWN), output, "Should be going DOWN to floor 3");
 	}
 
 }
