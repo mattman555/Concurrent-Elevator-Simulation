@@ -78,7 +78,7 @@ public class RequestGroup {
 	 * Removes a car button lamp from the list of car button lamps that should be on
 	 * @param floor the floor of the car button lamp that should not be on
 	 */
-	public void removeFloorLamp(Integer floor) {
+	public void removeElevatorFloorLamp(Integer floor) {
 		elevFloorLamps.remove(floor);
 	}
 	
@@ -100,7 +100,7 @@ public class RequestGroup {
 
 	/**
 	 * Method to sort the floor route, used bubble sort since the floor route is never going to be too large
-	 * @param arr the ArrayList of integeres that is to be sorted
+	 * @param arr the ArrayList of integers that is to be sorted
 	 */
 	private void bubbleSort(ArrayList<Integer> arr) {
 		int n = arr.size();

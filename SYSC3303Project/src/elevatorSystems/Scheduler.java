@@ -54,7 +54,7 @@ public class Scheduler implements Runnable {
 			inProgressBucket = requestBuckets.remove(0);
 		}
 		else { // at a destination floor, a request has been completed
-			inProgressBucket.removeFloorLamp(currLocation); //turn off floor lamp 
+			inProgressBucket.removeElevatorFloorLamp(currLocation); //turn off floor lamp 
 			for(Request request: inProgressBucket.getRequests()) {
 				if(request.getCarButton() == currLocation) {
 					inProgressBucket.removeRequest(request);
