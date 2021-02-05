@@ -11,13 +11,21 @@ public class RequestGroup {
 	private ArrayList<Integer> elevFloorLamps;
 	private ArrayList<Integer> route;
 	
+	/**
+	 * Constructor for a request group, meant to be used for similar requests
+	 * @param requests the Requests that are to be part of a RequestGroup
+	 */
 	public RequestGroup(ArrayList<Request> requests) {
 		this.requests = requests;
-		elevFloorLamps = setFloorLamps();
+		elevFloorLamps = setElevatorFloorLamps();
 		route = setFloorRoute();
 	}
 	
-	private ArrayList<Integer> setFloorLamps() {
+	/**
+	 * Used to initialize the car button lamps 
+	 * @return an ArrayList of integers, the integers represent which car button lamps should be on
+	 */
+	private ArrayList<Integer> setElevatorFloorLamps() {
 		ArrayList<Integer> floors = new ArrayList<Integer>();
 		for(Request request : requests) {
 			if(!floors.contains(request.getCarButton()))
@@ -26,6 +34,10 @@ public class RequestGroup {
 		return floors;
 	}
 	
+	/**
+	 * Used to initialized the floor route for a set of requests
+	 * @return an ordered ArrayList of the floors to be visited
+	 */
 	private ArrayList<Integer> setFloorRoute() {
 		ArrayList<Integer> floors = new ArrayList<>();
 		for(int i = 0; i < requests.size(); i++) {
@@ -41,6 +53,10 @@ public class RequestGroup {
 		return floors;
 	}
 	
+	/**
+	 * Gets the next destination that needs to be visited to fulfill a request
+	 * @return an Integer representing the next destination
+	 */
 	public Integer getNextDestination() {
 		if(route.size() > 0) 
 			return route.remove(0);
@@ -50,22 +66,42 @@ public class RequestGroup {
 		
 	}
 	
+	/**
+	 * Removes a request from the RequestGroup since the request is complete
+	 * @param request The request that is to be removed
+	 */
 	public void removeRequest(Request request) {
 		requests.remove(request);
 	}
 	
+	/**
+	 * Removes a car button lamp from the list of car button lamps that should be on
+	 * @param floor the floor of the car button lamp that should not be on
+	 */
 	public void removeFloorLamp(Integer floor) {
 		elevFloorLamps.remove(floor);
 	}
 	
+	/**
+	 * Gets the unfulfilled requests of the request group
+	 * @return an ArrayList<Request> containing requests that have not been completed
+	 */
 	public ArrayList<Request> getRequests(){
 		return requests;
 	}
-	public ArrayList<Integer> getFloorLamps() {
+	
+	/**
+	 * Gets the car button lamps that should be on in the elevator
+	 * @return an ArrayList of Integers representing which car buttons lamps should be on
+	 */
+	public ArrayList<Integer> getElevatorFloorLamps() {
 		return elevFloorLamps;
 	}
 
-	
+	/**
+	 * Method to sort the floor route, used bubble sort since the floor route is never going to be too large
+	 * @param arr the ArrayList of integeres that is to be sorted
+	 */
 	private void bubbleSort(ArrayList<Integer> arr) {
 		int n = arr.size();
 		for (int i = 0; i < n-1; i++) {

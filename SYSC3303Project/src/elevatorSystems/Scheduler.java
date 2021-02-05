@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 
-
+/**
+ * @author Nick Coutts
+ */
 public class Scheduler implements Runnable {
 
 	private List<Request> requests;
@@ -15,6 +17,9 @@ public class Scheduler implements Runnable {
 	private boolean done;
 	Elevator elevator;
 	
+	/**
+	 * Constructor for the scheduler class
+	 */
 	public Scheduler() {
 		this.requests = Collections.synchronizedList(new ArrayList<Request>());
 		this.requestBuckets = Collections.synchronizedList(new ArrayList<RequestGroup>());
@@ -22,10 +27,19 @@ public class Scheduler implements Runnable {
 		this.done = false;
 	}
 	
+	/**
+	 * Adds an elevator to the scheduler
+	 * @param elevator the elevator reference to be added to the scheduler
+	 */
 	public void addElevator(Elevator elevator) {
 		this.elevator = elevator;
 	}
 	
+	/**
+	 * Returns the next destination and the direction in which that destination is based on the current location of the elevator
+	 * @param currLocation current location of the elevator
+	 * @return an entry(key-value pair) containing the floor to go to and the direction that floor is 
+	 */
 	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
 		while(requestBuckets.size() == 0 && inProgressBucket == null) { //elevator wait until there are requests
 			try {
@@ -46,6 +60,7 @@ public class Scheduler implements Runnable {
 					inProgressBucket.removeRequest(request);
 					completedRequests.add(request);
 					requests.remove(request);
+					notifyAll();
 				}
 			}
 			if(inProgressBucket.getRequests().size() == 0) {
@@ -61,6 +76,10 @@ public class Scheduler implements Runnable {
 		return Map.entry(destination, direction);
 	}
 	
+	/**
+	 * Gets a completed from the list of completed requests
+	 * @return a Request that was completed by an elevator
+	 */
 	public synchronized Request getCompletedRequest() {
 		while(completedRequests.isEmpty()) { //floorSubsystem wait until there are completed requests
 			try {
@@ -72,11 +91,18 @@ public class Scheduler implements Runnable {
 		return completedRequests.remove(0);
 	}
 	
+	/**
+	 * Called when the system is out of requests and all requests have been completed and used to signal the elevators that they can stop running
+	 */
 	public void setDone() {
 		this.done = true;
 		notifyAll();
 	}
 	
+	/**
+	 * Adds a request to the list of requests
+	 * @param request the request to be added
+	 */
 	public synchronized void addRequest(Request request) {
 		requests.add(request);
 	}
@@ -91,7 +117,8 @@ public class Scheduler implements Runnable {
 	}
 	
 	/**
-	 * Sorts requests into groups of similar requests 
+	 * Sorts requests into groups of similar requests. 
+	 * Similar requests are currently if the request originates from the same floor and is within 30 seconds from the first request in that group
 	 */
 	private void sortRequestsIntoGroups() {
 		if(requests.isEmpty())
@@ -118,15 +145,27 @@ public class Scheduler implements Runnable {
 		requestBuckets.add(new RequestGroup((ArrayList<Request>) currGroup.clone())); // after final group, add it
 	}
 	
+	/**
+	 * Gets the car button lamps that are to be on in the elevator
+	 * @return an ArrayList of integers of the car button lamps that are supposed to be on
+	 */
 	public ArrayList<Integer> getRequestedLamps(){
-		return inProgressBucket.getFloorLamps();
+		return inProgressBucket.getElevatorFloorLamps();
 	}
 	
+	/**
+	 * The elevator requests to have its doors toggled and the scheduler will toggle them
+	 */
 	public void requestDoorChange() {
 		elevator.toggleDoors();
 	}
 	
-	
+	/**
+	 * Compares the time between a request and the initial request in a group
+	 * @param initial the initial request in a group
+	 * @param curr the request that will be compared to the initial request
+	 * @return true if there is 30 seconds or less difference between them, false if there is more than a 30 second difference.
+	 */
 	private boolean compareTime(Request initial, Request curr) {
 		int[] currTime = curr.getTime();
 		int[] initialTime = initial.getTime();
@@ -135,13 +174,21 @@ public class Scheduler implements Runnable {
 		return (currTotal - initialTotal <= 30);
 	}
 	
+	/**
+	 * Compares a Request with an initial of the group to see if they are in the same direction and if they originated from the same floor
+	 * @param initial the first request in a group and the Request that the other Request will be compared to
+	 * @param curr the request that will be compared to the initial Request
+	 * @return true if they are in the same direction and originate from the same floor, false if they are different directions or originate from a different floor
+	 */
 	private boolean similarRequests(Request initial, Request curr) {
 		boolean sameDir = curr.getFloorButtons().equals(initial.getFloorButtons()); // compare directions of requests
 		boolean sameFloor = curr.getFloor() == initial.getFloor(); // see if the new request is initiated on the same floor as the original floor 
 		return  sameDir && sameFloor;
 	}
 	
-	
+	/**
+	 * The method that runs when starting a Thread containing a Scheduler runnable.
+	 */
 	@Override
 	public void run() {
 		while(!done) {
@@ -150,6 +197,10 @@ public class Scheduler implements Runnable {
 		
 	}
 	
+	/**
+	 * Initiates the threads and starts them
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		//Thread floor = new 
 		//need code first
