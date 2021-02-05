@@ -151,15 +151,15 @@ public class Scheduler implements Runnable {
 	}
 	
 	public static void main(String[] args) {
-		//Thread floor = new 
-		//need code first
+		
 		Scheduler scheduler = new Scheduler();
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
+		Thread floorSubsystemThread = new Thread(new FloorSubsystem(scheduler, 7),"Scheduler");
 		Elevator elevator = new Elevator(scheduler);
 		scheduler.addElevator(elevator);
 		Thread elevatorThread = new Thread(elevator,"Elevator");
 		
-		//floor.start()
+		floorSubsystemThread.start();
 		schedulerThread.start();
 		elevatorThread.start();
 		
