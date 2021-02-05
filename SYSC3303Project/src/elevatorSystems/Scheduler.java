@@ -12,15 +12,18 @@ public class Scheduler implements Runnable {
 	private List<RequestGroup> requestBuckets;
 	private RequestGroup inProgressBucket;
 	private List<Request> completedRequests;
-	private boolean sorted;
 	private boolean done;
+	Elevator elevator;
 	
 	public Scheduler() {
 		this.requests = Collections.synchronizedList(new ArrayList<Request>());
 		this.requestBuckets = Collections.synchronizedList(new ArrayList<RequestGroup>());
 		this.completedRequests = Collections.synchronizedList(new ArrayList<Request>());
-		this.sorted = false;
 		this.done = false;
+	}
+	
+	public void addElevator(Elevator elevator) {
+		this.elevator = elevator;
 	}
 	
 	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
@@ -40,15 +43,20 @@ public class Scheduler implements Runnable {
 			inProgressBucket.removeFloorLamp(currLocation); //turn off floor lamp 
 			for(Request request: inProgressBucket.getRequests()) {
 				if(request.getCarButton() == currLocation) {
+					inProgressBucket.removeRequest(request);
 					completedRequests.add(request);
 					requests.remove(request);
 				}
 			}
+			if(inProgressBucket.getRequests().size() == 0) {
+				if(requestBuckets.size() > 0)
+					inProgressBucket = requestBuckets.remove(0);
+				else {
+					return null;
+				}
+			}
 		}
 		Integer destination = inProgressBucket.getNextDestination();
-		if(destination == null) { //finished its request group, do something, NOT COMPLETE YET
-			
-		}
 		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
 		return Map.entry(destination, direction);
 	}
@@ -70,22 +78,15 @@ public class Scheduler implements Runnable {
 	}
 	
 	public synchronized void addRequest(Request request) {
-		if (request.getStatus() == Progress.COMPLETED)
-			completedRequests.add(request);
-		else if(request.getStatus() == Progress.INCOMPLETE){
-			requests.add(request);
-		}
-		notifyAll();
+		requests.add(request);
 	}
 	
 	public void addRequests(List<Request> requests) {
 		for(Request request : requests) {
 			addRequest(request);
 		}
-		if(!sorted) {
-			sortRequestsIntoGroups();
-			sorted = true;
-		}
+		sortRequestsIntoGroups();
+		notifyAll();
 			
 	}
 	
@@ -121,12 +122,16 @@ public class Scheduler implements Runnable {
 		return inProgressBucket.getFloorLamps();
 	}
 	
+	public void requestDoorChange() {
+		elevator.toggleDoors();
+	}
+	
 	
 	private boolean compareTime(Request initial, Request curr) {
 		int[] currTime = curr.getTime();
 		int[] initialTime = initial.getTime();
-		int currTotal = currTime[0]*360 + currTime[1] * 60 + currTime[2];
-		int initialTotal = initialTime[0]*360 + initialTime[1] * 60 + initialTime[2];
+		int currTotal = currTime[0] * 360 + currTime[1] * 60 + currTime[2];
+		int initialTotal = initialTime[0] * 360 + initialTime[1] * 60 + initialTime[2];
 		return (currTotal - initialTotal <= 30);
 	}
 	
@@ -140,11 +145,23 @@ public class Scheduler implements Runnable {
 	@Override
 	public void run() {
 		while(!done) {
-			
+			elevator.getElevatorLocation();
 		}
 		
 	}
+	
 	public static void main(String[] args) {
+		//Thread floor = new 
+		//need code first
+		Scheduler scheduler = new Scheduler();
+		Thread schedulerThread = new Thread(scheduler,"Scheduler");
+		Elevator elevator = new Elevator(scheduler);
+		scheduler.addElevator(elevator);
+		Thread elevatorThread = new Thread(elevator,"Elevator");
+		
+		//floor.start()
+		schedulerThread.start();
+		elevatorThread.start();
 		
 	}
 

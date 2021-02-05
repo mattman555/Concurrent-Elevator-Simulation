@@ -13,7 +13,6 @@ public class Request {
 	private int floor;
 	private Direction floorButtons;
 	private int carButton;
-	private Progress status;
 	
 	public Request(String time, int floor, String floorButtons, int carButton) {
 		String[] timeArr = time.split(":");
@@ -25,7 +24,6 @@ public class Request {
 		this.floor = floor;
 		this.floorButtons = Direction.stringToDirection(floorButtons);
 		this.carButton = carButton;
-		this.setStatus(Progress.INCOMPLETE);
 	}
 
 	/**
@@ -54,20 +52,6 @@ public class Request {
 	 */
 	public int getCarButton() {
 		return carButton;
-	}
-
-	/**
-	 * @return the completed
-	 */
-	public Progress getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param completed the completed to set
-	 */
-	public void setStatus(Progress status) {
-		this.status = status;
 	}
 
 }
