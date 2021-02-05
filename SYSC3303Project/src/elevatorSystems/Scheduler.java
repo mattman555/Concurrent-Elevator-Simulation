@@ -13,7 +13,7 @@ public class Scheduler implements Runnable {
 	private RequestGroup inProgressBucket;
 	private List<Request> completedRequests;
 	private boolean done;
-	Elevator elevator;
+	private Elevator elevator;
 	
 	public Scheduler() {
 		this.requests = Collections.synchronizedList(new ArrayList<Request>());
@@ -24,6 +24,10 @@ public class Scheduler implements Runnable {
 	
 	public void addElevator(Elevator elevator) {
 		this.elevator = elevator;
+	}
+	
+	public Elevator getElevator() {
+		return this.elevator;
 	}
 	
 	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
@@ -93,7 +97,7 @@ public class Scheduler implements Runnable {
 	/**
 	 * Sorts requests into groups of similar requests 
 	 */
-	private void sortRequestsIntoGroups() {
+	public void sortRequestsIntoGroups() {
 		if(requests.isEmpty())
 			return;
 		Request initial = requests.get(0);

@@ -15,10 +15,11 @@ public class Request {
 	private int carButton;
 	
 	public Request(String time, int floor, String floorButtons, int carButton) {
+		this.time = new int[4];
 		String[] timeArr = time.split(":");
+		timeArr = timeArr[2].split("\\.");
 		this.time[0] = Integer.parseInt(timeArr[0]);
 		this.time[1] = Integer.parseInt(timeArr[1]);
-		timeArr = timeArr[2].split(".");
 		this.time[2] = Integer.parseInt(timeArr[0]);
 		this.time[3] = Integer.parseInt(timeArr[1]);
 		this.floor = floor;
