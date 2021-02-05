@@ -1,6 +1,8 @@
 package elevatorSystems;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -12,87 +14,69 @@ public class Elevator implements Runnable{
 	
 	private Scheduler scheduler;
 	private int elevatorLocation;
-	private boolean isDoorOpen = false;
+	private int floorDestination;
+	private boolean isDoorOpen;
 	private Direction motor;
-	private ArrayList<Integer> floorsRequested;
 	private Hashtable<Integer, Boolean> lamp;
 	private static boolean done = false;
 	
 	public Elevator(Scheduler scheduler) {
 		this.scheduler = scheduler;	
 		this.elevatorLocation = 1;	
+		this.floorDestination = 1;
+		this.isDoorOpen = false;
 		this.lamp = new Hashtable<Integer, Boolean>();
-	}
-	
-	public ArrayList<Integer> getFloorsRequested(){
-		return floorsRequested;
 	}
 	
 	public int getElevatorLocation(){
 		return elevatorLocation;
 	}
 	
-	public Hashtable<Integer, Boolean> getLamp(){
-		return lamp;
-	}
-	
-	public Direction getMotor(){
+	public Direction getMotor(){ //used to talk to floor subsystem
 		return motor;
 	}
 	
-	public void setFloorsRequested(ArrayList<Integer> floors){
-		this.floorsRequested = floors;
+	
+	public void toggleDoors() {
+		this.isDoorOpen = !isDoorOpen;
 	}
+	
 	
 	public void setElevatorLocation(int location){
 		this.elevatorLocation = location;
 	}
 	
-	public void setLamp(Hashtable<Integer, Boolean> lamps){
-		this.lamp = lamps;
-	}
-	
-	public void setMotor(Direction motor){
-		this.motor = motor;
-	}
-	
-	
 	
 	public void run() {
 		while (!done) {
+			Entry<Integer,Direction> destination = scheduler.getRequest(elevatorLocation);
+			//check if done
+			if(destination == null)
+				return;
 			
-			int floorDestination = scheduler.getFloorDestination();
-			this.motor = scheduler.getMotorDirection();
+			floorDestination = destination.getKey();
+			this.motor = destination.getValue();
 			
 			System.out.println(
 					Thread.currentThread().getName()
 					+ " goes to floor " + floorDestination);
 			
+			scheduler.requestDoorChange();
+			
 			setElevatorLocation(floorDestination);
 			
-			if (scheduler.getOpenDoors() = true) {
-				isDoorOpen = true;
+			//set car button lamps to on
+			ArrayList<Integer> lamps = scheduler.getRequestedLamps();
+			for(Integer key : lamp.keySet()) {
+				lamp.put(key, false);
 			}
 			
-			if (scheduler.turnLampOff()) {
-				lamp.put(floorDestination, false);
+			for(Integer i : lamps) {
+				lamp.put(i, true);
 			}
+
 			
-			ArrayList<Integer> requestedFloors = scheduler.getReuestedFloors();
-			
-			for (int floor : requestedFloors) {
-				lamp.put(floor, true);
-				floorsRequested.add(floor);
-			}
-			
-			if (scheduler.getOpenDoors() = false) {
-				isDoorOpen = false;
-			}
-			
-			if(scheduler.getDone()) {
-				done = false;
-			}
+			scheduler.requestDoorChange();
 		}
-		return;
 	}
 }

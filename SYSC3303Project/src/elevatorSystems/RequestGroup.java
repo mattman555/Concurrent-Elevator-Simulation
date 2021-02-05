@@ -26,26 +26,6 @@ public class RequestGroup {
 		return floors;
 	}
 	
-	public Integer getNextDestination() {
-		if(route.size() > 0) 
-			return route.remove(0);
-		else {
-			return null;
-		}
-		
-	}
-	
-	public void removeFloorLamp(Integer floor) {
-		elevFloorLamps.remove(floor);
-	}
-	
-	public ArrayList<Request> getRequests(){
-		return requests;
-	}
-	public ArrayList<Integer> getFloorLamps() {
-		return elevFloorLamps;
-	}
-
 	private ArrayList<Integer> setFloorRoute() {
 		ArrayList<Integer> floors = new ArrayList<>();
 		for(int i = 0; i < requests.size(); i++) {
@@ -60,6 +40,31 @@ public class RequestGroup {
 		bubbleSort(floors);
 		return floors;
 	}
+	
+	public Integer getNextDestination() {
+		if(route.size() > 0) 
+			return route.remove(0);
+		else {
+			return null;
+		}
+		
+	}
+	
+	public void removeRequest(Request request) {
+		requests.remove(request);
+	}
+	
+	public void removeFloorLamp(Integer floor) {
+		elevFloorLamps.remove(floor);
+	}
+	
+	public ArrayList<Request> getRequests(){
+		return requests;
+	}
+	public ArrayList<Integer> getFloorLamps() {
+		return elevFloorLamps;
+	}
+
 	
 	private void bubbleSort(ArrayList<Integer> arr) {
 		int n = arr.size();
