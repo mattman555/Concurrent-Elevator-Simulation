@@ -33,10 +33,19 @@ public class FloorSubsystem implements Runnable{
 	
 	/**
 	 * turns floor lamps on and off based on where elevators are going
+	 * @param floor the floor to change the lamp of
+	 * @param direction the direction on the floor to change the lamp of
+	 * @param on whether to turn the lamp on or off
 	 */
 	public void setFloorLamp(int floor, Direction direction, boolean on) {
 		String floorAndDirection = ((Integer)floor).toString() + direction.toString();
 		lamp.put(floorAndDirection, on);
+	}
+	/**
+	 *get the lamp hashtable
+	 */
+	public Hashtable<String, Boolean> getFloorLamp() {
+		return lamp;
 	}
 	
 	/**
