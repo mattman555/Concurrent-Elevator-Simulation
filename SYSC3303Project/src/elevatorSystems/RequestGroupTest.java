@@ -58,7 +58,9 @@ class RequestGroupTest {
 	@Test
 	void testRemoveRequest() {
 		assertTrue(requestGroup.getRequests().contains(request1));
-		requestGroup.removeRequest(request1);
+		ArrayList<Request> remove = new ArrayList<>();
+		remove.add(request1);
+		requestGroup.removeRequests(remove);
 		assertFalse(requestGroup.getRequests().contains(request1));
 	}
 

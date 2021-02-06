@@ -50,7 +50,6 @@ public class Scheduler implements Runnable {
 	 */	
 
 	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
-		System.out.print(requestBuckets.size() + " ");
 		while(requestBuckets.size() == 0 && inProgressBucket == null) { //elevator wait until there are requests
 			try {
 				if(done)
@@ -63,20 +62,22 @@ public class Scheduler implements Runnable {
 		if(inProgressBucket == null ) { // get a new bucket
 			inProgressBucket = requestBuckets.remove(0);
 		}
-		else { // at a destination floor, a request has been completed
-			inProgressBucket.removeElevatorFloorLamp(currLocation); //turn off floor lamp 
+		else { // at a destination floor, a request may have been completed
+			inProgressBucket.removeElevatorFloorLamp(currLocation); //turn off floor lamp
+			ArrayList<Request> removable = new ArrayList<Request>(); //dont want to remove them while iterating over them
 			for(Request request: inProgressBucket.getRequests()) {
 				if(request.getCarButton() == currLocation) {
-					inProgressBucket.removeRequest(request);
+					removable.add(request);
 					completedRequests.add(request);
-					requests.remove(request);
 					notifyAll();
 				}
 			}
-			if(inProgressBucket.getRequests().size() == 0) {
+			inProgressBucket.removeRequests(removable); // remove finished requests from the current bucket
+			
+			if(inProgressBucket.getRequests().size() == 0) { //bucket is complete, get a new one
 				if(requestBuckets.size() > 0)
 					inProgressBucket = requestBuckets.remove(0);
-				else {
+				else { // all requests have been completed, elevators can stop
 					return null;
 				}
 			}
@@ -124,27 +125,31 @@ public class Scheduler implements Runnable {
 	 * Similar requests are currently if the request originates from the same floor and is within 30 seconds from the first request in that group
 	 */
 	private void sortRequestsIntoGroups() {
-		if(requests.isEmpty())
-			return;
-		Request initial = requests.get(0);
-		ArrayList<Request> currGroup = new ArrayList<Request>();
-		currGroup.add(initial);
-		for(int i = 1; i < requests.size(); i++) {
-			Request curr = requests.get(i);
-			if(compareTime(initial, curr) && similarRequests(initial,curr)) { // check if same direction and within bounds
-					currGroup.add(curr);
-				
+		while(!requests.isEmpty()) {
+			Request initial = requests.get(0);
+			ArrayList<Request> currGroup = new ArrayList<Request>();
+			currGroup.add(initial);
+			for(int i = 1; i < requests.size(); i++) {
+				Request curr = requests.get(i);
+				if(compareTime(initial, curr)) { // check if similar time
+					if(similarRequests(initial,curr)) { // check if same direction and within bounds
+						currGroup.add(curr);
+					}
+				}
+				else { //not within time so all requests after will not be within time 
+					break;
+				}		
 			}
-			else { //not within time so add this group and make new group
-				RequestGroup group = new RequestGroup((ArrayList<Request>) currGroup.clone());
-				requestBuckets.add(group); //add curr group
-				//make new bucket
-				currGroup.clear();
-				initial = requests.get(i);
-				currGroup.add(initial);
-			}		
+			//add this group and remove  them from requests
+			requestBuckets.add(new RequestGroup((ArrayList<Request>) currGroup.clone())); // after final group, add it
+			removeRequests(currGroup);
 		}
-		requestBuckets.add(new RequestGroup((ArrayList<Request>) currGroup.clone())); // after final group, add it
+	}
+	
+	private void removeRequests(ArrayList<Request> requests) {
+		for(Request r : requests) {
+			this.requests.remove(r);
+		}
 	}
 	
 	/**

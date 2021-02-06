@@ -67,11 +67,13 @@ public class RequestGroup {
 	}
 	
 	/**
-	 * Removes a request from the RequestGroup since the request is complete
-	 * @param request The request that is to be removed
+	 * Removes each Request in requests from the RequestGroup since the requests are complete
+	 * @param requests An ArrayList containing the requests to be removed
 	 */
-	public void removeRequest(Request request) {
-		requests.remove(request);
+	public void removeRequests(ArrayList<Request> requests) {
+		for(Request request : requests) {
+			this.requests.remove(request);
+		}
 	}
 	
 	/**
