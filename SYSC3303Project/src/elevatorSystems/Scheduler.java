@@ -123,7 +123,7 @@ public class Scheduler implements Runnable {
 	 * Sorts requests into groups of similar requests. 
 	 * Similar requests are currently if the request originates from the same floor and is within 30 seconds from the first request in that group
 	 */
-	public void sortRequestsIntoGroups() {
+	private void sortRequestsIntoGroups() {
 		if(requests.isEmpty())
 			return;
 		Request initial = requests.get(0);
