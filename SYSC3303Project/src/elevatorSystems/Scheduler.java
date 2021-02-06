@@ -103,7 +103,6 @@ public class Scheduler implements Runnable {
 	 */
 	public void setDone() {
 		System.exit(0);
-		notifyAll();
 	}
 	
 	
