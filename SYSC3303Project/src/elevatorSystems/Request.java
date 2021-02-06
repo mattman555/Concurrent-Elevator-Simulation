@@ -11,19 +11,19 @@ public class Request {
 
 	private int[] time;
 	private int floor;
-	private Direction floorButtons;
+	private Direction floorButton;
 	private int carButton;
 	
-	public Request(String time, int floor, String floorButtons, int carButton) {
+	public Request(String time, int floor, String floorButton, int carButton) {
 		this.time = new int[4];
 		String[] timeArr = time.split(":");
-		timeArr = timeArr[2].split("\\.");
 		this.time[0] = Integer.parseInt(timeArr[0]);
 		this.time[1] = Integer.parseInt(timeArr[1]);
+		timeArr = timeArr[2].split("\\.");
 		this.time[2] = Integer.parseInt(timeArr[0]);
 		this.time[3] = Integer.parseInt(timeArr[1]);
 		this.floor = floor;
-		this.floorButtons = Direction.stringToDirection(floorButtons);
+		this.floorButton = Direction.stringToDirection(floorButton);
 		this.carButton = carButton;
 	}
 
@@ -44,8 +44,8 @@ public class Request {
 	/**
 	 * @return the floorButtons
 	 */
-	public Direction getFloorButtons() {
-		return floorButtons;
+	public Direction getFloorButton() {
+		return floorButton;
 	}
 
 	/**
@@ -53,6 +53,12 @@ public class Request {
 	 */
 	public int getCarButton() {
 		return carButton;
+	}
+	
+	public String toString() {
+		String time = Integer.toString(this.time[0]) + ":" + Integer.toString(this.time[1]) + ":"  + Integer.toString(this.time[2]) + ":" + Integer.toString(this.time[3]);
+		return ("Request{Time: " + time + "| Floor: " + this.floor + "| Directional button: " + this.floorButton + "| Destination: " + this.carButton + "}");
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package elevatorSystems;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Nick Coutts
@@ -49,7 +50,7 @@ public class RequestGroup {
 			if(!floors.contains(request.getCarButton())) //shouldn't add duplicate floors
 				floors.add(request.getCarButton());
 		}
-		bubbleSort(floors);
+		bubbleSort(floors, requests.get(0).getFloorButton());
 		return floors;
 	}
 	
@@ -104,7 +105,7 @@ public class RequestGroup {
 	 * Method to sort the floor route, used bubble sort since the floor route is never going to be too large
 	 * @param arr the ArrayList of integers that is to be sorted
 	 */
-	private void bubbleSort(ArrayList<Integer> arr) {
+	private void bubbleSort(ArrayList<Integer> arr, Direction dir) {
 		int n = arr.size();
 		for (int i = 0; i < n-1; i++) {
 			for (int j = 0; j < n-i-1; j++) {
@@ -116,6 +117,8 @@ public class RequestGroup {
                 }
 			}
 		}
+		if(dir == Direction.DOWN) // going down, sort in reverse order
+			Collections.reverse(arr);
     }
 	
 }
