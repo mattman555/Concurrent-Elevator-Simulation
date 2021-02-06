@@ -57,6 +57,6 @@ RequestGroup.java:  RequestGroup is used for grouping requests by creating an ar
 
 RequestGroupTest.java:  A JUnit Test class for RequestGroup class.
 
-Scheduler.java:	Scheduler is a thread meant for scheduling the requests and sending the correct order of operations for the elevator to perform.
+Scheduler.java: Scheduler is a thread meant for scheduling the requests and sending the correct order of operations for the elevator to perform.
 
 SchedulerTest.java: A JUnit Test class for Scheduler class.
