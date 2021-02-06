@@ -51,6 +51,6 @@ class SchedulerTest {
 	
 	    output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
 		assertEquals(Map.entry(3, Direction.DOWN), output, "Should be going DOWN to floor 3");
-	}
 
+	}
 }
