@@ -43,14 +43,17 @@ class SchedulerTest {
 		requests.add(request2);
 		scheduler.addRequests(requests);
 		
-		Map.Entry<Integer, Direction> output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
+		Map.Entry<Integer, Direction> output = scheduler.getRequest(1);
 		assertEquals(Map.entry(2, Direction.UP),output , "Should be going UP to floor 2");
 		
-		output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
+		output = scheduler.getRequest(2);
 		assertEquals(Map.entry(7, Direction.UP), output, "Should be going UP to floor 7");
 	
-	    output = scheduler.getRequest(scheduler.getElevator().getElevatorLocation());
+	    output = scheduler.getRequest(7);
 		assertEquals(Map.entry(3, Direction.DOWN), output, "Should be going DOWN to floor 3");
+		
+		output = scheduler.getRequest(3);
+		assertEquals(Map.entry(7, Direction.UP), output, "Should be going UP to floor 7");
 
 	}
 }
