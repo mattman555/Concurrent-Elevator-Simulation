@@ -11,31 +11,27 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SchedulerTest {
+public class SchedulerTest {
 	private Elevator elevatorMethods;
 	private Scheduler scheduler;
 	private Request request1, request2;
 
-	@BeforeEach
-	void setUp() throws Exception {
+	@org.junit.Before
+	public void setUp() throws Exception {
 		scheduler = new Scheduler();
 		elevatorMethods = new Elevator(scheduler);
 		request1 = new Request("14:05:15.0",2,"UP",7);
 		request2 = new Request("14:05:15.0",3,"UP",7);
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-	}
-
-	@Test
-	void testAddElevator() {
+	@org.junit.Test
+	public void testAddElevator() {
 		scheduler.addElevator(elevatorMethods);
 		assertEquals(elevatorMethods, scheduler.getElevator(), "Should add the evelvator elevatorMethods");
 	}
 	
-	@Test
-	void testDoorChange() {
+	@org.junit.Test
+	public void testDoorChange() {
 		scheduler.addElevator(elevatorMethods);		
 		assertEquals(false, elevatorMethods.getIsDoorsOpen(), "The doors should be closed");
 		scheduler.requestDoorChange();
@@ -44,8 +40,8 @@ class SchedulerTest {
 		assertEquals(false, elevatorMethods.getIsDoorsOpen(), "The doors should be closed");
 	}
 	
-	@Test
-	void testRequestedLamps() {
+	@org.junit.Test
+	public void testRequestedLamps() {
 		scheduler.addElevator(elevatorMethods);
 		ArrayList<Request> requests = new ArrayList<Request>();
 		requests.add(request1);
@@ -59,8 +55,8 @@ class SchedulerTest {
 	}
 	
 	
-	@Test
-	void testMultipleRequest() {
+	@org.junit.Test
+	public void testMultipleRequest() {
 		scheduler.addElevator(elevatorMethods);
 		ArrayList<Request> requests = new ArrayList<Request>();
 		requests.add(request1);
