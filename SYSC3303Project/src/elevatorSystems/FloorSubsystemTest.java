@@ -45,11 +45,5 @@ class FloorSubsystemTest {
 		assertFalse(floorSubsystemMethods.getFloorLamp().get("1UP"));
 		assertTrue(floorSubsystemMethods.getFloorLamp().get("1DOWN"));
 	}
-	@Test
-	void testRun() {
-		Thread floorSubsystemThread = new Thread(floorSubsystemMethods, "floorSubsystem");
-		floorSubsystemThread.start();
-		assertEquals(5, scheduler.getRequest(1));
-	}
 
 }
