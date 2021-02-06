@@ -60,6 +60,7 @@ public class Elevator implements Runnable{
 	 */
 	public void toggleDoors() {
 		this.isDoorOpen = !isDoorOpen;
+		System.out.println("Elevator door is "+ (this.isDoorOpen ? "open" : "closed"));
 	}
 	
 	/**
@@ -119,5 +120,6 @@ public class Elevator implements Runnable{
 			
 			scheduler.requestDoorChange();				//Ask scheduler if it can close doors
 		}
+		scheduler.setDone();
 	}
 }

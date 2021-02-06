@@ -14,7 +14,6 @@ public class Scheduler implements Runnable {
 	private List<RequestGroup> requestBuckets;
 	private RequestGroup inProgressBucket;
 	private List<Request> completedRequests;
-	private boolean done;
 	private Elevator elevator;
 	
 	/**
@@ -24,7 +23,6 @@ public class Scheduler implements Runnable {
 		this.requests = Collections.synchronizedList(new ArrayList<Request>());
 		this.requestBuckets = Collections.synchronizedList(new ArrayList<RequestGroup>());
 		this.completedRequests = Collections.synchronizedList(new ArrayList<Request>());
-		this.done = false;
 	}
 	
 	/**
@@ -52,8 +50,6 @@ public class Scheduler implements Runnable {
 	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
 		while(requestBuckets.size() == 0 && inProgressBucket == null) { //elevator wait until there are requests
 			try {
-				if(done)
-					return null;
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -106,7 +102,7 @@ public class Scheduler implements Runnable {
 	 * Called when the system is out of requests and all requests have been completed and used to signal the elevators that they can stop running
 	 */
 	public void setDone() {
-		this.done = true;
+		System.exit(0);
 		notifyAll();
 	}
 	
@@ -146,6 +142,10 @@ public class Scheduler implements Runnable {
 		}
 	}
 	
+	/**
+	 * Removes an ArrayList of Requests from the requests instance variable
+	 * @param requests the requests to remove
+	 */
 	private void removeRequests(ArrayList<Request> requests) {
 		for(Request r : requests) {
 			this.requests.remove(r);
@@ -188,7 +188,7 @@ public class Scheduler implements Runnable {
 	 * @return true if they are in the same direction and originate from the same floor, false if they are different directions or originate from a different floor
 	 */
 	private boolean similarRequests(Request initial, Request curr) {
-		boolean sameDir = curr.getFloorButtons().equals(initial.getFloorButtons()); // compare directions of requests
+		boolean sameDir = curr.getFloorButton().equals(initial.getFloorButton()); // compare directions of requests
 		boolean sameFloor = curr.getFloor() == initial.getFloor(); // see if the new request is initiated on the same floor as the original floor 
 		return  sameDir && sameFloor;
 	}
@@ -198,7 +198,7 @@ public class Scheduler implements Runnable {
 	 */
 	@Override
 	public void run() {
-		while(!done) {
+		while(true) {
 			elevator.getElevatorLocation();
 		}
 		

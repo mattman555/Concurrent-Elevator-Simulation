@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class FloorSubsystem implements Runnable{
 	 */
 	public FloorSubsystem(Scheduler scheduler, int maxFloors) {
 		this.scheduler = scheduler;
-		this.MAX_FLOORS = maxFloors;
 		this.requests = new ArrayList<Request>();
+		this.MAX_FLOORS = maxFloors;
 		this.lamp = new Hashtable<String, Boolean>();
 	}
 	
@@ -55,27 +54,17 @@ public class FloorSubsystem implements Runnable{
 	 */
 	private boolean validateRequest(Request request) {
 		int[] time = request.getTime();
-		if((time[0]>=0 && time[0]<=24)&&(time[1]>=0 && time[1]<=59) && (time[2]>=0 && time[2]<=59) && (time[3]>=0 && time[3]<=999)) {
-			if(request.getFloor()>0 && request.getFloor()<=MAX_FLOORS) {
-				if(request.getFloorButtons().equals(Direction.UP) || request.getFloorButtons().equals(Direction.DOWN)) {
-					if(request.getCarButton()>0 && request.getCarButton()<=MAX_FLOORS && request.getCarButton() == request.getFloor()) {
+		//later change these into smaller checking methods
+		if((time[0] >= 0 && time[0] <= 24) && (time[1] >= 0 && time[1] <= 59) && (time[2] >= 0 && time[2] <= 59) && (time[3] >= 0 && time[3] <= 999)) { 
+			if(request.getFloor() > 0 && request.getFloor()<=MAX_FLOORS) {
+				if(request.getFloorButton().equals(Direction.UP) || request.getFloorButton().equals(Direction.DOWN)) {
+					if(request.getCarButton() > 0 && request.getCarButton() <= MAX_FLOORS && request.getCarButton() != request.getFloor()) {
 						return true;
 					}
-					else {
-						return false;
-					}
-				}
-				else {
-					return false;
 				}
 			}
-			else {
-				return false;
-			}
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 	
 	/**
@@ -83,9 +72,8 @@ public class FloorSubsystem implements Runnable{
 	 * @param request the given request to be removed
 	 */
 	private void removeRequest(Request request) {
-		if(requests.contains(request)) {
-			requests.remove(request);
-		}
+		System.out.println("Completed: " + request.toString());
+		requests.remove(request);
 	}
 	
 	/**
@@ -101,7 +89,8 @@ public class FloorSubsystem implements Runnable{
 			while (line != null) {
 				String[] lineArr = line.split(" "); 
 				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3])); 
-				if(validateRequest(request)) requests.add(request);
+				if(validateRequest(request)) 
+					requests.add(request);
 				line = reader.readLine();
 			}
 			reader.close();
@@ -121,8 +110,6 @@ public class FloorSubsystem implements Runnable{
 			removeRequest(scheduler.getCompletedRequest());
 		}
 		scheduler.setDone();
-		
 	}
 	
-
 }
