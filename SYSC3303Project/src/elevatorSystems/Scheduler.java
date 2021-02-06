@@ -15,7 +15,7 @@ public class Scheduler implements Runnable {
 	private RequestGroup inProgressBucket;
 	private List<Request> completedRequests;
 	private boolean done;
-	Elevator elevator;
+	private Elevator elevator;
 	
 	/**
 	 * Constructor for the scheduler class
@@ -36,11 +36,21 @@ public class Scheduler implements Runnable {
 	}
 	
 	/**
+	 * returns the current elevator
+	 * @return returns the current elevator object
+	 */
+	public Elevator getElevator() {
+		return this.elevator;
+	}
+
+	/**
 	 * Returns the next destination and the direction in which that destination is based on the current location of the elevator
 	 * @param currLocation current location of the elevator
 	 * @return an entry(key-value pair) containing the floor to go to and the direction that floor is 
-	 */
+	 */	
+
 	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
+		System.out.print(requestBuckets.size() + " ");
 		while(requestBuckets.size() == 0 && inProgressBucket == null) { //elevator wait until there are requests
 			try {
 				if(done)
@@ -99,17 +109,10 @@ public class Scheduler implements Runnable {
 		notifyAll();
 	}
 	
-	/**
-	 * Adds a request to the list of requests
-	 * @param request the request to be added
-	 */
-	public synchronized void addRequest(Request request) {
-		requests.add(request);
-	}
 	
-	public void addRequests(List<Request> requests) {
+	public synchronized void addRequests(List<Request> requests) {
 		for(Request request : requests) {
-			addRequest(request);
+			this.requests.add(request);
 		}
 		sortRequestsIntoGroups();
 		notifyAll();
@@ -120,7 +123,7 @@ public class Scheduler implements Runnable {
 	 * Sorts requests into groups of similar requests. 
 	 * Similar requests are currently if the request originates from the same floor and is within 30 seconds from the first request in that group
 	 */
-	private void sortRequestsIntoGroups() {
+	public void sortRequestsIntoGroups() {
 		if(requests.isEmpty())
 			return;
 		Request initial = requests.get(0);
@@ -128,10 +131,9 @@ public class Scheduler implements Runnable {
 		currGroup.add(initial);
 		for(int i = 1; i < requests.size(); i++) {
 			Request curr = requests.get(i);
-			if(compareTime(initial, curr)) { // check if similar time
-				if(similarRequests(initial,curr)) { // check if same direction and within bounds
+			if(compareTime(initial, curr) && similarRequests(initial,curr)) { // check if same direction and within bounds
 					currGroup.add(curr);
-				}
+				
 			}
 			else { //not within time so add this group and make new group
 				RequestGroup group = new RequestGroup((ArrayList<Request>) currGroup.clone());
