@@ -6,7 +6,7 @@ import java.util.Map;
 
 
 /**
- * @author Nick Coutts
+ * @author Nick Coutts 101072875
  */
 public class Scheduler implements Runnable {
 
@@ -34,7 +34,7 @@ public class Scheduler implements Runnable {
 	}
 	
 	/**
-	 * returns the current elevator
+	 * Returns the current elevator
 	 * @return returns the current elevator object
 	 */
 	public Elevator getElevator() {

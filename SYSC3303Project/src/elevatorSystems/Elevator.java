@@ -22,7 +22,6 @@ public class Elevator implements Runnable{
 	private boolean isDoorOpen;
 	private Direction motor;
 	private Hashtable<Integer, Boolean> lamp;
-	private static boolean done = false;
 	
 	/**
 	 * Constructor, creating a base elevator starting
@@ -87,7 +86,7 @@ public class Elevator implements Runnable{
 		/*
 		 * until thread is told there is no more requests
 		 */
-		while (!done) {
+		while (true) {
 			//Get the request of the next floor with the motor direction from the scheduler
 			Entry<Integer,Direction> destination = scheduler.getRequest(elevatorLocation);
 			//check if is no more requests
@@ -120,6 +119,5 @@ public class Elevator implements Runnable{
 			
 			scheduler.requestDoorChange();				//Ask scheduler if it can close doors
 		}
-		scheduler.setDone();
 	}
 }
