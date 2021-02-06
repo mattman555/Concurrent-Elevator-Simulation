@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
  * @author Matthew Harris 101073502
  *
  */
-class RequestGroupTest {
+public class RequestGroupTest {
 	
 	RequestGroup requestGroup;
 	ArrayList<Request> requests;
@@ -24,8 +24,8 @@ class RequestGroupTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeEach
-	void setUp() throws Exception {
+	@org.junit.Before
+	public void setUp() throws Exception {
 		requests = new ArrayList<Request>();
 		request1 = new Request("10:30:30.0", 2, "UP", 5);
 		request2 = new Request("10:31:30.0", 2, "UP", 3);
@@ -39,24 +39,24 @@ class RequestGroupTest {
 	/**
 	 * Test method for {@link elevatorSystems.RequestGroup#RequestGroup(java.util.ArrayList)}.
 	 */
-	@Test
-	void testRequestGroup() {
+	@org.junit.Test
+	public void testRequestGroup() {
 		assertNotNull(new RequestGroup(requests));
 	}
 
 	/**
 	 * Test method for {@link elevatorSystems.RequestGroup#getNextDestination()}.
 	 */
-	@Test
-	void testGetNextDestination() {
+	@org.junit.Test
+	public void testGetNextDestination() {
 		assertEquals(2, requestGroup.getNextDestination());
 	}
 
 	/**
 	 * Test method for {@link elevatorSystems.RequestGroup#removeRequest(elevatorSystems.Request)}.
 	 */
-	@Test
-	void testRemoveRequest() {
+	@org.junit.Test
+	public void testRemoveRequest() {
 		assertTrue(requestGroup.getRequests().contains(request1));
 		ArrayList<Request> remove = new ArrayList<>();
 		remove.add(request1);
@@ -67,8 +67,8 @@ class RequestGroupTest {
 	/**
 	 * Test method for {@link elevatorSystems.RequestGroup#removeElevatorFloorLamp(java.lang.Integer)}.
 	 */
-	@Test
-	void testRemoveElevatorFloorLamp() {
+	@org.junit.Test
+	public void testRemoveElevatorFloorLamp() {
 		assertTrue(requestGroup.getElevatorFloorLamps().contains(3));
 		requestGroup.removeElevatorFloorLamp(3);
 		assertFalse(requestGroup.getElevatorFloorLamps().contains(3));
@@ -77,16 +77,16 @@ class RequestGroupTest {
 	/**
 	 * Test method for {@link elevatorSystems.RequestGroup#getRequests()}.
 	 */
-	@Test
-	void testGetRequests() {
+	@org.junit.Test
+	public void testGetRequests() {
 		assertTrue(requestGroup.getRequests().contains(request1));
 	}
 
 	/**
 	 * Test method for {@link elevatorSystems.RequestGroup#getElevatorFloorLamps()}.
 	 */
-	@Test
-	void testGetElevatorFloorLamps() {
+	@org.junit.Test
+	public void testGetElevatorFloorLamps() {
 		assertTrue(requestGroup.getElevatorFloorLamps().contains(3));
 	}
 

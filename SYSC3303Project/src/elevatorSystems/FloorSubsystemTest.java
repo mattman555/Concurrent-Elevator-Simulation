@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test;
  * @author Matthew Harris 101073502
  *
  */
-class FloorSubsystemTest {
+public class FloorSubsystemTest {
 	private FloorSubsystem floorSubsystemMethods;
 	private Scheduler scheduler;
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeEach
-	void setUp() throws Exception {
+	@org.junit.Before
+	public void setUp() throws Exception {
 		scheduler = new Scheduler();
 		floorSubsystemMethods = new FloorSubsystem(scheduler, 7);
 	}
@@ -27,16 +27,16 @@ class FloorSubsystemTest {
 	/**
 	 * Test method for {@link elevatorSystems.FloorSubsystem#FloorSubsystem(elevatorSystems.Scheduler, int)}.
 	 */
-	@Test
-	void testFloorSubsystem() {
+	@org.junit.Test
+	public void testFloorSubsystem() {
 		assertNotNull(new FloorSubsystem(scheduler,7));
 	}
 
 	/**
 	 * Test method for {@link elevatorSystems.FloorSubsystem#setFloorLamp(int, elevatorSystems.Direction, boolean)}.
 	 */
-	@Test
-	void testSetFloorLamp() {
+	@org.junit.Test
+	public void testSetFloorLamp() {
 		floorSubsystemMethods.setFloorLamp(1, Direction.UP, true);
 		assertTrue(floorSubsystemMethods.getFloorLamp().get("1UP"));
 		floorSubsystemMethods.setFloorLamp(1, Direction.UP, false);
