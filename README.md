@@ -1,4 +1,5 @@
 README
+Group 5 SYSC 3303 Elevator Project
 
 ---------------------
 Project Description
