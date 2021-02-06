@@ -1,7 +1,5 @@
-/**
- * 
- */
-package elevatorSystems;
+
+package elevatorSystems.JUnitTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -9,6 +7,7 @@ import org.junit.runners.Suite;
 
 @Suite.SuiteClasses(value={
    RequestGroupTest.class,
+   RequestTest.class,
    SchedulerTest.class,
    FloorSubsystemTest.class,
    ElevatorTest.class

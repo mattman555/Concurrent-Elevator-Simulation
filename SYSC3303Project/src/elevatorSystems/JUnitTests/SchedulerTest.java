@@ -1,13 +1,14 @@
-package elevatorSystems;
+package elevatorSystems.JUnitTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import elevatorSystems.Direction;
+import elevatorSystems.Elevator;
+import elevatorSystems.Request;
+import elevatorSystems.Scheduler;
 
 public class SchedulerTest {
 	private Elevator elevatorMethods;
