@@ -1,12 +1,13 @@
 /**
  * 
  */
-package elevatorSystems;
+package elevatorSystems.JUnitTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import elevatorSystems.Direction;
+import elevatorSystems.FloorSubsystem;
+import elevatorSystems.Scheduler;
 
 /**
  * @author Matthew Harris 101073502

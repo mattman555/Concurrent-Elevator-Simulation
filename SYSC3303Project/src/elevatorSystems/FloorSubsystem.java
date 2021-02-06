@@ -19,7 +19,7 @@ public class FloorSubsystem implements Runnable{
 	private List<Request> requests;
 	private final int MAX_FLOORS;
 	private Hashtable<String, Boolean> lamp;
-	private final String fileName = "TestFile.txt";
+	private final String FILENAME = "TestFile.txt";
 	/**
 	 * Constructor for the floor subsystem set all the fields
 	 */
@@ -104,7 +104,7 @@ public class FloorSubsystem implements Runnable{
 	 */
 	@Override
 	public void run() {
-		readFile(fileName);
+		readFile(FILENAME);
 		scheduler.addRequests(requests);
 		while(requests.size()>0) {
 			removeRequest(scheduler.getCompletedRequest());
