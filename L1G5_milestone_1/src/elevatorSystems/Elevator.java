@@ -8,15 +8,15 @@ import java.util.Map.Entry;
  * and floor destination from scheduler.
  * Keeps track on in car button lamps, turns on and off requested lamps.
  * 
- * @author Jay McCracken 101066860
- * @version 3.00
+ * @author Jay McCracken 101066860 and Matthew Harris 101073502
+ * @version 4.00
  */
-public class Elevator implements Runnable{
+public class Elevator{
 	
 	/*
 	 * Variables elevator needs to store
 	 */
-	private Scheduler scheduler;
+	public Scheduler scheduler;
 	private int elevatorLocation;
 	private int floorDestination;
 	private boolean isDoorOpen;
@@ -36,6 +36,22 @@ public class Elevator implements Runnable{
 		this.lamp = new Hashtable<Integer, Boolean>();
 	}
 	
+	public int getFloorDestination() {
+		return floorDestination;
+	}
+
+	public void setFloorDestination(int floorDestination) {
+		this.floorDestination = floorDestination;
+	}
+
+	public boolean isDoorOpen() {
+		return isDoorOpen;
+	}
+	
+	public Hashtable<Integer, Boolean> getLamp() {
+		return lamp;
+	}
+
 	/**
 	 * where the elevator currently is
 	 * @return	the floor number that the elevator is on
@@ -52,6 +68,9 @@ public class Elevator implements Runnable{
 		return motor;
 	}
 	
+	public void setMotor(Direction motor){ //used to talk to floor subsystem
+		this.motor = motor;
+	}
 	/**
 	 * Function to toggle if the doors are open
 	 * if open, close

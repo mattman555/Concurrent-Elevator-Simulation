@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import elevatorSystems.elevatorStateMachine.ElevatorSM;
+
 
 /**
  * @author Nick Coutts 101072875
@@ -211,10 +213,11 @@ public class Scheduler implements Runnable {
 		
 		Scheduler scheduler = new Scheduler();
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
-		Thread floorSubsystemThread = new Thread(new FloorSubsystem(scheduler, 7),"FloorSubsystem");
+		FloorSubsystem floorSubsystem = new FloorSubsystem(scheduler, 7);
+		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
 		Elevator elevator = new Elevator(scheduler);
 		scheduler.addElevator(elevator);
-		Thread elevatorThread = new Thread(elevator,"Elevator");
+		Thread elevatorThread = new Thread(new ElevatorSM(elevator,floorSubsystem),"Elevator");
 		
 		floorSubsystemThread.start();
 		schedulerThread.start();
