@@ -1,0 +1,18 @@
+ITERATION 2:
+  Everyone together - UML, Statemachine diagrams for both statemachines
+  Nick - 
+  Jay - Updates from TA feedback, 
+  Matt - 
+  Kevin - 
+  Ambar - 
+  This isn't strictly adhered to since everyone added methods and changes to other classes 
+
+
+ITERATION 1:
+  Everyone together - UML, Debugged final code as a group
+  Nick - RequestGroup.java, Scheduler.java, RequestTest.java
+  Jay - Elevator.java, SchedulerTest.java, ElevatorTest.java
+  Matt - FloorSubsytem.java, Request.java, FloorSubsystemTest.java, RequestGroupTest.java, Direction.java, TestSuite.java
+  Kevin - README, Sequence Diagrams
+  Ambar - 
+  This isn't strictly adhered to since everyone added methods and changes to other classes 
