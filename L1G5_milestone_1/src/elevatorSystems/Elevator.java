@@ -88,6 +88,7 @@ public class Elevator implements Runnable{
 		 */
 		while (true) {
 			//Get the request of the next floor with the motor direction from the scheduler
+			System.out.println(Thread.currentThread().getName() + ": Requesting destination from Scheduler...");
 			Entry<Integer,Direction> destination = scheduler.getRequest(elevatorLocation);
 			//check if is no more requests
 			if(destination == null)
@@ -99,14 +100,17 @@ public class Elevator implements Runnable{
 			//Flavor text of the elevator moving to new floor
 			System.out.println(
 					Thread.currentThread().getName()
-					+ " goes to floor " + floorDestination);
+					+ " goes " + this.motor + " to floor " + floorDestination);
 			
 			
+			System.out.println(Thread.currentThread().getName() + ": Requesting to open Doors from Scheduler...");
 			scheduler.requestDoorChange();				//Ask scheduler if it can open doors
 			
 			setElevatorLocation(floorDestination);		
+			System.out.println(Thread.currentThread().getName() + ": set Floor Destination to " + floorDestination);
 			
 			//set car button lamps to on
+			System.out.println(Thread.currentThread().getName() + ": Requesting what car lamps to turn on Scheduler...");
 			ArrayList<Integer> lamps = scheduler.getRequestedLamps();
 			for(Integer key : lamp.keySet()) {
 				lamp.put(key, false);
@@ -116,7 +120,7 @@ public class Elevator implements Runnable{
 				lamp.put(i, true);
 			}
 
-			
+			System.out.println(Thread.currentThread().getName() + ": Requesting close Doors from Scheduler...");
 			scheduler.requestDoorChange();				//Ask scheduler if it can close doors
 		}
 	}
