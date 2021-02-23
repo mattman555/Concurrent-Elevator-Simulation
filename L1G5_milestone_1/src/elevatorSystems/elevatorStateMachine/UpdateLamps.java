@@ -3,6 +3,8 @@
  */
 package elevatorSystems.elevatorStateMachine;
 
+import java.util.ArrayList;
+
 import elevatorSystems.Elevator;
 
 /**
@@ -18,12 +20,21 @@ public class UpdateLamps extends ElevatorState {
 	}
 
 	@Override
-	public void action() {
+	public void action(ArrayList<Integer> lamps) {
+		System.out.println("Updating lamps");
+		for(Integer key : this.elevator.getLamp().keySet()) {
+			this.elevator.getLamp().put(key, false);
+		}
 		
+		for(Integer i : lamps) {
+			this.elevator.getLamp().put(i, true);
+		}
 	}
 	
 	@Override
 	public void toggleDoors() {
+		System.out.println("Transition from Update Lamps to Doors Closed");
+		this.elevator.toggleDoors();
 		
 	}
 	

@@ -100,11 +100,12 @@ public class Elevator{
 	
 	/**
 	 * The running of the elevator, travel to new floor, updating lamps
-	 */
+	 
+	
 	public void run() {
 		/*
 		 * until thread is told there is no more requests
-		 */
+		 
 		while (true) {
 			//Get the request of the next floor with the motor direction from the scheduler
 			Entry<Integer,Direction> destination = scheduler.getRequest(elevatorLocation);
@@ -138,5 +139,5 @@ public class Elevator{
 			
 			scheduler.requestDoorChange();				//Ask scheduler if it can close doors
 		}
-	}
+	}*/
 }

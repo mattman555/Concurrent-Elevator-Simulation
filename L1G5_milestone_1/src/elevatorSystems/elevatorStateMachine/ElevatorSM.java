@@ -41,8 +41,8 @@ public class ElevatorSM implements Runnable{
 		states[current].activity();
 	}
 	
-	public void action() {
-		states[current].action();
+	public void action(ArrayList<Integer> lamps) {
+		states[current].action(lamps);
 	}
 	
 	public void validUpRequest(Entry<Integer,Direction> destination) {
@@ -70,9 +70,10 @@ public class ElevatorSM implements Runnable{
 		next(0);
 	}
 	
-	public void getLamps() {
-		states[current].getLamps();
+	public ArrayList<Integer> getLamps() {
+		ArrayList<Integer> lamps = states[current].getLamps();
 		next(0);
+		return lamps;
 	}
 	
 	public void exit() {
@@ -88,13 +89,14 @@ public class ElevatorSM implements Runnable{
 		 * until thread is told there is no more requests
 		 */
 		int destinationFloor = 1;
+		ArrayList<Integer> lamps = null;
 		while (true) {
 			switch(current) {
 			case 0:
 				//Get the request of the next floor with the motor direction from the scheduler
 				Entry<Integer,Direction> destination = this.elevator.scheduler.getRequest(this.elevator.getElevatorLocation());
 				destinationFloor = destination.getKey();
-				if(destination == null) {//no more requests move to end
+				if(destination.getValue() == null) {//no more requests move to end
 					this.invalidRequest();
 					break;
 				}
@@ -122,40 +124,25 @@ public class ElevatorSM implements Runnable{
 					this.arrivesAtDestination();
 					break;
 				}
-				else if(destinationFloor>this.elevator.getElevatorLocation()) {
+				else if(destinationFloor<this.elevator.getElevatorLocation()) {
 					this.activity();
 					break;
 				}
 				break;
 			case 3:
+				this.toggleDoors();
 				break;
 			case 4:
+				lamps = this.getLamps();
 				break;
 			case 5:
+				this.action(lamps);
+				this.toggleDoors();
 				break;
 			case 6:
+				this.exit();
 				break;
 			}
-			
-			
-			
-			
-			scheduler.requestDoorChange();				//Ask scheduler if it can open doors
-			
-			setElevatorLocation(floorDestination);		
-			
-			//set car button lamps to on
-			ArrayList<Integer> lamps = scheduler.getRequestedLamps();
-			for(Integer key : lamp.keySet()) {
-				lamp.put(key, false);
-			}
-			
-			for(Integer i : lamps) {
-				lamp.put(i, true);
-			}
-
-			
-			scheduler.requestDoorChange();				//Ask scheduler if it can close doors
 		}
 	}
 }

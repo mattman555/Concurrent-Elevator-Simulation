@@ -3,6 +3,8 @@
  */
 package elevatorSystems.elevatorStateMachine;
 
+import java.util.ArrayList;
+
 import elevatorSystems.Elevator;
 
 /**
@@ -18,7 +20,8 @@ public class DoorsOpen extends ElevatorState {
 	}
 
 	@Override
-	public void getLamps() {
+	public ArrayList<Integer> getLamps() {
 		System.out.println("Transition from Doors Open to Update Lamps");
+		return this.elevator.scheduler.getRequestedLamps();
 	}
 }

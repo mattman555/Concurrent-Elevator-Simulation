@@ -3,6 +3,7 @@
  */
 package elevatorSystems.elevatorStateMachine;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import elevatorSystems.Direction;
@@ -18,7 +19,7 @@ public abstract class ElevatorState {
 		throw new IllegalArgumentException();
 	}
 	
-	public void action() {
+	public void action(ArrayList<Integer> lamps) {
 		System.out.println("Incorrect State");
 		throw new IllegalArgumentException();
 	}
@@ -48,7 +49,7 @@ public abstract class ElevatorState {
 		throw new IllegalArgumentException();
 	}
 	
-	public void getLamps() {
+	public ArrayList<Integer> getLamps() {
 		System.out.println("Incorrect State");
 		throw new IllegalArgumentException();
 	}
