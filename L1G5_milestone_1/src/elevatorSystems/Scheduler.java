@@ -82,6 +82,7 @@ public class Scheduler implements Runnable {
 		}
 		Integer destination = inProgressBucket.getNextDestination();
 		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
+		System.out.println("Scheduler" + ": Sends " + Thread.currentThread().getName() + " to move " + direction + " to floor " + destination);
 		return Map.entry(destination, direction);
 	}
 	
@@ -97,6 +98,7 @@ public class Scheduler implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Scheduler" + ": Sends completed request to " + Thread.currentThread().getName() );
 		return completedRequests.remove(0);
 	}
 	
@@ -111,6 +113,7 @@ public class Scheduler implements Runnable {
 	public synchronized void addRequests(List<Request> requests) {
 		for(Request request : requests) {
 			this.requests.add(request);
+			System.out.println("Scheduler" + ": Gets Request for floor " + request.getFloor() + " from " + Thread.currentThread().getName() + "...");
 		}
 		sortRequestsIntoGroups();
 		notifyAll();
@@ -158,6 +161,7 @@ public class Scheduler implements Runnable {
 	 * @return an ArrayList of integers of the car button lamps that are supposed to be on
 	 */
 	public ArrayList<Integer> getRequestedLamps(){
+		System.out.println("Scheduler" + ": Sends " + Thread.currentThread().getName() + " requested car lamps");
 		return inProgressBucket.getElevatorFloorLamps();
 	}
 	
@@ -165,6 +169,7 @@ public class Scheduler implements Runnable {
 	 * The elevator requests to have its doors toggled and the scheduler will toggle them
 	 */
 	public void requestDoorChange() {
+		System.out.println("Scheduler" + ": Toggling " + Thread.currentThread().getName() + " Doors...");
 		elevator.toggleDoors();
 	}
 	

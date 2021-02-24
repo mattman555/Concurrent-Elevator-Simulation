@@ -72,6 +72,7 @@ public class FloorSubsystem implements Runnable{
 	 * @param request the given request to be removed
 	 */
 	private void removeRequest(Request request) {
+		System.out.println(Thread.currentThread().getName() + ": Recives completed Request from Scheduler" );
 		System.out.println("Completed: " + request.toString());
 		requests.remove(request);
 	}
@@ -107,6 +108,7 @@ public class FloorSubsystem implements Runnable{
 		readFile(FILENAME);
 		scheduler.addRequests(requests);
 		while(requests.size()>0) {
+			System.out.println(Thread.currentThread().getName() + ": waits for completed requests from Schduler" );
 			removeRequest(scheduler.getCompletedRequest());
 		}
 		scheduler.setDone();
