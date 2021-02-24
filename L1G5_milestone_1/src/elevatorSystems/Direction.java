@@ -9,7 +9,8 @@ package elevatorSystems;
  */
 public enum Direction {
 	UP,
-	DOWN;
+	DOWN, 
+	STATIONARY;
 	
 	/**
 	 * converts string to direction

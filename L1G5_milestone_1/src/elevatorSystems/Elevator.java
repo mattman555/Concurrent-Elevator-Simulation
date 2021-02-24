@@ -1,22 +1,20 @@
 package elevatorSystems;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Map.Entry;
 
 /**
  * Elevator Thread, keeps track of current location, grabs motor direction
  * and floor destination from scheduler.
  * Keeps track on in car button lamps, turns on and off requested lamps.
  * 
- * @author Jay McCracken 101066860
- * @version 3.00
+ * @author Jay McCracken 101066860 and Matthew Harris 101073502
+ * @version 4.00
  */
-public class Elevator implements Runnable{
+public class Elevator{
 	
 	/*
 	 * Variables elevator needs to store
 	 */
-	private Scheduler scheduler;
+	public Scheduler scheduler;
 	private int elevatorLocation;
 	private int floorDestination;
 	private boolean isDoorOpen;
@@ -36,6 +34,22 @@ public class Elevator implements Runnable{
 		this.lamp = new Hashtable<Integer, Boolean>();
 	}
 	
+	public int getFloorDestination() {
+		return floorDestination;
+	}
+
+	public void setFloorDestination(int floorDestination) {
+		this.floorDestination = floorDestination;
+	}
+
+	public boolean isDoorOpen() {
+		return isDoorOpen;
+	}
+	
+	public Hashtable<Integer, Boolean> getLamp() {
+		return lamp;
+	}
+
 	/**
 	 * where the elevator currently is
 	 * @return	the floor number that the elevator is on
@@ -52,6 +66,9 @@ public class Elevator implements Runnable{
 		return motor;
 	}
 	
+	public void setMotor(Direction motor){ //used to talk to floor subsystem
+		this.motor = motor;
+	}
 	/**
 	 * Function to toggle if the doors are open
 	 * if open, close
@@ -76,52 +93,5 @@ public class Elevator implements Runnable{
 	 */
 	public void setElevatorLocation(int location){
 		this.elevatorLocation = location;
-	}
-	
-	
-	/**
-	 * The running of the elevator, travel to new floor, updating lamps
-	 */
-	public void run() {
-		/*
-		 * until thread is told there is no more requests
-		 */
-		while (true) {
-			//Get the request of the next floor with the motor direction from the scheduler
-			System.out.println(Thread.currentThread().getName() + ": Requesting destination from Scheduler...");
-			Entry<Integer,Direction> destination = scheduler.getRequest(elevatorLocation);
-			//check if is no more requests
-			if(destination == null)
-				return;
-			
-			floorDestination = destination.getKey(); 	//the floor number to go to
-			this.motor = destination.getValue();		//the direction of the motor to get to that floor
-			
-			//Flavor text of the elevator moving to new floor
-			System.out.println(
-					Thread.currentThread().getName()
-					+ " goes " + this.motor + " to floor " + floorDestination);
-			
-			
-			System.out.println(Thread.currentThread().getName() + ": Requesting to open Doors from Scheduler...");
-			scheduler.requestDoorChange();				//Ask scheduler if it can open doors
-			
-			setElevatorLocation(floorDestination);		
-			System.out.println(Thread.currentThread().getName() + ": set Floor Destination to " + floorDestination);
-			
-			//set car button lamps to on
-			System.out.println(Thread.currentThread().getName() + ": Requesting what car lamps to turn on Scheduler...");
-			ArrayList<Integer> lamps = scheduler.getRequestedLamps();
-			for(Integer key : lamp.keySet()) {
-				lamp.put(key, false);
-			}
-			
-			for(Integer i : lamps) {
-				lamp.put(i, true);
-			}
-
-			System.out.println(Thread.currentThread().getName() + ": Requesting close Doors from Scheduler...");
-			scheduler.requestDoorChange();				//Ask scheduler if it can close doors
-		}
 	}
 }
