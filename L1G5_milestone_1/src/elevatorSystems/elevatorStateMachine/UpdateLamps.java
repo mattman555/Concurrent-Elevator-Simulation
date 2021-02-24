@@ -34,7 +34,7 @@ public class UpdateLamps extends ElevatorState {
 	@Override
 	public void toggleDoors() {
 		System.out.println("Transition from Update Lamps to Doors Closed");
-		this.elevator.toggleDoors();
+		this.elevator.scheduler.requestDoorChange();
 		
 	}
 	

@@ -14,7 +14,7 @@ import elevatorSystems.Direction;
  */
 public abstract class ElevatorState {
 
-	public void activity() {
+	public void activity(Direction direction) {
 		System.out.println("Incorrect State");
 		throw new IllegalArgumentException();
 	}
@@ -24,12 +24,7 @@ public abstract class ElevatorState {
 		throw new IllegalArgumentException();
 	}
 	
-	public void validUpRequest(Entry<Integer,Direction> destination) {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
-	}
-	
-	public void validDownRequest(Entry<Integer,Direction> destination) {
+	public void validRequest(Entry<Integer,Direction> destination) {
 		System.out.println("Incorrect State");
 		throw new IllegalArgumentException();
 	}

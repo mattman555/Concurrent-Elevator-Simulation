@@ -6,6 +6,8 @@ package elevatorSystems.elevatorStateMachine;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import javax.print.attribute.standard.Destination;
+
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
 import elevatorSystems.FloorSubsystem;
@@ -18,7 +20,7 @@ public class ElevatorSM implements Runnable{
 
 	private ElevatorState[] states;
 	private int current;
-	private int[][] transitions = {{1, 2, 6},{3},{3},{4},{5},{0}};
+	private int[][] transitions = {{2,1,5},{2},{3},{4},{0}};
 	private Elevator elevator;
 	private FloorSubsystem floorSubsystem;
 	/**
@@ -27,58 +29,54 @@ public class ElevatorSM implements Runnable{
 	public ElevatorSM(Elevator elevator, FloorSubsystem floorSubsystem) {
 		this.elevator =  elevator;
 		this.floorSubsystem = floorSubsystem;
-		ElevatorState[] statearr ={new DoorsClosed(this.elevator), new MovingUp(this.elevator, this.floorSubsystem), new MovingDown(this.elevator, this.floorSubsystem), new Arrived(this.elevator), new DoorsOpen(this.elevator), new UpdateLamps(this.elevator), new End(this.elevator)};
+		ElevatorState[] statearr ={new DoorsClosed(this.elevator, this.floorSubsystem), new Moving(this.elevator, this.floorSubsystem), new Arrived(this.elevator), new DoorsOpen(this.elevator), new UpdateLamps(this.elevator), new End(this.elevator)};
 		states = statearr;
 		current = 0;
 	}
 	 
 	
-	private void next(int nextState) {
+	private void nextState(int nextState) {
 		 current = transitions[current][nextState];
     }
 	
-	public void activity() {
-		states[current].activity();
+	public void activity(Direction direction) {
+		states[current].activity(direction);
 	}
 	
 	public void action(ArrayList<Integer> lamps) {
 		states[current].action(lamps);
 	}
 	
-	public void validUpRequest(Entry<Integer,Direction> destination) {
-		states[current].validUpRequest(destination);
-		next(0);
+	public void validRequest(Entry<Integer,Direction> destination) {
+		states[current].validRequest(destination);
+		nextState(1);
 	}
-	
-	public void validDownRequest(Entry<Integer,Direction> destination) {
-		states[current].validDownRequest(destination);
-		next(1);
-	}
-	
 	public void invalidRequest() {
 		states[current].invalidRequest();
-		next(2);
+		nextState(2);
 	}
 	
 	public void arrivesAtDestination() {
 		states[current].arrivesAtDestination();
-		next(0);
+		nextState(0);
 	}
 	
 	public void toggleDoors() {
 		states[current].toggleDoors();
-		next(0);
+		nextState(0);
 	}
 	
 	public ArrayList<Integer> getLamps() {
 		ArrayList<Integer> lamps = states[current].getLamps();
-		next(0);
+		nextState(0);
 		return lamps;
 	}
 	
 	public void exit() {
 		states[current].exit();
+		current = 6;
 	}
+	
 	
 	@Override
 	/**
@@ -89,23 +87,25 @@ public class ElevatorSM implements Runnable{
 		 * until thread is told there is no more requests
 		 */
 		int destinationFloor = 1;
+		Direction destinationDirection = Direction.STATIONARY;
 		ArrayList<Integer> lamps = null;
 		while (true) {
 			switch(current) {
 			case 0:
 				//Get the request of the next floor with the motor direction from the scheduler
 				Entry<Integer,Direction> destination = this.elevator.scheduler.getRequest(this.elevator.getElevatorLocation());
-				destinationFloor = destination.getKey();
-				if(destination.getValue() == null) {//no more requests move to end
+				if(destination == null) {//no more requests move to end
 					this.invalidRequest();
 					break;
 				}
-				else if(destination.getValue()==Direction.UP) {
-					this.validUpRequest(destination);
+				else if(destination.getValue()==Direction.UP||destination.getValue()==Direction.DOWN) {
+					destinationFloor = destination.getKey();
+					destinationDirection = destination.getValue();
+					this.validRequest(destination);
 					break;
 				}
-				else if(destination.getValue()==Direction.DOWN) {
-					this.validDownRequest(destination);
+				else if(destination.getValue()==Direction.STATIONARY) {
+					this.arrivesAtDestination();
 					break;
 				}
 				break;
@@ -114,32 +114,22 @@ public class ElevatorSM implements Runnable{
 					this.arrivesAtDestination();
 					break;
 				}
-				else if(destinationFloor>this.elevator.getElevatorLocation()) {
-					this.activity();
+				else if(destinationFloor>this.elevator.getElevatorLocation()||destinationFloor<this.elevator.getElevatorLocation()) {
+					this.activity(destinationDirection);
 					break;
 				}
 				break;
 			case 2:
-				if(destinationFloor==this.elevator.getElevatorLocation()) {
-					this.arrivesAtDestination();
-					break;
-				}
-				else if(destinationFloor<this.elevator.getElevatorLocation()) {
-					this.activity();
-					break;
-				}
-				break;
-			case 3:
 				this.toggleDoors();
 				break;
-			case 4:
+			case 3:
 				lamps = this.getLamps();
 				break;
-			case 5:
+			case 4:
 				this.action(lamps);
 				this.toggleDoors();
 				break;
-			case 6:
+			case 5:
 				this.exit();
 				break;
 			}

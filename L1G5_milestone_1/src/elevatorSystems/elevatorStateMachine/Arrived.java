@@ -20,6 +20,6 @@ public class Arrived extends ElevatorState {
 	@Override
 	public void toggleDoors() {
 		System.out.println("Transition from Arrived to Doors Open");
-		this.elevator.toggleDoors();
+		this.elevator.scheduler.requestDoorChange();
 	}
 }

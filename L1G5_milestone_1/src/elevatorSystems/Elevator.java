@@ -1,7 +1,5 @@
 package elevatorSystems;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Map.Entry;
 
 /**
  * Elevator Thread, keeps track of current location, grabs motor direction
@@ -96,48 +94,4 @@ public class Elevator{
 	public void setElevatorLocation(int location){
 		this.elevatorLocation = location;
 	}
-	
-	
-	/**
-	 * The running of the elevator, travel to new floor, updating lamps
-	 
-	
-	public void run() {
-		/*
-		 * until thread is told there is no more requests
-		 
-		while (true) {
-			//Get the request of the next floor with the motor direction from the scheduler
-			Entry<Integer,Direction> destination = scheduler.getRequest(elevatorLocation);
-			//check if is no more requests
-			if(destination == null)
-				return;
-			
-			floorDestination = destination.getKey(); 	//the floor number to go to
-			this.motor = destination.getValue();		//the direction of the motor to get to that floor
-			
-			//Flavor text of the elevator moving to new floor
-			System.out.println(
-					Thread.currentThread().getName()
-					+ " goes to floor " + floorDestination);
-			
-			
-			scheduler.requestDoorChange();				//Ask scheduler if it can open doors
-			
-			setElevatorLocation(floorDestination);		
-			
-			//set car button lamps to on
-			ArrayList<Integer> lamps = scheduler.getRequestedLamps();
-			for(Integer key : lamp.keySet()) {
-				lamp.put(key, false);
-			}
-			
-			for(Integer i : lamps) {
-				lamp.put(i, true);
-			}
-
-			
-			scheduler.requestDoorChange();				//Ask scheduler if it can close doors
-		}
-	}*/
 }
