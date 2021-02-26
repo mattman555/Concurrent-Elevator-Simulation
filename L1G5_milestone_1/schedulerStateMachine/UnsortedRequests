@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package elevatorSystems.schedulerStateMachine;
+
+import elevatorSystems.Scheduler;
+
+/**
+ * @author Ambar Mendez Jimenez 
+ * @author Kevin Belanger 101121709
+
+ *
+ */
+public class UnsortedRequests extends SchedulerState {
+
+	private Scheduler scheduler; 
+	
+	public UnsortedRequests( Scheduler scheduler ) {
+		this.scheduler = scheduler;
+	}
+	
+	@Override
+	public void SortRequests() {
+		System.out.println("Sorting requests");
+		scheduler.sortRequestsIntoGroups();
+	}
+}
