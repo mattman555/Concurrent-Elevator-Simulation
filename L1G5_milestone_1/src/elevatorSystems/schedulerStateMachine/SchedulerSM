@@ -1,0 +1,139 @@
+package elevatorSystems.schedulerStateMachine;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
+import elevatorSystems.Direction;
+import elevatorSystems.Elevator;
+import elevatorSystems.FloorSubsystem;
+import elevatorSystems.Scheduler;
+import elevatorSystems.schedulerStateMachine.AwaitingRequests;
+import elevatorSystems.schedulerStateMachine.InProgressBucket;
+import elevatorSystems.schedulerStateMachine.UnsortedRequests;
+import elevatorSystems.schedulerStateMachine.SortedRequests;
+
+
+
+public class SchedulerSM implements Runnable {
+	private SchedulerState[] states;
+	private int current;
+	private int[][] transitions = {{2,1,5},{2},{3},{4},{0}};
+	public Elevator elevator;
+	public boolean printed;
+	private Scheduler scheduler;
+	
+	/**
+	* 
+	*/
+	public SchedulerSM(Scheduler scheduler, Elevator elevator) {
+		this.elevator =  elevator;
+		this.scheduler = scheduler;
+		SchedulerState[] statearr =
+			{new AwaitingRequests(this.scheduler, this.elevator), 
+			 new UnsortedRequests(this.scheduler), 
+			 new SortedRequests(this.scheduler, this.elevator), 
+			 new InProgressBucket(this.scheduler, this.elevator)};
+		states = statearr;
+		current = 0;
+	}
+	
+	private void nextState(int nextState) {
+		 current = transitions[current][nextState];
+   }
+	
+	public void RequestTask(Entry<Integer,Direction> destination) {
+		states[current].RequestTask(destination);
+	}
+	
+	public void getListOfRequests(Entry<Integer,Direction> destination) {
+		states[current].getListOfRequests(destination);
+		nextState(1);
+	}
+	
+	public void SortRequests() {
+		states[current].SortRequests();
+		nextState(3);
+	}
+	
+	public void setNewInProgressBucket() {
+		states[current].setNewInProgressBucket();
+		nextState(1);
+	}
+	
+	public void RequestIsCurrentlocation() {
+		states[current].RequestIsCurrentlocation();
+	}
+	
+	public void RemoveDestination() {
+		states[current].RemoveDestination();
+	}
+	
+	public void GiveDestination() {
+		states[current].GiveDestination();
+	}
+	
+	public void RequestsNewDestination() {
+		states[current].RequestsNewDestination();
+	}
+	public void ProgressBucketEmpty() {
+		states[current].ProgressBucketEmpty();
+		nextState(2);
+	}
+
+	public void exit() {
+		states[current].exit();
+		current = 6;
+	}
+	
+	
+	@Override
+	/**
+	 * The running of the elevator, travel to new floor, updating lamps
+	 */
+	public void run() {
+
+		
+		while (true) {
+			switch(current) {
+				case 0:
+					//Scheduler waiting for requests
+						if (!scheduler.requestsready) {
+							if (!printed) {
+								System.out.println("Scheduler waiting for all requests");
+								printed = true;
+							}
+						}
+						else {
+							current = 1;
+							printed = false;
+						}
+						break;
+				case 1:
+					//Unsorted requests
+					System.out.println("Scheduler sorting requests");
+					current = 2;
+					break;
+				case 2:
+					//Sorted requests
+					if(scheduler.inProgressBucket != null) {
+					current = 3;
+					}
+					else {
+						
+					}
+					break;
+				case 3:
+					//Progress bucket
+					
+					current= 4; 
+					break;
+				case 4: 
+					//Final state 
+					this.exit();
+					
+					break;
+				}
+		}
+	}
+	
+}
