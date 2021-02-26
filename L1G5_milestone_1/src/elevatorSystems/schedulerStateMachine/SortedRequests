@@ -1,0 +1,43 @@
+/**
+ * 
+ */
+package elevatorSystems.schedulerStateMachine;
+
+import java.util.Map;
+
+import elevatorSystems.Elevator;
+import elevatorSystems.Scheduler;
+/**
+ * @author Ambar Mendez Jimenez 
+ * @author Kevin Belanger 101121709
+
+ *
+ */
+public class SortedRequests extends SchedulerState {
+
+	private Scheduler scheduler; 
+	private Elevator elevator; 
+	private int currLocation;
+	
+	
+	public SortedRequests( Scheduler scheduler, Elevator elevator ) {
+		this.scheduler = scheduler;
+		this.elevator = elevator;
+	}
+	
+	public void getLocation() {
+ 		currLocation= elevator.getElevatorLocation();
+    } 
+	
+	@Override
+	
+	public void exit() {
+		System.out.println("No more buckets, Terminating");
+		
+	}
+	
+	public void setNewInProgressBucket() {
+		System.out.println("Setting New In Progress Bucket");
+		scheduler.getRequest(currLocation);
+	}
+}
