@@ -1,0 +1,45 @@
+/**
+ * 
+ */
+package elevatorSystems.schedulerStateMachine;
+
+import java.util.Map.Entry;
+import elevatorSystems.Direction;
+import elevatorSystems.Elevator;
+import elevatorSystems.Scheduler;
+
+/**
+ * @author Ambar Mendez Jimenez 
+ * @author Kevin Belanger 101121709
+
+ *
+ */
+public class AwaitingRequests extends SchedulerState {
+
+	private Scheduler scheduler; 
+	private Elevator elevator; 
+	private int currLocation;
+	
+	
+	public void AwaitingRequest(Scheduler scheduler, Elevator elevator ) {
+		this.scheduler = scheduler;
+		this.elevator = elevator;
+	}
+	
+	public void getLocation() {
+ 		currLocation= elevator.getElevatorLocation();
+    }
+	
+	@Override
+	public void getListOfRequests(Entry<Integer,Direction> destination) {
+		System.out.println("Receiving the requests");
+		this.scheduler.getRequest(currLocation);
+		
+	}
+	
+	@Override
+	public void RequestTask(Entry<Integer,Direction> destination) {
+		System.out.println("Elevator Requests Task");
+		//not finished 
+	}
+}
