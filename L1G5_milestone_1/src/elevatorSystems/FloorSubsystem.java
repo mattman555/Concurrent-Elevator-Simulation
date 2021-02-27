@@ -16,7 +16,7 @@ import java.util.List;
 public class FloorSubsystem implements Runnable{
 
 	private Scheduler scheduler;
-	private List<Request> requests;
+	private ArrayList<Request> requests;
 	private final int MAX_FLOORS;
 	private Hashtable<String, Boolean> lamp;
 	private final String FILENAME = "TestFile.txt";
@@ -72,7 +72,9 @@ public class FloorSubsystem implements Runnable{
 	 * @param request the given request to be removed
 	 */
 	private void removeRequest(Request request) {
-		System.out.println(Thread.currentThread().getName() + ": Recives completed Request from Scheduler" );
+		if(request == null)
+			return;
+		System.out.println(Thread.currentThread().getName() + ": Receives completed Request from Scheduler" );
 		System.out.println("Completed: " + request.toString());
 		requests.remove(request);
 	}
@@ -87,6 +89,7 @@ public class FloorSubsystem implements Runnable{
 		try {
 			reader = new BufferedReader(new FileReader(filename));
 			String line = reader.readLine();
+			ArrayList<Request> requests = new ArrayList<>();
 			while (line != null) {
 				String[] lineArr = line.split(" "); 
 				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3])); 
@@ -94,12 +97,19 @@ public class FloorSubsystem implements Runnable{
 					addRequest(request);
 				line = reader.readLine();
 			}
+			this.requests = requests;
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public ArrayList<Request> getListOfRequests(){
+		if(this.requests.isEmpty())
+			return null;
+		return this.requests;
+  }
+  
 	/**
 	 * adding request to the request list
 	 * @param request
@@ -114,12 +124,11 @@ public class FloorSubsystem implements Runnable{
 	@Override
 	public void run() {
 		readFile(FILENAME);
-		scheduler.addRequests(requests);
 		while(requests.size()>0) {
-			System.out.println(Thread.currentThread().getName() + ": waits for completed requests from Schduler" );
 			removeRequest(scheduler.getCompletedRequest());
 		}
-		scheduler.setDone();
+		System.out.println("Floor subsystem: All requests completed.");
+		scheduler.exit();
 	}
 	
 }

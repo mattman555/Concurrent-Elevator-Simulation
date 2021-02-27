@@ -17,6 +17,7 @@ public class Moving extends ElevatorState {
 
 	private Elevator elevator;
 	private FloorSubsystem floorSubsystem;
+	private static final int TIME_BETWEEN_FLOORS = 1000;
 	
 	public Moving(Elevator elevator, FloorSubsystem floorSubsystem) {
 		this.elevator = elevator;
@@ -31,7 +32,7 @@ public class Moving extends ElevatorState {
 	public void activity(Direction direction) {
 		System.out.println("Moving "+direction.toString().toLowerCase()+" Elevator on: "+this.elevator.getElevatorLocation());
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(TIME_BETWEEN_FLOORS);
 		} catch (InterruptedException e) {}
 		if(direction==Direction.UP) {
 		this.elevator.setElevatorLocation(this.elevator.getElevatorLocation()+1);

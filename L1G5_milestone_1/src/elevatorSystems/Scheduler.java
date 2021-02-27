@@ -1,30 +1,35 @@
 package elevatorSystems;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
-import elevatorSystems.elevatorStateMachine.ElevatorSM;
+import elevatorSystems.schedulerStateMachine.*;
 
-
-/**
- * @author Nick Coutts 101072875
- */
 public class Scheduler implements Runnable {
-
-	private List<Request> requests;
-	private List<RequestGroup> requestBuckets;
+	private SchedulerState[] states;
+	private int current;
+	private int[][] transitions = {{0,1}, {1,2}, {3}, {3,4}};
+	public Elevator elevator;
+	private FloorSubsystem floorSubsystem;
+	private ArrayList<Request> requests;
+	private ArrayList<RequestGroup> requestBuckets;
 	private RequestGroup inProgressBucket;
-	private List<Request> completedRequests;
-	private Elevator elevator;
+	private ArrayList<Request> completedRequests;
 	
 	/**
 	 * Constructor for the scheduler class
 	 */
 	public Scheduler() {
-		this.requests = Collections.synchronizedList(new ArrayList<Request>());
-		this.requestBuckets = Collections.synchronizedList(new ArrayList<RequestGroup>());
-		this.completedRequests = Collections.synchronizedList(new ArrayList<Request>());
+		SchedulerState[] statearr =
+			{new AwaitingRequests(this), 
+			 new UnsortedRequests(this), 
+			 new SortedRequests(this), 
+			 new InProgress(this),
+			 new End()};
+		this.states = statearr;
+		this.current = 0;
+		this.requests = new ArrayList<>();
+		this.requestBuckets = new ArrayList<>();
+		this.completedRequests = new ArrayList<>();
 	}
 	
 	/**
@@ -42,48 +47,66 @@ public class Scheduler implements Runnable {
 	public Elevator getElevator() {
 		return this.elevator;
 	}
-
+	
 	/**
-	 * Returns the next destination and the direction in which that destination is based on the current location of the elevator
-	 * @param currLocation current location of the elevator
-	 * @return an entry(key-value pair) containing the floor to go to and the direction that floor is 
-	 */	
+	 * Adds a floor subsystem to the scheduler
+	 * @param floorSubsystem the floor subsystem reference to be added to the scheduler
+	 */
+	public void addFloorSubsystem(FloorSubsystem floorSubsystem) {
+		this.floorSubsystem = floorSubsystem;
+	}
+	
+	public ArrayList<Request> getRequests() {
+		return requests;
+	}
 
-	public synchronized Map.Entry<Integer, Direction> getRequest(int currLocation) {
-		while(requestBuckets.size() == 0 && inProgressBucket == null) { //elevator wait until there are requests
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		if(inProgressBucket == null ) { // get a new bucket
-			inProgressBucket = requestBuckets.remove(0);
-		}
-		else { // at a destination floor, a request may have been completed
-			inProgressBucket.removeElevatorFloorLamp(currLocation); //turn off floor lamp
-			ArrayList<Request> removable = new ArrayList<Request>(); //dont want to remove them while iterating over them
-			for(Request request: inProgressBucket.getRequests()) {
-				if(request.getCarButton() == currLocation) {
-					removable.add(request);
-					completedRequests.add(request);
-					notifyAll();
-				}
-			}
-			inProgressBucket.removeRequests(removable); // remove finished requests from the current bucket
-			
-			if(inProgressBucket.getRequests().size() == 0) { //bucket is complete, get a new one
-				if(requestBuckets.size() > 0)
-					inProgressBucket = requestBuckets.remove(0);
-				else { // all requests have been completed, elevators can stop
-					return null;
-				}
-			}
-		}
-		Integer destination = inProgressBucket.getNextDestination();
-		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
-		System.out.println("Scheduler" + ": Sends " + Thread.currentThread().getName() + " to move " + direction + " to floor " + destination);
-		return Map.entry(destination, direction);
+	public ArrayList<RequestGroup> getRequestBuckets() {
+		return requestBuckets;
+	}
+
+	public RequestGroup getInProgressBucket() {
+		return inProgressBucket;
+	}
+	
+	public void setInProgressBucket(RequestGroup inProgressBucket) {
+		this.inProgressBucket = inProgressBucket;
+	}
+
+	public ArrayList<Request> getCompletedRequests() {
+		return completedRequests;
+	}
+
+	
+	private void nextState(int nextState) {
+		 current = transitions[current][nextState];
+   }
+	
+	public synchronized Entry<Integer,Direction> requestTask(int currLocation) {	
+		int curr = current;
+		nextState(0);
+		return states[curr].requestTask(currLocation);
+	}
+	
+	public void getListOfRequests() {
+		boolean gotRequests = states[current].getListOfRequests(floorSubsystem);
+		System.out.println("Scheduler request are ready");
+		nextState( gotRequests ? 1 : 0);
+	}
+	
+	public void sortRequests() {
+		states[current].sortRequests();
+		nextState(1);
+	}
+
+	public void exit() {
+		nextState(1);
+		states[current].exit();
+		System.out.println(current);
+	}
+	
+	public  void addRequest(Request request) {
+		this.requests.add(request);
+		System.out.println("Scheduler: Gets Request for floor " + request.getFloor() + " from floor subsystem");
 	}
 	
 	/**
@@ -91,69 +114,11 @@ public class Scheduler implements Runnable {
 	 * @return a Request that was completed by an elevator
 	 */
 	public synchronized Request getCompletedRequest() {
-		while(completedRequests.isEmpty()) { //floorSubsystem wait until there are completed requests
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		if(completedRequests.isEmpty()) { //floorSubsystem wait until there are completed requests
+			return null;
 		}
-		System.out.println("Scheduler" + ": Sends completed request to " + Thread.currentThread().getName() );
+		System.out.println("Scheduler: Sends completed request to " + Thread.currentThread().getName() );
 		return completedRequests.remove(0);
-	}
-	
-	/**
-	 * Called when the system is out of requests and all requests have been completed and used to signal the elevators that they can stop running
-	 */
-	public void setDone() {
-		System.exit(0);
-	}
-	
-	
-	public synchronized void addRequests(List<Request> requests) {
-		for(Request request : requests) {
-			this.requests.add(request);
-			System.out.println("Scheduler" + ": Gets Request for floor " + request.getFloor() + " from " + Thread.currentThread().getName() + "...");
-		}
-		sortRequestsIntoGroups();
-		notifyAll();
-			
-	}
-	
-	/**
-	 * Sorts requests into groups of similar requests. 
-	 * Similar requests are currently if the request originates from the same floor and is within 30 seconds from the first request in that group
-	 */
-	private void sortRequestsIntoGroups() {
-		while(!requests.isEmpty()) {
-			Request initial = requests.get(0);
-			ArrayList<Request> currGroup = new ArrayList<Request>();
-			currGroup.add(initial);
-			for(int i = 1; i < requests.size(); i++) {
-				Request curr = requests.get(i);
-				if(compareTime(initial, curr)) { // check if similar time
-					if(similarRequests(initial,curr)) { // check if same direction and within bounds
-						currGroup.add(curr);
-					}
-				}
-				else { //not within time so all requests after will not be within time 
-					break;
-				}		
-			}
-			//add this group and remove  them from requests
-			requestBuckets.add(new RequestGroup((ArrayList<Request>) currGroup.clone())); // after final group, add it
-			removeRequests(currGroup);
-		}
-	}
-	
-	/**
-	 * Removes an ArrayList of Requests from the requests instance variable
-	 * @param requests the requests to remove
-	 */
-	private void removeRequests(ArrayList<Request> requests) {
-		for(Request r : requests) {
-			this.requests.remove(r);
-		}
 	}
 	
 	/**
@@ -161,7 +126,7 @@ public class Scheduler implements Runnable {
 	 * @return an ArrayList of integers of the car button lamps that are supposed to be on
 	 */
 	public ArrayList<Integer> getRequestedLamps(){
-		System.out.println("Scheduler" + ": Sends " + Thread.currentThread().getName() + " requested car lamps");
+		System.out.println("Scheduler: Sends " + Thread.currentThread().getName() + " requested car lamps");
 		return inProgressBucket.getElevatorFloorLamps();
 	}
 	
@@ -169,45 +134,37 @@ public class Scheduler implements Runnable {
 	 * The elevator requests to have its doors toggled and the scheduler will toggle them
 	 */
 	public void requestDoorChange() {
-		System.out.println("Scheduler" + ": Toggling " + Thread.currentThread().getName() + " Doors...");
+		System.out.println("Scheduler: Toggling " + Thread.currentThread().getName() + " Doors...");
 		elevator.toggleDoors();
 	}
 	
-	/**
-	 * Compares the time between a request and the initial request in a group
-	 * @param initial the initial request in a group
-	 * @param curr the request that will be compared to the initial request
-	 * @return true if there is 30 seconds or less difference between them, false if there is more than a 30 second difference.
-	 */
-	private boolean compareTime(Request initial, Request curr) {
-		int[] currTime = curr.getTime();
-		int[] initialTime = initial.getTime();
-		int currTotal = currTime[0] * 360 + currTime[1] * 60 + currTime[2];
-		int initialTotal = initialTime[0] * 360 + initialTime[1] * 60 + initialTime[2];
-		return (currTotal - initialTotal <= 30);
-	}
 	
-	/**
-	 * Compares a Request with an initial of the group to see if they are in the same direction and if they originated from the same floor
-	 * @param initial the first request in a group and the Request that the other Request will be compared to
-	 * @param curr the request that will be compared to the initial Request
-	 * @return true if they are in the same direction and originate from the same floor, false if they are different directions or originate from a different floor
-	 */
-	private boolean similarRequests(Request initial, Request curr) {
-		boolean sameDir = curr.getFloorButton().equals(initial.getFloorButton()); // compare directions of requests
-		boolean sameFloor = curr.getFloor() == initial.getFloor(); // see if the new request is initiated on the same floor as the original floor 
-		return  sameDir && sameFloor;
-	}
-	
-	/**
-	 * The method that runs when starting a Thread containing a Scheduler runnable.
-	 */
 	@Override
-	public void run() {
-		while(true) {
-			elevator.getElevatorLocation();
+	/**
+	 * The running of the elevator, travel to new floor, updating lamps
+	 */
+	public void run() {		
+		while (true) {
+			switch(current) {
+				case 0:
+					//Scheduler waiting for requests
+					System.out.println("Scheduler waiting for all requests");
+					this.getListOfRequests();
+					break;
+				case 1:
+					//Unsorted requests
+					System.out.println("Scheduler sorting requests");
+					this.sortRequests();
+					break;
+				case 2:
+					//Sorted requests
+					
+					break;
+				case 3:
+					//In Progress State
+					break;
+			}
 		}
-		
 	}
 	
 	/**
@@ -222,6 +179,7 @@ public class Scheduler implements Runnable {
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
 		Elevator elevator = new Elevator(scheduler);
 		scheduler.addElevator(elevator);
+		scheduler.addFloorSubsystem(floorSubsystem);
 		Thread elevatorThread = new Thread(new ElevatorSM(elevator,floorSubsystem),"Elevator");
 		
 		floorSubsystemThread.start();
@@ -229,5 +187,5 @@ public class Scheduler implements Runnable {
 		elevatorThread.start();
 		
 	}
-
+	
 }
