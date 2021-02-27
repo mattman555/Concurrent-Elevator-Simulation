@@ -8,6 +8,7 @@ import elevatorSystems.Elevator;
 /**
  * @author Matthew Harris 101073502
  *
+ * State when elevator arrives at required floor 
  */
 public class Arrived extends ElevatorState {
 	
@@ -17,6 +18,9 @@ public class Arrived extends ElevatorState {
 		this.elevator = elevator;
 	}
 
+	/**
+	 * Change the state of the elevator doors
+	 */
 	@Override
 	public void toggleDoors() {
 		System.out.println("Transition from Arrived to Doors Open");
