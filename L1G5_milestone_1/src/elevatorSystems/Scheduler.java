@@ -2,7 +2,6 @@ package elevatorSystems;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import elevatorSystems.elevatorStateMachine.ElevatorSM;
 import elevatorSystems.schedulerStateMachine.*;
 
 public class Scheduler implements Runnable {
