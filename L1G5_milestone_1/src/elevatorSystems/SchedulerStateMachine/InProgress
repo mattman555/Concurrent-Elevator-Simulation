@@ -1,0 +1,68 @@
+/**
+ * 
+ */
+package elevatorSystems.schedulerStateMachine;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
+import elevatorSystems.Direction;
+import elevatorSystems.Elevator;
+import elevatorSystems.Request;
+import elevatorSystems.Scheduler;
+
+/**
+ * @author Ambar Mendez Jimenez 
+ * @author Kevin Belanger 101121709
+
+ *
+ */
+public class InProgress extends SchedulerState {
+
+	private Scheduler scheduler; 
+	private Elevator elevator; 
+	private int currLocation;
+	
+	
+	public InProgress( Scheduler scheduler, Elevator elevator ) {
+		this.scheduler = scheduler;
+		this.elevator = elevator;
+	}
+	
+	public void getLocation() {
+ 		currLocation= elevator.getElevatorLocation();
+    }
+	
+	
+	@Override
+	
+	public void exit() {
+		System.out.println("No more buckets, Terminating");
+		
+	}
+	
+
+	@Override	
+	public void RequestIsCurrentlocation() {
+			System.out.println("Request is CurrentLocation");
+			scheduler.getRequest(currLocation);
+	}
+	
+	@Override	
+	public void RemoveDestination() {
+			System.out.println("Removing Requests");
+			//scheduler.removeRequests(ArrayList<Request> requests); 
+		}
+		
+	@Override
+	public void GiveDestination() {
+			System.out.println("Giving destination");
+		}
+		
+	
+	@Override
+	public void RequestTask(Entry<Integer,Direction> destination) {
+		System.out.println("Elevator Requests Task");
+		//not finished 
+	}
+}
