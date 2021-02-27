@@ -37,54 +37,5 @@ public class SchedulerTest {
 		assertEquals(true, elevatorMethods.getIsDoorsOpen(), "The doors should be open");
 		scheduler.requestDoorChange();
 		assertEquals(false, elevatorMethods.getIsDoorsOpen(), "The doors should be closed");
-	}
-	
-	@org.junit.Test
-	public void testRequestedLamps() {
-		scheduler.addElevator(elevatorMethods);
-		ArrayList<Request> requests = new ArrayList<Request>();
-		requests.add(request1);
-		scheduler.addRequests(requests);
-		Map.Entry<Integer, Direction> output = scheduler.getRequest(1);
-		ArrayList<Integer> floor = new ArrayList<>();
-		floor.add(7);
-		
-		assertEquals(floor, scheduler.getRequestedLamps() , "Should be going UP to floor 2");
-		
-	}
-	
-	
-	@org.junit.Test
-	public void testMultipleRequest() {
-		scheduler.addElevator(elevatorMethods);
-		ArrayList<Request> requests = new ArrayList<Request>();
-		requests.add(request1);
-		requests.add(request2);
-		scheduler.addRequests(requests);
-		
-		//testing going to each floor
-		Map.Entry<Integer, Direction> output = scheduler.getRequest(1);
-		assertEquals(Map.entry(2, Direction.UP),output , "Should be going UP to floor 2");
-		
-		output = scheduler.getRequest(2);
-		assertEquals(Map.entry(7, Direction.UP), output, "Should be going UP to floor 7");
-				
-	    output = scheduler.getRequest(7);
-		assertEquals(Map.entry(3, Direction.DOWN), output, "Should be going DOWN to floor 3");
-		
-		output = scheduler.getRequest(3);
-		assertEquals(Map.entry(7, Direction.UP), output, "Should be going UP to floor 7");
-		
-		output = scheduler.getRequest(7);
-		
-		//testing getCompletedRequest
-		Request completedRequest = scheduler.getCompletedRequest();
-		assertEquals(request1, completedRequest, "Should be the first request completed");
-	
-		completedRequest = scheduler.getCompletedRequest();
-		assertEquals(request2, completedRequest, "Should be the second request completed");
-	
-		}
-	
-	
+	}	
 }

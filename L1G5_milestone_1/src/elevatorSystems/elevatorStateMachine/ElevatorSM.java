@@ -93,8 +93,11 @@ public class ElevatorSM implements Runnable{
 			switch(current) {
 			case 0:
 				//Get the request of the next floor with the motor direction from the scheduler
-				Entry<Integer,Direction> destination = this.elevator.scheduler.getRequest(this.elevator.getElevatorLocation());
-				if(destination == null) {//no more requests move to end
+				Entry<Integer,Direction> destination = this.elevator.scheduler.requestTask(this.elevator.getElevatorLocation());
+				if(destination == null) {
+					break;
+				}
+				else if(destination.getKey() == 10000) {//no more requests move to end
 					this.invalidRequest();
 					break;
 				}
@@ -131,7 +134,7 @@ public class ElevatorSM implements Runnable{
 				break;
 			case 5:
 				this.exit();
-				break;
+				return;
 			}
 		}
 	}
