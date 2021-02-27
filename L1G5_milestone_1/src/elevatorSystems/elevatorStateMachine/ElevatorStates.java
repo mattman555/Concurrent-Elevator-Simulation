@@ -2,7 +2,7 @@ package elevatorSystems.elevatorStateMachine;
 
 /**
  * All of the state that the elevator State Machine has
- * @author Jay McCracken
+ * @author Nick Coutts 
  *
  */
 public enum ElevatorStates {
