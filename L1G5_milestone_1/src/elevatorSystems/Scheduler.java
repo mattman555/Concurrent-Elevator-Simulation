@@ -15,10 +15,9 @@ public class Scheduler implements Runnable {
 	private RequestGroup inProgressBucket;
 	private ArrayList<Request> completedRequests;
 	
-	
 	/**
-	* 
-	*/
+	 * Constructor for the scheduler class
+	 */
 	public Scheduler() {
 		SchedulerState[] statearr =
 			{new AwaitingRequests(this), 
@@ -33,14 +32,26 @@ public class Scheduler implements Runnable {
 		this.completedRequests = new ArrayList<>();
 	}
 	
+	/**
+	 * Adds an elevator to the scheduler
+	 * @param elevator the elevator reference to be added to the scheduler
+	 */
 	public void addElevator(Elevator elevator) {
 		this.elevator = elevator;
 	}
 	
+	/**
+	 * Returns the current elevator
+	 * @return returns the current elevator object
+	 */
 	public Elevator getElevator() {
 		return this.elevator;
 	}
 	
+	/**
+	 * Adds a floor subsystem to the scheduler
+	 * @param floorSubsystem the floor subsystem reference to be added to the scheduler
+	 */
 	public void addFloorSubsystem(FloorSubsystem floorSubsystem) {
 		this.floorSubsystem = floorSubsystem;
 	}
