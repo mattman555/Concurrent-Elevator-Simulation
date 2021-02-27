@@ -91,13 +91,21 @@ public class FloorSubsystem implements Runnable{
 				String[] lineArr = line.split(" "); 
 				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3])); 
 				if(validateRequest(request)) 
-					requests.add(request);
+					addRequest(request);
 				line = reader.readLine();
 			}
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * adding request to the request list
+	 * @param request
+	 */
+	public void addRequest(Request request) {
+		requests.add(request);
 	}
 
 	/**

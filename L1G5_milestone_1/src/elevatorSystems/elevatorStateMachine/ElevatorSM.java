@@ -96,6 +96,9 @@ public class ElevatorSM implements Runnable{
 		states.get(current).exit();
 	}
 	
+	public ElevatorStates getState() {
+		return current;
+	}
 	
 	@Override
 	/**
