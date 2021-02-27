@@ -8,6 +8,7 @@ import elevatorSystems.Elevator;
 /**
  * @author Matthew Harris 101073502
  *
+ * All requests have been achieved ending state machine
  */
 public class End extends ElevatorState {
 	
@@ -17,6 +18,9 @@ public class End extends ElevatorState {
 		this.elevator = elevator;
 	}
 
+	/**
+	 * saying that it is in its final state
+	 */
 	@Override
 	public void exit() {
 		System.out.println("All requests processed Transition to Final state");

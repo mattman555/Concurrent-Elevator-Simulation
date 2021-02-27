@@ -11,7 +11,9 @@ import elevatorSystems.FloorSubsystem;
 
 /**
  * @author Matthew Harris 101073502
- *
+ * @author Jay McCracken 101066860
+ * 
+ *	State when the elevator doors are closed, from statanory or moving state
  */
 public class DoorsClosed extends ElevatorState {
 
@@ -23,6 +25,10 @@ public class DoorsClosed extends ElevatorState {
 		this.floorSubsystem = floorSubsystem;
 	}
 
+	/**
+	 * When received a valid request set the conditions of the elevation to get to the request
+	 * @param The elevators next destination
+	 */
 	@Override
 	public void validRequest(Entry<Integer,Direction> destination) {
 		System.out.println("Transition from Doors Closed to Moving Up");
@@ -35,6 +41,9 @@ public class DoorsClosed extends ElevatorState {
 				+ " goes to floor " + this.elevator.getFloorDestination());
 	}
 	
+	/**
+	 * When the elevator reaches the required floor, turn the floor lamp for destination to off
+	 */
 	@Override
 	public void arrivesAtDestination() {
 		System.out.println("Transition from Doors Closed to Arrived");
@@ -42,6 +51,9 @@ public class DoorsClosed extends ElevatorState {
 		this.floorSubsystem.setFloorLamp(this.elevator.getElevatorLocation(), this.elevator.getMotor(), false);
 	}
 	
+	/**
+	 * If the request set is invalid send that it is going to end state
+	 */
 	@Override
 	public void invalidRequest() {
 		System.out.println("Transition from Doors Closed to End");

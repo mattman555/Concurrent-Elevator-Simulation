@@ -53,10 +53,9 @@ public class ElevatorSMTest {
 
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-	}
-
+	/**
+	 * testing the movement of the elevator
+	 */
 	@org.junit.Test
 	public void testActivity() {
 		state.validRequest(Map.entry(2, Direction.UP));
@@ -65,9 +64,12 @@ public class ElevatorSMTest {
 		state.activity(Direction.UP);
 		assertEquals(2, elevatorMethods.getElevatorLocation(), "The Elevator should be at floor 2");
 		state.activity(Direction.DOWN);
-		assertEquals(1, elevatorMethods.getElevatorLocation(), "The Elevator should be at floor 2");
+		assertEquals(1, elevatorMethods.getElevatorLocation(), "The Elevator should be at floor 1");
 	}
 	
+	/**
+	 * testing turning on and off car lamps
+	 */
 	@org.junit.Test
 	public void testAction() {
 		Hashtable<Integer, Boolean> responce = new Hashtable<Integer, Boolean>();
@@ -84,9 +86,12 @@ public class ElevatorSMTest {
 		elevatorMethods.setElevatorLocation(2);
 		state.action(lamps);
 		responce.put(2, false);
-		assertEquals(responce,elevatorMethods.getLamp(), "The lamp 1 going  should be false");
+		assertEquals(responce,elevatorMethods.getLamp(), "The lamp 1 should be false");
 	}
 	
+	/**
+	 * testing switching from doors closed to moving state
+	 */
 	@org.junit.Test
 	public void testValidRequest() {
 		assertEquals(ElevatorStates.DOORS_CLOSED, state.getState(), "The Elevator state should be Doors Closed");
@@ -94,6 +99,9 @@ public class ElevatorSMTest {
 		assertEquals(ElevatorStates.MOVING, state.getState(), "The Elevator state should be moving");
 	}
 	
+	/**
+	 * testing switching from doors closed to end state
+	 */
 	@org.junit.Test
 	public void testInvalidRequest() {
 		assertEquals(ElevatorStates.DOORS_CLOSED, state.getState(), "The Elevator state should be Doors Closed");
@@ -101,6 +109,9 @@ public class ElevatorSMTest {
 		assertEquals(ElevatorStates.END, state.getState(), "The Elevator state should be end");
 	}
 	
+	/**
+	 * testing switching from doors closed to arrived state
+	 */
 	@org.junit.Test
 	public void testArrivesAtDestination() {
 		assertEquals(ElevatorStates.DOORS_CLOSED, state.getState(), "The Elevator state should be Moving");
@@ -108,6 +119,9 @@ public class ElevatorSMTest {
 		assertEquals(ElevatorStates.ARRIVED, state.getState(), "The Elevator state should be arrived");
 	}
 	
+	/**
+	 * testing switching from doors closed to doors open state
+	 */
 	@org.junit.Test
 	public void testToggleDoors() {
 		assertEquals(ElevatorStates.DOORS_CLOSED, state.getState(), "The Elevator state should be Doors Closed");
@@ -119,6 +133,9 @@ public class ElevatorSMTest {
 		assertEquals(ElevatorStates.DOORS_CLOSED, state.getState(), "The Elevator state should be Doors Closed");
 	}
 	
+	/**
+	 * testing switching from doors open to update lamps state
+	 */
 	@org.junit.Test
 	public void testGetLamps() {
 		assertEquals(ElevatorStates.DOORS_CLOSED, state.getState(), "The Elevator state should be Doors Closed");
@@ -128,6 +145,9 @@ public class ElevatorSMTest {
 		assertEquals(ElevatorStates.UPDATE_LAMPS, state.getState(), "The Elevator state should be update Lamps");
 	}
 	
+	/**
+	 * testing switching from doors closed to moving state
+	 */
 	@org.junit.Test
 	public void testExit() {
 		assertEquals(ElevatorStates.DOORS_CLOSED, state.getState(), "The Elevator state should be Doors Closed");

@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import elevatorSystems.Elevator;
 
 /**
- * @author Matthew Harris 101073502 && Jay McCracken 101066860
+ * @author Matthew Harris 101073502
+ * @author Jay McCracken 101066860
  *
+ *	Turning on and off car lamps
  */
 public class UpdateLamps extends ElevatorState {
 
@@ -34,6 +36,10 @@ public class UpdateLamps extends ElevatorState {
 		System.out.println("Car Lamps: " + this.elevator.getLamp());
 	}
 	
+	/**
+	 * Toggling the doors of the elevator to open or closed based on what it last was
+	 * @param next the state of the door that was switched too
+	 */
 	@Override
 	public void toggleDoors() {
 		System.out.println("Transition from Update Lamps to Doors Closed");

@@ -39,19 +39,21 @@ public class DoorsClosedTest {
 		fssystem.addRequest(request);
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-	}
-
+	/**
+	 * Testing the setting of an elevator destination when passed a valid request
+	 */
 	@org.junit.Test
 	public void testValidRequest() {
 		assertEquals(elevatorMethods.getFloorDestination(), 1, "The Elevator should be at floor 1");	
 		assertEquals(elevatorMethods.getMotor(), null, "The Elevator should be going Down");
 		state.validRequest(Map.entry(2, Direction.UP));
-		assertEquals(2, elevatorMethods.getFloorDestination(), "The Elevator should be at floor 2");	
+		assertEquals(2, elevatorMethods.getFloorDestination(), "The Elevator should be going to floor 2");	
 		assertEquals( Direction.UP, elevatorMethods.getMotor(), "The Elevator should be going UP");
 	}
 	
+	/**
+	 * Test is the lamp gets turned off correctly
+	 */
 	@org.junit.Test
 	public void testArrivesAtDestination() {
 		Hashtable<String, Boolean> responce = new Hashtable<String, Boolean>();

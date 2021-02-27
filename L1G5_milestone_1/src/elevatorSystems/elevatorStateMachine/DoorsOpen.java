@@ -10,6 +10,7 @@ import elevatorSystems.Elevator;
 /**
  * @author Matthew Harris 101073502
  *
+ * State for when elevator doors are open after it has arrived at the destination
  */
 public class DoorsOpen extends ElevatorState {
 	
@@ -19,6 +20,10 @@ public class DoorsOpen extends ElevatorState {
 		this.elevator = elevator;
 	}
 
+	/**
+	 * Get all the car lamps that need to be turned on 
+	 * @return list of all lamps to be turned on
+	 */
 	@Override
 	public ArrayList<Integer> getLamps() {
 		System.out.println("Transition from Doors Open to Update Lamps");

@@ -42,10 +42,9 @@ public class UpdateLampsTest {
 		lamps = new ArrayList<Integer>();
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-	}
-
+	/**
+	 * testing turning on and off car lamps
+	 */
 	@org.junit.Test
 	public void testAction() {
 		Hashtable<Integer, Boolean> responce = new Hashtable<Integer, Boolean>();

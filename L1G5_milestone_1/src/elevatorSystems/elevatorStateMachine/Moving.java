@@ -9,7 +9,9 @@ import elevatorSystems.FloorSubsystem;
 
 /**
  * @author Matthew Harris 101073502
+ * @author Jay McCracken 101066860
  *
+ *	State of the elevator when transitioning between floors
  */
 public class Moving extends ElevatorState {
 
@@ -21,6 +23,10 @@ public class Moving extends ElevatorState {
 		this.floorSubsystem = floorSubsystem;
 	}
 
+	/**
+	 * The movement of the elevator to the next floor by 1 based on the direction given
+	 * @param direction, If the elevator is going UP or DOWN
+	 */
 	@Override
 	public void activity(Direction direction) {
 		System.out.println("Moving "+direction.toString().toLowerCase()+" Elevator on: "+this.elevator.getElevatorLocation());
@@ -35,6 +41,9 @@ public class Moving extends ElevatorState {
 		}
 	}
 	
+	/**
+	 * When the elevator reaches the required floor, turn the floor lamp for destination to off
+	 */
 	@Override
 	public void arrivesAtDestination() {
 		System.out.println("Transition from Moving to Arrived");

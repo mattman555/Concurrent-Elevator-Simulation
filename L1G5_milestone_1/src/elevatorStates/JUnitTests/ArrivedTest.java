@@ -28,10 +28,9 @@ public class ArrivedTest {
 		state = new Arrived(elevatorMethods);
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-	}
-
+	/**
+	 * Do the doors toffle correctly
+	 */
 	@org.junit.Test
 	public void testToggleDoors() {
 		assertEquals(elevatorMethods.getIsDoorsOpen(), false, "The Doors should be closed");	

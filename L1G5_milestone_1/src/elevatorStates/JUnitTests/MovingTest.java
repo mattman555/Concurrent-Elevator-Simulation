@@ -38,10 +38,10 @@ public class MovingTest {
 		fssystem.addRequest(request);
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-	}
 
+	/**
+	 * testing the movement of the elevator
+	 */
 	@org.junit.Test
 	public void testActivity() {
 		elevatorMethods.setElevatorLocation(1);
@@ -52,6 +52,9 @@ public class MovingTest {
 		assertEquals(1, elevatorMethods.getElevatorLocation(), "The Elevator should be at floor 2");
 	}
 	
+	/**
+	 * Test is the lamp gets turned off correctly
+	 */
 	@org.junit.Test
 	public void testArrivesAtDestination() {
 		Hashtable<String, Boolean> responce = new Hashtable<String, Boolean>();
