@@ -39,14 +39,14 @@ Files from current iteration (.java) ------> Arrived, AwaitingRequests, DoorsClo
 Elevator State Machine Diagram
 --------------------------------
 
-![alt text](https://github.com/mattman555/SYSC_3303_Project/blob/main/Elevator%Subsystem%State%Machine.jpg)
+![Click to see Diagram](https://github.com/mattman555/SYSC_3303_Project/blob/main/Elevator%20Subsystem%20State%20Machine.jpg)
 
 
 ---------------------------------
 Scheduler State Machine Diagram
 ---------------------------------
 
-![alt text](https://github.com/mattman555/SYSC_3303_Project/blob/main/Scheduler%State%Machine.jpg)
+![Click to see Diagram](https://github.com/mattman555/SYSC_3303_Project/blob/main/Scheduler%20State%20Machine.jpg)
 
 
 -------------------
