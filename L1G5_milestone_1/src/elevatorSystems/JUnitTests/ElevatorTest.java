@@ -4,7 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import elevatorSystems.Elevator;
 import elevatorSystems.Scheduler;
-
+/**
+ * 
+ * @author Jay McCracken 101066860
+ *
+ */
 public class ElevatorTest {
 	
 	private Elevator elevatorMethods;
