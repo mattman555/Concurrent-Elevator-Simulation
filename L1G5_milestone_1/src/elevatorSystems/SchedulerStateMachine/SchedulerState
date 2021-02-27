@@ -1,0 +1,63 @@
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
+import elevatorSystems.Direction;
+
+/**
+ * @author Ambar Mendez Jimenez 
+ * @author Kevin Belanger 101121709
+
+ *
+ */
+public abstract class SchedulerState {
+	
+	public void RequestTask(Entry<Integer,Direction> destination) {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+	public void getListOfRequests(Entry<Integer,Direction> destination) {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+	public void SortRequests() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+	public void setNewInProgressBucket() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+	public void RequestIsCurrentlocation() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+	public void RemoveDestination() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+	public void GiveDestination() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+	public void RequestsNewDestination() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	public void ProgressBucketEmpty() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+
+	public void exit() {
+		System.out.println("Incorrect State");
+		throw new IllegalArgumentException();
+	}
+	
+}
