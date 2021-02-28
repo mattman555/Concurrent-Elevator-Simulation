@@ -19,10 +19,17 @@ public class UnsortedRequests extends SchedulerState {
 
 	private Scheduler scheduler;
 
+	/**
+	 * Constructor for the UnsortedRequest class
+	 * @param scheduler the scheduler this state belongs to
+	 */
 	public UnsortedRequests(Scheduler scheduler) {
 		this.scheduler = scheduler;
 	}
 
+	/**
+	 * Returns null since the scheduler isnt in a state to send tasks
+	 */
 	@Override
 	public Entry<Integer,Direction> requestTask(int destination) {
 		return null;
