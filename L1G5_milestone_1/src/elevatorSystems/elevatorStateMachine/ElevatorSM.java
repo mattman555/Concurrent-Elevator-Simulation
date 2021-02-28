@@ -58,6 +58,9 @@ public class ElevatorSM implements Runnable{
 		this.states.put(ElevatorStates.END, new End(this.elevator));
 	}
 	
+	public Elevator getElevator() {
+		return this.elevator;
+	}
 	/**
 	 * Moving the elevator to the next state if it can
 	 * @param nextState the state it tries to switch to

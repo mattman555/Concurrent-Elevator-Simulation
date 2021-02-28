@@ -26,7 +26,8 @@ public class ElevatorSMTest {
 	private Scheduler scheduler;
 	private FloorSubsystem fssystem;
 	private ElevatorSM state;
-	private Request request; 
+	private Request request;
+	private Request request2;
 	private ArrayList<Integer> lamps;
 	private List<Request> requests;
 	
@@ -36,16 +37,17 @@ public class ElevatorSMTest {
 		elevatorMethods = new Elevator(scheduler);
 		scheduler.addElevator(elevatorMethods);
 		fssystem = new FloorSubsystem(scheduler, 10);
+		scheduler.addFloorSubsystem(fssystem);
 		state = new ElevatorSM(elevatorMethods,fssystem);
 		request = new Request("00:00:05.000", 2, "Up", 5); 
+		request2 = new Request("00:00:05.000", 2, "Up", 6); 
 		fssystem.addRequest(request);
 		lamps = new ArrayList<Integer>();
 		elevatorMethods.setMotor(Direction.UP);
 		requests = new ArrayList<Request>();
-		
-		requests.add(request);
-		scheduler.addRequest(request);
-		scheduler.requestTask(2);
+		scheduler.getListOfRequests();
+		scheduler.sortRequests();
+		state.getElevator().scheduler.requestTask(2);
 
 	}
 
