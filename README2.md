@@ -32,7 +32,7 @@ Important Files Included
 
 Files from previous iteration (.java) -----> Direction, Elevator, ElevatorTest, FloorSubsystem, FloorSubsystemTest, Request, RequestTest, RequestGroup, RequestGroupTest, Scheduler, SchedulerTest
 
-Files from current iteration (.java) ------> Arrived, AwaitingRequests, DoorsClosed, DoorsOpen, ElevatorSM, ElevatorState, ElevatorStates, End, InProgress, Moving, SchedulerSM, SchedulerState, SortedRequests, UnsortedRequests, UpdateLamps
+Files from current iteration (.java) ------> Arrived, AwaitingRequests, DoorsClosed, DoorsOpen, ElevatorSM, ElevatorState, ElevatorStates, End, InProgress, Moving, SchedulerState, SortedRequests, UnsortedRequests, UpdateLamps
 
 
 --------------------------------
@@ -114,8 +114,6 @@ End.java: A class for the End state for the elevator state machine.
 InProgress.java: A class for the InProgress state for the scheduler state machine.
 
 Moving.java: A class for the Moving state for the elevator state machine.
-
-SchedulerSM.java: A class that simulates the order of the states of the scheduler state machine.
 
 SchedulerState.java: A class that contains a method for each state in the scheduler.
 
