@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * @author Matthew Harris 101073502
@@ -94,7 +93,7 @@ public class FloorSubsystem implements Runnable{
 				String[] lineArr = line.split(" "); 
 				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3])); 
 				if(validateRequest(request)) 
-					addRequest(request);
+					requests.add(request);
 				line = reader.readLine();
 			}
 			this.requests = requests;

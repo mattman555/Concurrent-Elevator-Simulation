@@ -7,10 +7,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
 import elevatorSystems.FloorSubsystem;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package elevatorSystems.elevatorStateMachine;
 
 import elevatorSystems.Direction;
@@ -30,14 +27,14 @@ public class Moving extends ElevatorState {
 	 */
 	@Override
 	public void activity(Direction direction) {
-		System.out.println("Moving "+direction.toString().toLowerCase()+" Elevator on: "+this.elevator.getElevatorLocation());
+		System.out.println("Elevator moving " + direction.toString().toLowerCase() + "  on floor " + this.elevator.getElevatorLocation());
 		try {
 			Thread.sleep(TIME_BETWEEN_FLOORS);
 		} catch (InterruptedException e) {}
-		if(direction==Direction.UP) {
+		if(direction == Direction.UP) {
 		this.elevator.setElevatorLocation(this.elevator.getElevatorLocation()+1);
 		}
-		else if(direction==Direction.DOWN) {
+		else if(direction == Direction.DOWN) {
 			this.elevator.setElevatorLocation(this.elevator.getElevatorLocation()-1);
 		}
 	}

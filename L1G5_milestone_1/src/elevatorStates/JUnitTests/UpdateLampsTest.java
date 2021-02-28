@@ -5,10 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import elevatorSystems.Elevator;
 import elevatorSystems.FloorSubsystem;
 import elevatorSystems.Request;

@@ -2,6 +2,7 @@ package elevatorSystems;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import elevatorSystems.elevatorStateMachine.ElevatorSM;
 import elevatorSystems.schedulerStateMachine.*;
 
 public class Scheduler implements Runnable {
@@ -27,7 +28,7 @@ public class Scheduler implements Runnable {
 			 new End()};
 		this.states = statearr;
 		this.current = 0;
-		this.requests = new ArrayList<>();
+		this.requests = new ArrayList<Request>();
 		this.requestBuckets = new ArrayList<>();
 		this.completedRequests = new ArrayList<>();
 	}

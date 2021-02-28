@@ -1,6 +1,3 @@
-/**
- * 
- */
 package elevatorSystems.elevatorStateMachine;
 
 import java.util.Map.Entry;
@@ -34,11 +31,6 @@ public class DoorsClosed extends ElevatorState {
 		System.out.println("Transition from Doors Closed to Moving Up");
 		this.elevator.setFloorDestination(destination.getKey()); //set the floor number to go to
 		this.elevator.setMotor(destination.getValue());			 //the direction of the motor to get to that floor
-		
-		//Flavor text of the elevator moving to new floor
-		System.out.println(
-				Thread.currentThread().getName()
-				+ " goes to floor " + this.elevator.getFloorDestination());
 	}
 	
 	/**
@@ -47,7 +39,7 @@ public class DoorsClosed extends ElevatorState {
 	@Override
 	public void arrivesAtDestination() {
 		System.out.println("Transition from Doors Closed to Arrived");
-		System.out.println("Arrived at: "+this.elevator.getElevatorLocation());
+		System.out.println("Arrived at: " + this.elevator.getElevatorLocation());
 		this.floorSubsystem.setFloorLamp(this.elevator.getElevatorLocation(), this.elevator.getMotor(), false);
 	}
 	
