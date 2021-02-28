@@ -1,11 +1,12 @@
 ITERATION 2:
-  Everyone together - UML, Statemachine diagrams for both statemachines
-  Nick - 
-  Jay - Updates from TA feedback, 
-  Matt - 
-  Kevin - 
-  Ambar - 
+  Everyone together - Outline of UML, Outline of State machine diagrams for both state machines
+  Nick - Majority of code for Scheduler State machine, Refactored Elevator state machine to use enums
+  Jay - Added more logging to the code, Testing for elevator state machine
+  Matt - Majority of code for Scheduler State machine, majority of code for elevator State machine
+  Kevin - Majority of UML, Outline of Scheduler State machine code, Readme
+  Ambar - Outline of Scheduler State machine code
   This isn't strictly adhered to since everyone added methods and changes to other classes 
+
 
 
 ITERATION 1:
