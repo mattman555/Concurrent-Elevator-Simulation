@@ -57,54 +57,96 @@ public class Scheduler implements Runnable {
 		this.floorSubsystem = floorSubsystem;
 	}
 	
+	/**
+	 * Gets the requests
+	 * @return an ArrayList of Requests that is the requests
+	 */
 	public ArrayList<Request> getRequests() {
 		return requests;
 	}
 
+	/**
+	 * Gets the requestBuckets
+	 * @return an ArrayList of RequestGroups that is the requestBuckets
+	 */
 	public ArrayList<RequestGroup> getRequestBuckets() {
 		return requestBuckets;
 	}
 
+	/**
+	 * Gets the inProgressBucket
+	 * @return a RequestGroup that is the inProgressBucket
+	 */
 	public RequestGroup getInProgressBucket() {
 		return inProgressBucket;
 	}
 	
+	/**
+	 * Sets the in progress bucket to another RequestGroup
+	 * @param inProgressBucket the new in progress bucket 
+	 */
 	public void setInProgressBucket(RequestGroup inProgressBucket) {
 		this.inProgressBucket = inProgressBucket;
 	}
 
+	/**
+	 * Gets the completed requests
+	 * @return an arraylist containing the completed requests
+	 */
 	public ArrayList<Request> getCompletedRequests() {
 		return completedRequests;
 	}
 
-	
+	/**
+	 * Moving the scheduler to the next state 
+	 * @param nextState the state it will switch to
+	 */
 	private void nextState(int nextState) {
 		 current = transitions[current][nextState];
    }
 	
+	/**
+	 * Gets the current state to return an elevator task.
+	 *         
+	 * @param currLocation the elevators current location
+	 * @return a null request if no requests are currently available,
+	 *         a request to floor 10000 if the elevators can stop running
+	 *         or returns a valid destination.
+	 */
 	public synchronized Entry<Integer,Direction> requestTask(int currLocation) {	
 		int curr = current;
 		nextState(0);
 		return states[curr].requestTask(currLocation);
 	}
 	
+	/**
+	 * Gets the current state to ask the floorsubsystem for the request list
+	 */
 	public void getListOfRequests() {
 		boolean gotRequests = states[current].getListOfRequests(floorSubsystem);
-		System.out.println("Scheduler request are ready");
-		nextState( gotRequests ? 1 : 0);
+		nextState( gotRequests ? 1 : 0); //if scheduler got the requests we go to a new state.
 	}
 	
+	/**
+	 * Asks the current state to Sort the requests
+	 */
 	public void sortRequests() {
 		states[current].sortRequests();
 		nextState(1);
 	}
 
+	/**
+	 * Called to signal the program that it can stop
+	 */
 	public void exit() {
 		nextState(1);
 		states[current].exit();
-		System.out.println(current);
 	}
 	
+	/**
+	 * Adds a request to the requests list
+	 * @param request the request to be added
+	 */
 	public  void addRequest(Request request) {
 		this.requests.add(request);
 		System.out.println("Scheduler: Gets Request for floor " + request.getFloor() + " from floor subsystem");
@@ -149,7 +191,6 @@ public class Scheduler implements Runnable {
 			switch(current) {
 				case 0:
 					//Scheduler waiting for requests
-					System.out.println("Scheduler waiting for all requests");
 					this.getListOfRequests();
 					break;
 				case 1:

@@ -18,6 +18,10 @@ public class InProgress extends SchedulerState {
 
 	private Scheduler scheduler;
 
+	/**
+	 * Constructor for the InProgress class
+	 * @param scheduler the scheduler this state belongs to
+	 */
 	public InProgress(Scheduler scheduler) {
 		this.scheduler = scheduler;
 	}

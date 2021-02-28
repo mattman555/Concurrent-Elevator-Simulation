@@ -17,11 +17,18 @@ public class AwaitingRequests extends SchedulerState {
 
 	private Scheduler scheduler; 
 
+	/**
+	 * Constructor for the class
+	 * @param scheduler the scheduler this state belongs to
+	 */
 	public AwaitingRequests(Scheduler scheduler) {
 		this.scheduler = scheduler;
 	}
 
-	
+	/**
+	 * Gets the current list of requests from the floorSubsystem
+	 * @param floorSubsystem the Scheduler's floorSubsystem
+	 */
 	@Override
 	public boolean getListOfRequests(FloorSubsystem floorSubsystem) {
 		ArrayList<Request> requests = floorSubsystem.getListOfRequests();
@@ -37,7 +44,9 @@ public class AwaitingRequests extends SchedulerState {
 		return true;
 	}
 	
-
+	/**
+	 * Returns null since the scheduler isnt in a state to give an elevator a task
+	 */
 	@Override
 	public Entry<Integer,Direction> requestTask(int destination) {
 		return null;

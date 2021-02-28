@@ -18,11 +18,19 @@ public class SortedRequests extends SchedulerState {
 	
 	private Scheduler scheduler;
 	
+	/**
+	 * Constructor for the SortedRequests class
+	 * @param scheduler the scheduler this state belongs to
+	 */
 	public SortedRequests(Scheduler scheduler) {
 		this.scheduler = scheduler;
 	}
 	
-
+	/**
+	 * Returns the next destination and the direction in which that destination is based on the current location of the elevator
+	 * @param currLocation current location of the elevator
+	 * @return an entry(key-value pair) containing the floor to go to and the direction that floor is 
+	 */
 	public Entry<Integer,Direction> requestTask(int currLocation) {
 		if(scheduler.getInProgressBucket() == null ) { // get a new bucket
 			scheduler.setInProgressBucket(scheduler.getRequestBuckets().remove(0));
