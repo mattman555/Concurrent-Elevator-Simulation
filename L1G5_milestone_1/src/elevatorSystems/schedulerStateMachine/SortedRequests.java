@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package elevatorSystems.schedulerStateMachine;
 
 import java.util.ArrayList;

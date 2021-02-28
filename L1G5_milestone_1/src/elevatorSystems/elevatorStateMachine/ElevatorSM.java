@@ -1,6 +1,3 @@
-/**
- * 
- */
 package elevatorSystems.elevatorStateMachine;
 
 import java.util.ArrayList;
@@ -15,6 +12,7 @@ import elevatorSystems.FloorSubsystem;
 /**
  * @author Matthew Harris 101073502
  * @author Jay McCracken 101066860
+ * @author Nick Coutts 101072875
  *
  *	The State machine for the elevator, switching states based on event
  */

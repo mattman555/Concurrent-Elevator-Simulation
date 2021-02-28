@@ -1,6 +1,3 @@
-/**
- * 
- */
 package elevatorSystems.elevatorStateMachine;
 
 import elevatorSystems.Elevator;

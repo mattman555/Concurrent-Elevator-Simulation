@@ -7,10 +7,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
 import elevatorSystems.FloorSubsystem;
@@ -48,8 +44,8 @@ public class ElevatorSMTest {
 		requests = new ArrayList<Request>();
 		
 		requests.add(request);
-		scheduler.addRequests(requests);
-		scheduler.getRequest(2);
+		scheduler.addRequest(request);
+		scheduler.requestTask(2);
 
 	}
 
