@@ -31,7 +31,7 @@ public class UnsortedRequests extends SchedulerState {
 	 * Returns null since the scheduler isnt in a state to send tasks
 	 */
 	@Override
-	public Entry<Integer,Direction> requestTask(int destination) {
+	public Entry<Integer,Direction> requestTask(int id, int destination) {
 		return null;
 	}
 

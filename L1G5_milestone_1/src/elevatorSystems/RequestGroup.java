@@ -16,6 +16,11 @@ public class RequestGroup {
 	 * Constructor for a request group, meant to be used for similar requests
 	 * @param requests the Requests that are to be part of a RequestGroup
 	 */
+	public RequestGroup() {	}
+	/**
+	 * Constructor for a request group, meant to be used for similar requests
+	 * @param requests the Requests that are to be part of a RequestGroup
+	 */
 	public RequestGroup(ArrayList<Request> requests) {
 		this.requests = requests;
 		elevFloorLamps = setElevatorFloorLamps();

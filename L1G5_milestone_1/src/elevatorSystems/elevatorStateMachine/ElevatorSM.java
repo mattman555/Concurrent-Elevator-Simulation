@@ -2,6 +2,7 @@ package elevatorSystems.elevatorStateMachine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -19,8 +20,8 @@ import elevatorSystems.FloorSubsystem;
 public class ElevatorSM implements Runnable{
 
 	private ElevatorStates current;
-	HashMap<ElevatorStates, ElevatorState> states;
-	private HashMap<ElevatorStates, List<ElevatorStates>> transitions;
+	private Hashtable<ElevatorStates, ElevatorState> states;
+	private Hashtable<ElevatorStates, List<ElevatorStates>> transitions;
 	private Elevator elevator;
 	private FloorSubsystem floorSubsystem;
 ;
@@ -37,7 +38,7 @@ public class ElevatorSM implements Runnable{
 	 * Creating the order of states, what state can switch to what state
 	 */
 	private void generateTransitionHashmap() {
-		this.transitions = new HashMap<>();
+		this.transitions = new Hashtable<>();
 		this.transitions.put(ElevatorStates.DOORS_CLOSED,  List.of(ElevatorStates.ARRIVED, ElevatorStates.MOVING, ElevatorStates.END));
 		this.transitions.put(ElevatorStates.MOVING, List.of(ElevatorStates.ARRIVED));
 		this.transitions.put(ElevatorStates.ARRIVED, List.of(ElevatorStates.DOORS_OPEN));
@@ -49,7 +50,7 @@ public class ElevatorSM implements Runnable{
 	 * Matching the class states the reference each of the different states
 	 */
 	private void generateStateHashmap() {
-		this.states = new HashMap<>();
+		this.states = new Hashtable<>();
 		this.states.put(ElevatorStates.DOORS_CLOSED, new DoorsClosed(this.elevator, this.floorSubsystem));
 		this.states.put(ElevatorStates.MOVING,  new Moving(this.elevator, this.floorSubsystem));
 		this.states.put(ElevatorStates.ARRIVED,  new Arrived(this.elevator));
@@ -119,7 +120,7 @@ public class ElevatorSM implements Runnable{
 	 * @param next the state of the door that was switched too
 	 */
 	public void toggleDoors(ElevatorStates next) {
-		states.get(current).toggleDoors();
+		states.get(current).toggleDoors(elevator.getId());
 		nextState(next);
 	}
 	
@@ -128,7 +129,7 @@ public class ElevatorSM implements Runnable{
 	 * @return the list of lamps that need to be turned on
 	 */
 	public ArrayList<Integer> getLamps() {
-		ArrayList<Integer> lamps = states.get(current).getLamps();
+		ArrayList<Integer> lamps = states.get(current).getLamps(elevator.getId());
 		nextState(ElevatorStates.UPDATE_LAMPS);
 		return lamps;
 	}
@@ -163,7 +164,7 @@ public class ElevatorSM implements Runnable{
 			switch(current) {
 			case DOORS_CLOSED:
 				//Get the request of the next floor with the motor direction from the scheduler
-				Entry<Integer,Direction> destination = this.elevator.scheduler.requestTask(this.elevator.getElevatorLocation());
+				Entry<Integer,Direction> destination = this.elevator.scheduler.requestTask(elevator.getId(), this.elevator.getElevatorLocation());
 				if(destination == null) {
 					break;
 				}

@@ -24,13 +24,13 @@ public class UpdateLamps extends ElevatorState {
 	 */
 	@Override
 	public void action(ArrayList<Integer> lamps) {
-		elevator.getLogger().println("Elevator Updating lamps");
+		elevator.getLogger().println("Elevator " + elevator.getId() + ": Updating lamps");
 		int location = this.elevator.getElevatorLocation();
 		for(Integer i : lamps) {
 			this.elevator.getLamp().put(i, true);
 		}
 		this.elevator.getLamp().put(location, false);
-		System.out.println("Elevator Car Lamps: " + this.elevator.getLamp());
+		System.out.println("Elevator " + elevator.getId() + ": Car Lamps: " + this.elevator.getLamp());
 	}
 	
 	/**
@@ -38,9 +38,9 @@ public class UpdateLamps extends ElevatorState {
 	 * @param next the state of the door that was switched too
 	 */
 	@Override
-	public void toggleDoors() {
-		elevator.getLogger().println("Elevator Transition from Update Lamps to Doors Closed");
-		this.elevator.scheduler.requestDoorChange();
+	public void toggleDoors(int id) {
+		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Update Lamps to Doors Closed");
+		this.elevator.scheduler.requestDoorChange(id);
 		
 	}
 	

@@ -21,23 +21,29 @@ public class Elevator{
 	private Direction motor;
 	private Hashtable<Integer, Boolean> lamp;
 	private Logger logger;
+	private int id;
 	
 	/**
 	 * Constructor, creating a base elevator starting
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator(Scheduler scheduler, Logger logger) {
+	public Elevator(Scheduler scheduler, Logger logger, int elevId) {
 		this.scheduler = scheduler;	
 		this.elevatorLocation = 1;	
 		this.floorDestination = 1;
 		this.isDoorOpen = false;
 		this.lamp = new Hashtable<Integer, Boolean>();
 		this.logger = logger;
+		this.id = elevId;
 	}
 
 	public Logger getLogger() {
 		return this.logger;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	public int getFloorDestination() {
 		return floorDestination;
@@ -81,7 +87,7 @@ public class Elevator{
 	 */
 	public void toggleDoors() {
 		this.isDoorOpen = !isDoorOpen;
-		logger.println("Elevator door is "+ (this.isDoorOpen ? "open" : "closed"));
+		logger.println("Elevator " + this.getId()+" door is "+ (this.isDoorOpen ? "open" : "closed"));
 	}
 	
 	/**

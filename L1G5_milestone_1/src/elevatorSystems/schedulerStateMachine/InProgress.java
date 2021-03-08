@@ -27,30 +27,30 @@ public class InProgress extends SchedulerState {
 	}
 
 	@Override
-	public Entry<Integer,Direction> requestTask(int currLocation) {
-		if(scheduler.getInProgressBucket() == null ) { // get a new bucket
-			scheduler.setInProgressBucket(scheduler.getRequestBuckets().remove(0));
+	public synchronized Entry<Integer,Direction> requestTask(int id, int currLocation) {
+		if(scheduler.getInProgressBucket(id) == null ) { // get a new bucket
+			scheduler.setInProgressBucket(id, scheduler.getRequestBuckets().remove(0));
 		}
 		else { // at a destination floor, a request may have been completed
-			scheduler.getInProgressBucket().removeElevatorFloorLamp(currLocation); //turn off floor lamp
+			scheduler.getInProgressBucket(id).removeElevatorFloorLamp(currLocation); //turn off floor lamp
 			ArrayList<Request> removable = new ArrayList<Request>(); //dont want to remove them while iterating over them
-			for(Request request: scheduler.getInProgressBucket().getRequests()) {
+			for(Request request: scheduler.getInProgressBucket(id).getRequests()) {
 				if(request.getCarButton() == currLocation) {
 					removable.add(request);
 					scheduler.getCompletedRequests().add(request);
 				}
 			}
-			scheduler.getInProgressBucket().removeRequests(removable); // remove finished requests from the current bucket
-			if(scheduler.getInProgressBucket().getRequests().size() == 0) { //bucket is complete, get a new one
+			scheduler.getInProgressBucket(id).removeRequests(removable); // remove finished requests from the current bucket
+			if(scheduler.getInProgressBucket(id).getRequests().size() == 0) { //bucket is complete, get a new one
 				if(scheduler.getRequestBuckets().size() > 0)
-					scheduler.setInProgressBucket(scheduler.getRequestBuckets().remove(0));
+					scheduler.setInProgressBucket(id, scheduler.getRequestBuckets().remove(0));
 				else { // all requests have been completed, elevators can stop
-					return Map.entry(10000,Direction.UP);
+					return Map.entry(10000, Direction.UP);
 				}
 			}
 		}
 		
-		Integer destination = scheduler.getInProgressBucket().getNextDestination();
+		Integer destination = scheduler.getInProgressBucket(id).getNextDestination();
 		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
 		scheduler.getLogger().println("Scheduler: Sends " + Thread.currentThread().getName() + " to move " + direction + " to floor " + destination);
 		return Map.entry(destination, direction);

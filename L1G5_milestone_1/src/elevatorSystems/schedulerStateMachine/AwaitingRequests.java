@@ -47,7 +47,7 @@ public class AwaitingRequests extends SchedulerState {
 	 * Returns null since the scheduler isnt in a state to give an elevator a task
 	 */
 	@Override
-	public Entry<Integer,Direction> requestTask(int destination) {
+	public Entry<Integer,Direction> requestTask(int id, int destination) {
 		return null;
 	}
 }
