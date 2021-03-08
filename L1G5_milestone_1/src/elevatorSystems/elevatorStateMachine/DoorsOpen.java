@@ -22,8 +22,8 @@ public class DoorsOpen extends ElevatorState {
 	 * @return list of all lamps to be turned on
 	 */
 	@Override
-	public ArrayList<Integer> getLamps() {
-		elevator.getLogger().println("Transition from Doors Open to Update Lamps");
-		return this.elevator.scheduler.getRequestedLamps();
+	public ArrayList<Integer> getLamps(int id) {
+		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Doors Open to Update Lamps");
+		return this.elevator.scheduler.getRequestedLamps(id);
 	}
 }

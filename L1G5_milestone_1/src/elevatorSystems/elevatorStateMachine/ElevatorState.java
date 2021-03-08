@@ -53,7 +53,7 @@ public abstract class ElevatorState {
 	/**
 	 * Default Method for the toggleDoors event
 	 */
-	public void toggleDoors() {
+	public void toggleDoors(int id) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
@@ -61,7 +61,7 @@ public abstract class ElevatorState {
 	 * Default Method for the getLamps event
 	 * @return
 	 */
-	public ArrayList<Integer> getLamps() {
+	public ArrayList<Integer> getLamps(int id) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 
