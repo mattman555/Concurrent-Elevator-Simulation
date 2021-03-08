@@ -17,8 +17,7 @@ public abstract class ElevatorState {
 	 * @param direction the elevator should move
 	 */
 	public void activity(Direction direction) {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 	/**
@@ -26,8 +25,7 @@ public abstract class ElevatorState {
 	 * @param lamps list of lamps to be turned on
 	 */
 	public void action(ArrayList<Integer> lamps) {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 	/**
@@ -35,32 +33,28 @@ public abstract class ElevatorState {
 	 * @param destination where the elevator should go next
 	 */
 	public void validRequest(Entry<Integer,Direction> destination) {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 	/**
 	 * Default Method for the invalidRequest event
 	 */
 	public void invalidRequest() {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 	/**
 	 * Default Method for the arrivesAtDestination event
 	 */
 	public void arrivesAtDestination() {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 	/**
 	 * Default Method for the toggleDoors event
 	 */
 	public void toggleDoors() {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 	/**
@@ -68,16 +62,14 @@ public abstract class ElevatorState {
 	 * @return
 	 */
 	public ArrayList<Integer> getLamps() {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 
 	/**
 	 * Default Method for the exit event
 	 */
 	public void exit() {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 }

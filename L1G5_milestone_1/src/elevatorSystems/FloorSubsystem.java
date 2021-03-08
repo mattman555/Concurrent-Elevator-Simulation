@@ -19,14 +19,16 @@ public class FloorSubsystem implements Runnable{
 	private final int MAX_FLOORS;
 	private Hashtable<String, Boolean> lamp;
 	private final String FILENAME = "TestFile.txt";
+	private Logger logger;
 	/**
 	 * Constructor for the floor subsystem set all the fields
 	 */
-	public FloorSubsystem(Scheduler scheduler, int maxFloors) {
+	public FloorSubsystem(Scheduler scheduler, int maxFloors, Logger logger) {
 		this.scheduler = scheduler;
 		this.requests = new ArrayList<Request>();
 		this.MAX_FLOORS = maxFloors;
 		this.lamp = new Hashtable<String, Boolean>();
+		this.logger = logger;
 	}
 	
 	/**
@@ -73,8 +75,8 @@ public class FloorSubsystem implements Runnable{
 	private void removeRequest(Request request) {
 		if(request == null)
 			return;
-		System.out.println(Thread.currentThread().getName() + ": Receives completed Request from Scheduler" );
-		System.out.println("Completed: " + request.toString());
+		logger.println(Thread.currentThread().getName() + ": Receives completed Request from Scheduler" );
+		logger.println("Floor subsystem Completed: " + request.toString());
 		requests.remove(request);
 	}
 	
@@ -126,7 +128,7 @@ public class FloorSubsystem implements Runnable{
 		while(requests.size()>0) {
 			removeRequest(scheduler.getCompletedRequest());
 		}
-		System.out.println("Floor subsystem: All requests completed.");
+		logger.println("Floor subsystem: All requests completed.");
 		scheduler.exit();
 	}
 	

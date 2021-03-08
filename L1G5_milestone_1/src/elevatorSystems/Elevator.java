@@ -20,20 +20,25 @@ public class Elevator{
 	private boolean isDoorOpen;
 	private Direction motor;
 	private Hashtable<Integer, Boolean> lamp;
+	private Logger logger;
 	
 	/**
 	 * Constructor, creating a base elevator starting
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator(Scheduler scheduler) {
+	public Elevator(Scheduler scheduler, Logger logger) {
 		this.scheduler = scheduler;	
 		this.elevatorLocation = 1;	
 		this.floorDestination = 1;
 		this.isDoorOpen = false;
 		this.lamp = new Hashtable<Integer, Boolean>();
+		this.logger = logger;
 	}
-	
+
+	public Logger getLogger() {
+		return this.logger;
+	}
 	public int getFloorDestination() {
 		return floorDestination;
 	}
@@ -76,7 +81,7 @@ public class Elevator{
 	 */
 	public void toggleDoors() {
 		this.isDoorOpen = !isDoorOpen;
-		System.out.println("Elevator door is "+ (this.isDoorOpen ? "open" : "closed"));
+		logger.println("Elevator door is "+ (this.isDoorOpen ? "open" : "closed"));
 	}
 	
 	/**

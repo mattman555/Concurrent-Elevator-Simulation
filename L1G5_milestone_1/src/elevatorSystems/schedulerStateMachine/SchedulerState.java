@@ -19,8 +19,7 @@ public abstract class SchedulerState {
 	 * @param currLocation current location of the elevator
 	 */
 	public Entry<Integer,Direction> requestTask(int currLocation) {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Scheduler is in an Incorrect State");
 	}
 
 	/**
@@ -28,24 +27,21 @@ public abstract class SchedulerState {
 	 * @param currLocation current location of the elevator
 	 */
 	public boolean getListOfRequests(FloorSubsystem floorSubsystem) {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Scheduler is in an Incorrect State");
 	}
 
 	/**
 	 * default implementation of the sortRequests method
 	 */
 	public void sortRequests() {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Scheduler is in an Incorrect State");
 	}
 
 	/**
 	 * default implementation of the exit method
 	 */
 	public void exit() {
-		System.out.println("Incorrect State");
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Scheduler is in an Incorrect State");
 	}
 
 }

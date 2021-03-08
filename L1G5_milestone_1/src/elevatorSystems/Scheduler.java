@@ -15,22 +15,28 @@ public class Scheduler implements Runnable {
 	private ArrayList<RequestGroup> requestBuckets;
 	private RequestGroup inProgressBucket;
 	private ArrayList<Request> completedRequests;
+	private Logger logger;
 	
 	/**
 	 * Constructor for the scheduler class
 	 */
-	public Scheduler() {
+	public Scheduler(Logger logger) {
 		SchedulerState[] statearr =
 			{new AwaitingRequests(this), 
 			 new UnsortedRequests(this), 
 			 new SortedRequests(this), 
 			 new InProgress(this),
-			 new End()};
+			 new End(this)};
 		this.states = statearr;
 		this.current = 0;
 		this.requests = new ArrayList<Request>();
 		this.requestBuckets = new ArrayList<>();
 		this.completedRequests = new ArrayList<>();
+		this.logger = logger;
+	}
+	
+	public Logger getLogger() {
+		return this.logger;
 	}
 	
 	/**
@@ -149,7 +155,7 @@ public class Scheduler implements Runnable {
 	 */
 	public  void addRequest(Request request) {
 		this.requests.add(request);
-		System.out.println("Scheduler: Gets Request for floor " + request.getFloor() + " from floor subsystem");
+		logger.println("Scheduler: Gets Request for floor " + request.getFloor() + " from floor subsystem");
 	}
 	
 	/**
@@ -160,7 +166,7 @@ public class Scheduler implements Runnable {
 		if(completedRequests.isEmpty()) { //floorSubsystem wait until there are completed requests
 			return null;
 		}
-		System.out.println("Scheduler: Sends completed request to " + Thread.currentThread().getName() );
+		logger.println("Scheduler: Sends completed request to " + Thread.currentThread().getName() );
 		return completedRequests.remove(0);
 	}
 	
@@ -169,7 +175,7 @@ public class Scheduler implements Runnable {
 	 * @return an ArrayList of integers of the car button lamps that are supposed to be on
 	 */
 	public ArrayList<Integer> getRequestedLamps(){
-		System.out.println("Scheduler: Sends " + Thread.currentThread().getName() + " requested car lamps");
+		logger.println("Scheduler: Sends " + Thread.currentThread().getName() + " requested car lamps");
 		return inProgressBucket.getElevatorFloorLamps();
 	}
 	
@@ -177,7 +183,7 @@ public class Scheduler implements Runnable {
 	 * The elevator requests to have its doors toggled and the scheduler will toggle them
 	 */
 	public void requestDoorChange() {
-		System.out.println("Scheduler: Toggling " + Thread.currentThread().getName() + " Doors...");
+		logger.println("Scheduler: Toggling " + Thread.currentThread().getName() + " Doors...");
 		elevator.toggleDoors();
 	}
 	
@@ -214,12 +220,12 @@ public class Scheduler implements Runnable {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		Scheduler scheduler = new Scheduler();
+		Logger logger = new Logger();
+		Scheduler scheduler = new Scheduler(logger);
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
-		FloorSubsystem floorSubsystem = new FloorSubsystem(scheduler, 7);
+		FloorSubsystem floorSubsystem = new FloorSubsystem(scheduler, 7, logger);
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
-		Elevator elevator = new Elevator(scheduler);
+		Elevator elevator = new Elevator(scheduler, logger);
 		scheduler.addElevator(elevator);
 		scheduler.addFloorSubsystem(floorSubsystem);
 		Thread elevatorThread = new Thread(new ElevatorSM(elevator,floorSubsystem),"Elevator");
