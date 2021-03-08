@@ -34,12 +34,11 @@ public class AwaitingRequests extends SchedulerState {
 		ArrayList<Request> requests = floorSubsystem.getListOfRequests();
 		if(requests == null)
 			return false;
-		System.out.println("Scheduler received list of requests.");
+		scheduler.getLogger().println("Scheduler received list of requests.");
 		for(Request request : requests) {
 			this.scheduler.addRequest(request);
-			System.out.println("Scheduler: Gets Request for floor " + request.getFloor() + " from " + Thread.currentThread().getName() + "...");
 		}
-		System.out.println("Scheduler transitions from awaiting requests to unsorted requests.");
+		scheduler.getLogger().println("Scheduler transitions from awaiting requests to unsorted requests.");
 
 		return true;
 	}

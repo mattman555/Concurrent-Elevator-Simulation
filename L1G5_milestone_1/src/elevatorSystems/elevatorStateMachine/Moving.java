@@ -27,7 +27,7 @@ public class Moving extends ElevatorState {
 	 */
 	@Override
 	public void activity(Direction direction) {
-		System.out.println("Elevator moving " + direction.toString().toLowerCase() + "  on floor " + this.elevator.getElevatorLocation());
+		elevator.getLogger().println("Elevator moving " + direction.toString().toLowerCase() + "  on floor " + this.elevator.getElevatorLocation());
 		try {
 			Thread.sleep(TIME_BETWEEN_FLOORS);
 		} catch (InterruptedException e) {}
@@ -44,8 +44,8 @@ public class Moving extends ElevatorState {
 	 */
 	@Override
 	public void arrivesAtDestination() {
-		System.out.println("Transition from Moving to Arrived");
-		System.out.println("Arrived at: "+this.elevator.getElevatorLocation());
+		elevator.getLogger().println("Elevator Transition from Moving to Arrived");
+		elevator.getLogger().println("Elevator Arrived at: "+this.elevator.getElevatorLocation());
 		this.floorSubsystem.setFloorLamp(this.elevator.getElevatorLocation(), this.elevator.getMotor(), false);
 		
 	}

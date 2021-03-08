@@ -28,7 +28,7 @@ public class DoorsClosed extends ElevatorState {
 	 */
 	@Override
 	public void validRequest(Entry<Integer,Direction> destination) {
-		System.out.println("Transition from Doors Closed to Moving Up");
+		elevator.getLogger().println("Elevator Transition from Doors Closed to Moving Up");
 		this.elevator.setFloorDestination(destination.getKey()); //set the floor number to go to
 		this.elevator.setMotor(destination.getValue());			 //the direction of the motor to get to that floor
 	}
@@ -38,8 +38,8 @@ public class DoorsClosed extends ElevatorState {
 	 */
 	@Override
 	public void arrivesAtDestination() {
-		System.out.println("Transition from Doors Closed to Arrived");
-		System.out.println("Arrived at: " + this.elevator.getElevatorLocation());
+		elevator.getLogger().println("Elevator Transition from Doors Closed to Arrived");
+		elevator.getLogger().println("Elevator Arrived at: " + this.elevator.getElevatorLocation());
 		this.floorSubsystem.setFloorLamp(this.elevator.getElevatorLocation(), this.elevator.getMotor(), false);
 	}
 	
@@ -48,6 +48,6 @@ public class DoorsClosed extends ElevatorState {
 	 */
 	@Override
 	public void invalidRequest() {
-		System.out.println("Transition from Doors Closed to End");
+		elevator.getLogger().println("Transition from Doors Closed to End");
 	}
 }

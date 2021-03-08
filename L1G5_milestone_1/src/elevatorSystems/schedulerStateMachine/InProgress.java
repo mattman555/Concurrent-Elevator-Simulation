@@ -52,7 +52,7 @@ public class InProgress extends SchedulerState {
 		
 		Integer destination = scheduler.getInProgressBucket().getNextDestination();
 		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
-		System.out.println("Scheduler: Sends " + Thread.currentThread().getName() + " to move " + direction + " to floor " + destination);
+		scheduler.getLogger().println("Scheduler: Sends " + Thread.currentThread().getName() + " to move " + direction + " to floor " + destination);
 		return Map.entry(destination, direction);
 	}
 }

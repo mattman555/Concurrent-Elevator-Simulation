@@ -70,7 +70,7 @@ public class Request {
 	 * Returns a string representation of the request
 	 */
 	public String toString() {
-		String time = Integer.toString(this.time[0]) + ":" + Integer.toString(this.time[1]) + ":"  + Integer.toString(this.time[2]) + ":" + Integer.toString(this.time[3]);
+		String time = Integer.toString(this.time[0]) + ":" + Integer.toString(this.time[1]) + ":"  + Integer.toString(this.time[2]) + "." + Integer.toString(this.time[3]);
 		return ("Request{Time: " + time + " | Floor: " + this.floor + " | Directional button: " + this.floorButton + " | Destination: " + this.carButton + "}");
 		
 	}
