@@ -230,14 +230,18 @@ public class Scheduler implements Runnable {
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
 		FloorSubsystem floorSubsystem = new FloorSubsystem(scheduler, 7, logger);
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
-		Elevator elevator = new Elevator(scheduler, logger, 1);
-		scheduler.addElevator(elevator);
+		Elevator elevator1 = new Elevator(scheduler, logger, 1);
+		Elevator elevator2 = new Elevator(scheduler, logger, 2);
+		scheduler.addElevator(elevator1);
+		scheduler.addElevator(elevator2);
 		scheduler.addFloorSubsystem(floorSubsystem);
-		Thread elevatorThread = new Thread(new ElevatorSM(elevator,floorSubsystem),"Elevator");
+		Thread elevatorThread1 = new Thread(new ElevatorSM(elevator1,floorSubsystem),"Elevator 1");
+		Thread elevatorThread2 = new Thread(new ElevatorSM(elevator2,floorSubsystem),"Elevator 2");
 		
 		floorSubsystemThread.start();
 		schedulerThread.start();
-		elevatorThread.start();
+		elevatorThread1.start();
+		elevatorThread2.start();
 		
 	}
 	
