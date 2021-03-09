@@ -1,14 +1,16 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
 
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
-import elevatorSystems.FloorSubsystem;
 
 /**
  * @author Matthew Harris 101073502
@@ -22,16 +24,21 @@ public class ElevatorSM implements Runnable{
 	private ElevatorStates current;
 	private Hashtable<ElevatorStates, ElevatorState> states;
 	private Hashtable<ElevatorStates, List<ElevatorStates>> transitions;
+	private static final int INVALID_FLOOR = 10000;
 	private Elevator elevator;
-	private FloorSubsystem floorSubsystem;
+	private DatagramSocket sendReceiveSocket;
 ;
 
-	public ElevatorSM(Elevator elevator, FloorSubsystem floorSubsystem) {
+	public ElevatorSM(Elevator elevator) {
 		this.elevator =  elevator;
-		this.floorSubsystem = floorSubsystem;
 		this.current = ElevatorStates.DOORS_CLOSED;
 		generateTransitionHashmap();
 		generateStateHashmap();
+		try {
+			sendReceiveSocket = new DatagramSocket();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
 	}
 	 
 	/**
@@ -51,8 +58,8 @@ public class ElevatorSM implements Runnable{
 	 */
 	private void generateStateHashmap() {
 		this.states = new Hashtable<>();
-		this.states.put(ElevatorStates.DOORS_CLOSED, new DoorsClosed(this.elevator, this.floorSubsystem));
-		this.states.put(ElevatorStates.MOVING,  new Moving(this.elevator, this.floorSubsystem));
+		this.states.put(ElevatorStates.DOORS_CLOSED, new DoorsClosed(this.elevator));
+		this.states.put(ElevatorStates.MOVING,  new Moving(this.elevator));
 		this.states.put(ElevatorStates.ARRIVED,  new Arrived(this.elevator));
 		this.states.put(ElevatorStates.DOORS_OPEN, new DoorsOpen(this.elevator));
 		this.states.put(ElevatorStates.UPDATE_LAMPS, new UpdateLamps(this.elevator));
@@ -111,7 +118,7 @@ public class ElevatorSM implements Runnable{
 	 * switch to arrived state
 	 */
 	public void arrivesAtDestination() {
-		states.get(current).arrivesAtDestination();
+		states.get(current).arrivesAtDestination(sendReceiveSocket);
 		nextState(ElevatorStates.ARRIVED);
 	}
 	
@@ -120,7 +127,7 @@ public class ElevatorSM implements Runnable{
 	 * @param next the state of the door that was switched too
 	 */
 	public void toggleDoors(ElevatorStates next) {
-		states.get(current).toggleDoors(elevator.getId());
+		states.get(current).toggleDoors(sendReceiveSocket);
 		nextState(next);
 	}
 	
@@ -129,7 +136,7 @@ public class ElevatorSM implements Runnable{
 	 * @return the list of lamps that need to be turned on
 	 */
 	public ArrayList<Integer> getLamps() {
-		ArrayList<Integer> lamps = states.get(current).getLamps(elevator.getId());
+		ArrayList<Integer> lamps = states.get(current).getLamps(sendReceiveSocket);
 		nextState(ElevatorStates.UPDATE_LAMPS);
 		return lamps;
 	}
@@ -148,6 +155,29 @@ public class ElevatorSM implements Runnable{
 	public ElevatorStates getState() {
 		return current;
 	}
+	private Entry<Integer,Direction> requestTask(){
+		DatagramPacket requestPacket = this.elevator.generatePacket(RPCRequestType.GET_REQUEST);
+		try {
+	         sendReceiveSocket.send(requestPacket);
+	    }
+		catch (IOException e) {
+	         e.printStackTrace();
+	         System.exit(1);
+	    }
+		
+		byte data[] = new byte[1000];
+	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+
+	    try {
+	         // Block until a datagram is received via sendReceiveSocket.  
+	         sendReceiveSocket.receive(receivePacket);
+	    } catch(IOException e) {
+	    	e.printStackTrace();
+	    	System.exit(1);
+	    }
+	    return this.elevator.readResponse(receivePacket).getDestination();
+		
+	}
 	
 	@Override
 	/**
@@ -164,11 +194,11 @@ public class ElevatorSM implements Runnable{
 			switch(current) {
 			case DOORS_CLOSED:
 				//Get the request of the next floor with the motor direction from the scheduler
-				Entry<Integer,Direction> destination = this.elevator.scheduler.requestTask(elevator.getId(), this.elevator.getElevatorLocation());
+				Entry<Integer,Direction> destination = requestTask();
 				if(destination == null) {
 					break;
 				}
-				else if(destination.getKey() == 10000) {//no more requests move to end
+				else if(destination.getKey() == INVALID_FLOOR) {//no more requests move to end
 					this.invalidRequest();
 				}
 				else if(destination.getValue() == Direction.UP || destination.getValue() == Direction.DOWN) {

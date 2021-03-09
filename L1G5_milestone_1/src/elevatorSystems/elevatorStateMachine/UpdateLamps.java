@@ -1,5 +1,8 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.util.ArrayList;
 
 import elevatorSystems.Elevator;
@@ -38,9 +41,29 @@ public class UpdateLamps extends ElevatorState {
 	 * @param next the state of the door that was switched too
 	 */
 	@Override
-	public void toggleDoors(int id) {
+	public void toggleDoors(DatagramSocket sendReceiveSocket) {
 		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Update Lamps to Doors Closed");
-		this.elevator.scheduler.requestDoorChange(id);
+		DatagramPacket togglePacket = this.elevator.generatePacket(RPCRequestType.TOGGLE_DOORS);
+		try {
+	         sendReceiveSocket.send(togglePacket);
+	    }
+		catch (IOException e) {
+	         e.printStackTrace();
+	         System.exit(1);
+	    }
+		
+		byte data[] = new byte[1000];
+	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+
+	    try {
+	         // Block until a datagram is received via sendReceiveSocket.  
+	         sendReceiveSocket.receive(receivePacket);
+	    } catch(IOException e) {
+	    	e.printStackTrace();
+	    	System.exit(1);
+	    }
+		boolean isDoorOpen = this.elevator.readResponse(receivePacket).getIsDoorOpen();
+		this.elevator.setIsDoorOpen(isDoorOpen);
 		
 	}
 	

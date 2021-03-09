@@ -1,5 +1,10 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.util.ArrayList;
 
 import elevatorSystems.Elevator;
@@ -22,8 +27,29 @@ public class DoorsOpen extends ElevatorState {
 	 * @return list of all lamps to be turned on
 	 */
 	@Override
-	public ArrayList<Integer> getLamps(int id) {
+	public ArrayList<Integer> getLamps(DatagramSocket sendReceiveSocket) {
 		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Doors Open to Update Lamps");
-		return this.elevator.scheduler.getRequestedLamps(id);
+		DatagramPacket lampsPacket = this.elevator.generatePacket(RPCRequestType.GET_LAMPS);
+		try {
+	         sendReceiveSocket.send(lampsPacket);
+	    }
+		catch (IOException e) {
+	         e.printStackTrace();
+	         System.exit(1);
+	    }
+		
+		byte data[] = new byte[1000];
+	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+
+	    try {
+	         // Block until a datagram is received via sendReceiveSocket.  
+	         sendReceiveSocket.receive(receivePacket);
+	    } catch(IOException e) {
+	    	e.printStackTrace();
+	    	System.exit(1);
+	    }
+    
+		return this.elevator.readResponse(receivePacket).getLamps();
 	}
+	
 }

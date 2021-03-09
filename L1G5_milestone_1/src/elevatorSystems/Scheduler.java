@@ -10,7 +10,6 @@ public class Scheduler implements Runnable {
 	private SchedulerState[] states;
 	private int current;
 	private int[][] transitions = {{0,1}, {1,2}, {3}, {3,4}};
-	//public Elevator elevator;
 	private FloorSubsystem floorSubsystem;
 	private ArrayList<Request> requests;
 	private ArrayList<RequestGroup> requestBuckets;
@@ -230,10 +229,10 @@ public class Scheduler implements Runnable {
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
 		FloorSubsystem floorSubsystem = new FloorSubsystem(scheduler, 7, logger);
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
-		Elevator elevator = new Elevator(scheduler, logger, 1);
+		Elevator elevator = new Elevator(logger, 1);
 		scheduler.addElevator(elevator);
 		scheduler.addFloorSubsystem(floorSubsystem);
-		Thread elevatorThread = new Thread(new ElevatorSM(elevator,floorSubsystem),"Elevator");
+		Thread elevatorThread = new Thread(new ElevatorSM(elevator),"Elevator");
 		
 		floorSubsystemThread.start();
 		schedulerThread.start();
