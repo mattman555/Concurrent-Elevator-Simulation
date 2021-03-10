@@ -1,5 +1,17 @@
 package elevatorSystems;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+
+import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
+import elevatorSystems.elevatorStateMachine.RPCRequestType;
 
 /**
  * Elevator Thread, keeps track of current location, grabs motor direction
@@ -14,7 +26,7 @@ public class Elevator{
 	/*
 	 * Variables elevator needs to store
 	 */
-	public Scheduler scheduler;
+	public Scheduler scheduler; //will get replaced
 	private int elevatorLocation;
 	private int floorDestination;
 	private boolean isDoorOpen;
@@ -22,14 +34,15 @@ public class Elevator{
 	private Hashtable<Integer, Boolean> lamp;
 	private Logger logger;
 	private int id;
+	private static final int SCHEDULER_PORT = 12;
+	private static final int FLOOR_SUB_PORT = 156;
 	
 	/**
 	 * Constructor, creating a base elevator starting
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator(Scheduler scheduler, Logger logger, int elevId) {
-		this.scheduler = scheduler;	
+	public Elevator(Logger logger, int elevId) {
 		this.elevatorLocation = 1;	
 		this.floorDestination = 1;
 		this.isDoorOpen = false;
@@ -53,7 +66,7 @@ public class Elevator{
 		this.floorDestination = floorDestination;
 	}
 
-	public boolean isDoorOpen() {
+	public boolean getIsDoorOpen() {
 		return isDoorOpen;
 	}
 	
@@ -85,8 +98,8 @@ public class Elevator{
 	 * if open, close
 	 * if closed, open
 	 */
-	public void toggleDoors() {
-		this.isDoorOpen = !isDoorOpen;
+	public void setIsDoorOpen(boolean isDoorOpen) {
+		this.isDoorOpen = isDoorOpen;
 		logger.println("Elevator " + this.getId()+" door is "+ (this.isDoorOpen ? "open" : "closed"));
 	}
 	
@@ -104,5 +117,61 @@ public class Elevator{
 	 */
 	public void setElevatorLocation(int location){
 		this.elevatorLocation = location;
+	}
+	
+	public DatagramPacket generatePacket(RPCRequestType requestType) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		ObjectOutputStream oStream;
+		int port = SCHEDULER_PORT;
+		try {
+			oStream = new ObjectOutputStream(stream);
+			switch(requestType) {
+				case TOGGLE_DOORS:
+					oStream.writeObject(new ElevatorRPCRequest(getIsDoorsOpen()));
+					break;
+				case GET_REQUEST:
+					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.id));
+					break;
+				case GET_LAMPS:
+					oStream.writeObject(new ElevatorRPCRequest(this.id));
+					break;
+				case SET_LAMPS:
+					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.motor));
+					port = FLOOR_SUB_PORT;
+					break;
+				default:
+					System.exit(1);	
+				
+			}
+			oStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		byte[] response = stream.toByteArray();
+		try {
+			return new DatagramPacket(response, response.length, InetAddress.getLocalHost(), port);
+		}
+		catch(UnknownHostException e){
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return null; //never called, needed for structure
+	}
+	
+	public ElevatorRPCRequest readResponse(DatagramPacket receivePacket) {
+		ByteArrayInputStream stream = new ByteArrayInputStream(receivePacket.getData());
+        ObjectInputStream oStream;
+        ElevatorRPCRequest response = null;
+		try {
+			oStream = new ObjectInputStream(stream);
+			response = (ElevatorRPCRequest) oStream.readObject();
+	        oStream.close();
+	        return response;
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+        
+        return null;  //never called, needed for structure
 	}
 }

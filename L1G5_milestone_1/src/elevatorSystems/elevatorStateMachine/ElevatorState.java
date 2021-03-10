@@ -1,5 +1,6 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -46,14 +47,14 @@ public abstract class ElevatorState {
 	/**
 	 * Default Method for the arrivesAtDestination event
 	 */
-	public void arrivesAtDestination() {
+	public void arrivesAtDestination(DatagramSocket sendReceiveSocket) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
 	/**
 	 * Default Method for the toggleDoors event
 	 */
-	public void toggleDoors(int id) {
+	public void toggleDoors(DatagramSocket sendReceiveSocket) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
@@ -61,7 +62,7 @@ public abstract class ElevatorState {
 	 * Default Method for the getLamps event
 	 * @return
 	 */
-	public ArrayList<Integer> getLamps(int id) {
+	public ArrayList<Integer> getLamps(DatagramSocket sendReceiveSocket) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 
