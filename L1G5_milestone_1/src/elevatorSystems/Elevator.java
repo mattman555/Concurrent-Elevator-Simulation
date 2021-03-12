@@ -26,7 +26,6 @@ public class Elevator{
 	/*
 	 * Variables elevator needs to store
 	 */
-	public Scheduler scheduler; //will get replaced
 	private int elevatorLocation;
 	private int floorDestination;
 	private boolean isDoorOpen;
@@ -127,7 +126,7 @@ public class Elevator{
 			oStream = new ObjectOutputStream(stream);
 			switch(requestType) {
 				case TOGGLE_DOORS:
-					oStream.writeObject(new ElevatorRPCRequest(getIsDoorsOpen()));
+					oStream.writeObject(new ElevatorRPCRequest(this.isDoorOpen, this.id));
 					break;
 				case GET_REQUEST:
 					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.id));
@@ -143,11 +142,13 @@ public class Elevator{
 					System.exit(1);	
 				
 			}
+			stream.close();
 			oStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		byte[] response = stream.toByteArray();
+		
 		try {
 			return new DatagramPacket(response, response.length, InetAddress.getLocalHost(), port);
 		}
@@ -165,6 +166,7 @@ public class Elevator{
 		try {
 			oStream = new ObjectInputStream(stream);
 			response = (ElevatorRPCRequest) oStream.readObject();
+			stream.close();
 	        oStream.close();
 	        return response;
 		} catch (IOException | ClassNotFoundException e) {

@@ -1,5 +1,6 @@
 package elevatorSystems.schedulerStateMachine;
 
+import java.net.DatagramSocket;
 import java.util.Map.Entry;
 
 import elevatorSystems.Direction;
@@ -26,7 +27,7 @@ public abstract class SchedulerState {
 	 * default implementation of the getListOfRequests method
 	 * @param currLocation current location of the elevator
 	 */
-	public boolean getListOfRequests(FloorSubsystem floorSubsystem) {
+	public boolean getListOfRequests(DatagramSocket floorSubsystemSocket) {
 		throw new IllegalArgumentException("Scheduler is in an Incorrect State");
 	}
 

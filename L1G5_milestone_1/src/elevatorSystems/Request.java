@@ -3,12 +3,18 @@
  */
 package elevatorSystems;
 
+import java.io.Serializable;
+
 /**
  * @author Matthew Harris 101073502
  *
  */
-public class Request {
+public class Request implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1385846343311119897L;
 	private int[] time;
 	private int floor;
 	private Direction floorButton;

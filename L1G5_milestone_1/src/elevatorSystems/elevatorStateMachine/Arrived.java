@@ -24,9 +24,9 @@ public class Arrived extends ElevatorState {
 	 */
 	@Override
 	public void toggleDoors(DatagramSocket sendReceiveSocket) {
-		elevator.getLogger().println("Elevator " + elevator.getId() +": Transition from Arrived to Doors Open");
 		DatagramPacket togglePacket = this.elevator.generatePacket(RPCRequestType.TOGGLE_DOORS);
 		try {
+			System.out.println("Sent new toggle doors request");
 	         sendReceiveSocket.send(togglePacket);
 	    }
 		catch (IOException e) {
@@ -38,14 +38,17 @@ public class Arrived extends ElevatorState {
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 
 	    try {
-	         // Block until a datagram is received via sendReceiveSocket.  
+	         // Block until a datagram is received via sendReceiveSocket.
+	    	sendReceiveSocket.setSoTimeout(0);
 	         sendReceiveSocket.receive(receivePacket);
+	         System.out.println("received response for toggle doors request");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
 	    }
 		boolean isDoorOpen = this.elevator.readResponse(receivePacket).getIsDoorOpen();
 		this.elevator.setIsDoorOpen(isDoorOpen);
+		elevator.getLogger().println("Elevator " + elevator.getId() +": Transition from Arrived to Doors Open");
 	}
 	
 		

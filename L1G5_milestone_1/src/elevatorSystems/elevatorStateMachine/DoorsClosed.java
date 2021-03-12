@@ -62,7 +62,7 @@ public class DoorsClosed extends ElevatorState {
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
     	try {
     		// Block until a datagram is received via sendReceiveSocket.  
-    		sendReceiveSocket.setSoTimeout(5000);
+    		sendReceiveSocket.setSoTimeout(500);
     		sendReceiveSocket.receive(receivePacket); 
     		if(receivePacket.getLength() == 1 && receivePacket.getData()[0] == 1) 
     			return true; //return true if receive a packet back with correct data
