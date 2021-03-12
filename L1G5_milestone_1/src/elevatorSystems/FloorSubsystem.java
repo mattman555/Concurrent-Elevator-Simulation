@@ -3,10 +3,21 @@
  */
 package elevatorSystems;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
 
 /**
  * @author Matthew Harris 101073502
@@ -14,21 +25,27 @@ import java.util.Hashtable;
  */
 public class FloorSubsystem implements Runnable{
 
-	private Scheduler scheduler;
 	private ArrayList<Request> requests;
 	private final int MAX_FLOORS;
 	private Hashtable<String, Boolean> lamp;
 	private final String FILENAME = "TestFile.txt";
+	DatagramSocket schedulerSocket, elevatorSocket;
 	private Logger logger;
 	/**
 	 * Constructor for the floor subsystem set all the fields
 	 */
-	public FloorSubsystem(Scheduler scheduler, int maxFloors, Logger logger) {
-		this.scheduler = scheduler;
+	public FloorSubsystem(int maxFloors, Logger logger) {
 		this.requests = new ArrayList<Request>();
 		this.MAX_FLOORS = maxFloors;
 		this.lamp = new Hashtable<String, Boolean>();
 		this.logger = logger;
+		try {
+			this.schedulerSocket = new DatagramSocket(16);
+			this.elevatorSocket = new DatagramSocket(156);
+		} catch (SocketException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
 	/**
@@ -72,12 +89,19 @@ public class FloorSubsystem implements Runnable{
 	 * removes the given request from the request list
 	 * @param request the given request to be removed
 	 */
-	private void removeRequest(Request request) {
-		if(request == null)
+	private void removeRequests(ArrayList<Request> completedRequests) {
+		if(completedRequests == null)
 			return;
-		logger.println(Thread.currentThread().getName() + ": Receives completed Request from Scheduler" );
-		logger.println("Floor subsystem Completed: " + request.toString());
-		requests.remove(request);
+		logger.println(Thread.currentThread().getName() + ": Receives " + completedRequests.size() + " completed Requests from Scheduler" );
+		for(Request completedRequest : completedRequests) {
+			logger.println("Floor subsystem Completed: " + completedRequest.toString());
+			for(int i = 0; i < this.requests.size(); i++) { //iterate through and remove the completed ones
+				if(this.requests.get(i).equals(completedRequest)) {
+					this.requests.remove(i);
+					break;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -118,6 +142,118 @@ public class FloorSubsystem implements Runnable{
 	public void addRequest(Request request) {
 		requests.add(request);
 	}
+	
+	private void respondWithRequests() {
+		byte data[] = new byte[1];
+	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+		try {
+	         // Block until a datagram is received via socket.  
+			schedulerSocket.receive(receivePacket);
+	    } catch(IOException e) {
+	    	e.printStackTrace();
+	    	System.exit(1);
+	    }
+		
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			ObjectOutputStream oStream = new ObjectOutputStream(stream);
+			oStream.writeObject(requests);
+			oStream.close();
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		byte[] sendData = stream.toByteArray();
+		try {
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+			schedulerSocket.send(sendPacket);
+	    }
+		catch (IOException e) {
+	         e.printStackTrace();
+	         System.exit(1);
+	    }
+	}
+	
+	private ArrayList<Request> processCompletedRequests(){
+		byte data[] = new byte[1000];
+	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+		try {
+	         // Block until a datagram is received via schedulerSocket.
+			schedulerSocket.setSoTimeout(200);
+			schedulerSocket.receive(receivePacket);
+	    } catch(SocketTimeoutException e) {
+	    	return null;
+		}catch(IOException e) {
+	    	e.printStackTrace();
+	    	System.exit(1);
+	    }
+		
+		ArrayList<Request> completedRequests = new ArrayList<>();		 
+		try {
+			ByteArrayInputStream stream = new ByteArrayInputStream(receivePacket.getData());
+			ObjectInputStream oStream = new ObjectInputStream(stream);
+			completedRequests = (ArrayList<Request>) oStream.readObject();
+			oStream.close();
+			stream.close();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		if(completedRequests != null) {
+			removeRequests(completedRequests);
+			completedRequests.clear();
+		}
+		byte[] sendData = {(byte) this.requests.size()};
+		sendAck(sendData, schedulerSocket, receivePacket.getAddress(), receivePacket.getPort());
+		
+		return completedRequests;
+		
+	}
+	
+
+	private void changeFloorLamps() {
+		byte data[] = new byte[1000];
+	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+		try {
+	         // Block until a datagram is received via elevatorSocket.
+			elevatorSocket.setSoTimeout(200);
+			elevatorSocket.receive(receivePacket);
+	    } catch(SocketTimeoutException e) {
+	    	return;
+		}catch(IOException e) {
+	    	e.printStackTrace();
+	    	System.exit(1);
+	    }
+		
+		ElevatorRPCRequest request = null;		 
+		try {
+			ByteArrayInputStream stream = new ByteArrayInputStream(receivePacket.getData());
+			ObjectInputStream oStream = new ObjectInputStream(stream);
+			request = (ElevatorRPCRequest) oStream.readObject();
+			oStream.close();
+			stream.close();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		System.out.println("changing lamps");
+		setFloorLamp(request.getCurrentLocation(), request.getMotorDirection(), false);
+		byte[] sendData = {1};
+		sendAck(sendData, elevatorSocket, receivePacket.getAddress(), receivePacket.getPort());
+	}
+	
+	private void sendAck(byte[] data, DatagramSocket socket, InetAddress address, int port) {
+		try {
+			DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, port);
+			socket.send(sendPacket);
+	    }
+		catch (IOException e) {
+	         e.printStackTrace();
+	         System.exit(1);
+	    }
+	}
 
 	/**
 	 * the run method that runs when the thread start method is called
@@ -125,11 +261,21 @@ public class FloorSubsystem implements Runnable{
 	@Override
 	public void run() {
 		readFile(FILENAME);
+		respondWithRequests();
 		while(requests.size()>0) {
-			removeRequest(scheduler.getCompletedRequest());
+			processCompletedRequests();
+			changeFloorLamps();
 		}
+		schedulerSocket.close();
+		elevatorSocket.close();
 		logger.println("Floor subsystem: All requests completed.");
-		scheduler.exit();
+	}
+
+	public static void main(String[] args) {
+		Logger logger = new Logger("3303Output.txt");
+		FloorSubsystem floorSubsystem = new FloorSubsystem(7, logger);
+		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
+		floorSubsystemThread.start();
 	}
 	
 }

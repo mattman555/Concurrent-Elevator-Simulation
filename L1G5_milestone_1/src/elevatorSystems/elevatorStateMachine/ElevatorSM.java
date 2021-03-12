@@ -7,10 +7,12 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
+import elevatorSystems.Logger;
 
 /**
  * @author Matthew Harris 101073502
@@ -155,6 +157,7 @@ public class ElevatorSM implements Runnable{
 	public ElevatorStates getState() {
 		return current;
 	}
+	
 	private Entry<Integer,Direction> requestTask(){
 		DatagramPacket requestPacket = this.elevator.generatePacket(RPCRequestType.GET_REQUEST);
 		try {
@@ -175,7 +178,8 @@ public class ElevatorSM implements Runnable{
 	    	e.printStackTrace();
 	    	System.exit(1);
 	    }
-	    return this.elevator.readResponse(receivePacket).getDestination();
+	    ElevatorRPCRequest request = this.elevator.readResponse(receivePacket);
+	    return Map.entry(request.getDestination(), request.getMotorDirection());
 		
 	}
 	
@@ -230,8 +234,18 @@ public class ElevatorSM implements Runnable{
 				break;
 			case END:
 				this.exit();
+				sendReceiveSocket.close();
 				return;
 			}
 		}
+	}
+	public static void main(String[] args) {
+		Logger logger = new Logger("3303Output.txt");
+		Elevator elevator1 = new Elevator(logger, 1);
+		Elevator elevator2 = new Elevator(logger, 2);
+		Thread elevatorThread1 = new Thread(new ElevatorSM(elevator1),"Elevator 1");
+		Thread elevatorThread2 = new Thread(new ElevatorSM(elevator2),"Elevator 2");
+		elevatorThread1.start();
+		elevatorThread2.start();
 	}
 }

@@ -1,8 +1,6 @@
 package elevatorSystems.elevatorStateMachine;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
@@ -32,6 +30,7 @@ public class DoorsOpen extends ElevatorState {
 		DatagramPacket lampsPacket = this.elevator.generatePacket(RPCRequestType.GET_LAMPS);
 		try {
 	         sendReceiveSocket.send(lampsPacket);
+	         System.out.println("sent getlamps");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
