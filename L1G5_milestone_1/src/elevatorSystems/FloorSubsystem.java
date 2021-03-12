@@ -89,13 +89,18 @@ public class FloorSubsystem implements Runnable{
 	 * removes the given request from the request list
 	 * @param request the given request to be removed
 	 */
-	private void removeRequests(ArrayList<Request> requests) {
-		if(requests == null)
+	private void removeRequests(ArrayList<Request> completedRequests) {
+		if(completedRequests == null)
 			return;
-		logger.println(Thread.currentThread().getName() + ": Receives " + requests.size() + " completed Requests from Scheduler" );
-		for(Request request : requests) {
-			logger.println("Floor subsystem Completed: " + request.toString());
-			requests.remove(request);
+		logger.println(Thread.currentThread().getName() + ": Receives " + completedRequests.size() + " completed Requests from Scheduler" );
+		for(Request completedRequest : completedRequests) {
+			logger.println("Floor subsystem Completed: " + completedRequest.toString());
+			for(int i = 0; i < this.requests.size(); i++) { //iterate through and remove the completed ones
+				if(this.requests.get(i).equals(completedRequest)) {
+					this.requests.remove(i);
+					break;
+				}
+			}
 		}
 	}
 	
@@ -171,7 +176,7 @@ public class FloorSubsystem implements Runnable{
 	    }
 	}
 	
-	private ArrayList<Request> getCompletedRequests(){
+	private ArrayList<Request> processCompletedRequests(){
 		byte data[] = new byte[1000];
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 		try {
@@ -196,6 +201,13 @@ public class FloorSubsystem implements Runnable{
 			e.printStackTrace();
 			System.exit(1);
 		}
+		if(completedRequests != null) {
+			removeRequests(completedRequests);
+			completedRequests.clear();
+		}
+		byte[] sendData = {(byte) this.requests.size()};
+		sendAck(sendData, schedulerSocket, receivePacket.getAddress(), receivePacket.getPort());
+		
 		return completedRequests;
 		
 	}
@@ -229,9 +241,13 @@ public class FloorSubsystem implements Runnable{
 		System.out.println("changing lamps");
 		setFloorLamp(request.getCurrentLocation(), request.getMotorDirection(), false);
 		byte[] sendData = {1};
+		sendAck(sendData, elevatorSocket, receivePacket.getAddress(), receivePacket.getPort());
+	}
+	
+	private void sendAck(byte[] data, DatagramSocket socket, InetAddress address, int port) {
 		try {
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-			schedulerSocket.send(sendPacket);
+			DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, port);
+			socket.send(sendPacket);
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -247,21 +263,16 @@ public class FloorSubsystem implements Runnable{
 		readFile(FILENAME);
 		respondWithRequests();
 		while(requests.size()>0) {
-			ArrayList<Request> completedRequests = getCompletedRequests();
-			if(completedRequests != null) {
-				removeRequests(completedRequests);
-				completedRequests.clear();
-			}
+			processCompletedRequests();
 			changeFloorLamps();
-			
-			
 		}
+		schedulerSocket.close();
+		elevatorSocket.close();
 		logger.println("Floor subsystem: All requests completed.");
-		System.exit(2);
 	}
 
 	public static void main(String[] args) {
-		Logger logger = new Logger();
+		Logger logger = new Logger("3303Output.txt");
 		FloorSubsystem floorSubsystem = new FloorSubsystem(7, logger);
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
 		floorSubsystemThread.start();

@@ -234,17 +234,18 @@ public class ElevatorSM implements Runnable{
 				break;
 			case END:
 				this.exit();
+				sendReceiveSocket.close();
 				return;
 			}
 		}
 	}
 	public static void main(String[] args) {
-		Logger logger = new Logger();
+		Logger logger = new Logger("3303Output.txt");
 		Elevator elevator1 = new Elevator(logger, 1);
-		//Elevator elevator2 = new Elevator(logger, 2);
+		Elevator elevator2 = new Elevator(logger, 2);
 		Thread elevatorThread1 = new Thread(new ElevatorSM(elevator1),"Elevator 1");
-		//Thread elevatorThread2 = new Thread(new ElevatorSM(elevator2),"Elevator 2");
+		Thread elevatorThread2 = new Thread(new ElevatorSM(elevator2),"Elevator 2");
 		elevatorThread1.start();
-		//elevatorThread2.start();
+		elevatorThread2.start();
 	}
 }

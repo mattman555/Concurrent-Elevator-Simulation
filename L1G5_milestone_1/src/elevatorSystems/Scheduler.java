@@ -224,6 +224,7 @@ public class Scheduler implements Runnable {
 			case GET_REQUEST:
 				requestTask(request, receivePacket.getAddress(),receivePacket.getPort());
 				sendCompletedRequests();
+				System.out.println("sent completed requests");
 				break;
 			case TOGGLE_DOORS:
 				System.out.println("New toggle doors case");
@@ -260,11 +261,18 @@ public class Scheduler implements Runnable {
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 
 	    try {
-	         // Block until a datagram is received via floorSocket.  
+	         // Block until an acknowledgment is received via floorSocket.  
 	    	floorSocket.receive(receivePacket);
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
+	    }
+	    int remaining = receivePacket.getData()[0];
+	    if(remaining == 0) {
+	    	floorSocket.close();
+	    	elevatorSocket.close();
+	    	System.out.println("Completed all requests");
+	    	System.exit(2);
 	    }
 	    completedRequests.clear(); //remove those completed requests		
 		
@@ -326,7 +334,7 @@ public class Scheduler implements Runnable {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Logger logger = new Logger();
+		Logger logger = new Logger("3303Output.txt");
 		Scheduler scheduler = new Scheduler(logger);
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
 		schedulerThread.start();

@@ -72,6 +72,14 @@ public class Request implements Serializable{
 		return carButton;
 	}
 	
+	public boolean equals(Request req2) {
+		boolean time = (this.time[0] == req2.time[0]) && (this.time[1] == req2.time[1]) && (this.time[2] == req2.time[2]) && (this.time[3] == req2.time[3]);
+		boolean buttons = this.carButton == req2.carButton;
+		boolean floor = this.floor == req2.floor;
+		boolean direction = this.floorButton == req2.floorButton;
+		return (time && buttons && floor && direction);
+		
+	}
 	/**
 	 * Returns a string representation of the request
 	 */
