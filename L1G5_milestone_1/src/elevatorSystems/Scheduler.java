@@ -330,9 +330,7 @@ public class Scheduler implements Runnable {
 	public static void main(String[] args) {
 		Scheduler scheduler = new Scheduler();
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
-		schedulerThread.start();
-
-		
+		schedulerThread.start();	
 	}
 	
 }
