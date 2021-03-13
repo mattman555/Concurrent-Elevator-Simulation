@@ -53,6 +53,12 @@ public class AwaitingRequests extends SchedulerState {
 		return true;
 	}
 	
+	/**
+	 * Method waiting for requests of data through the sockets, sends datagram to floor subsystem requesting 
+	 * the requests. Waits for list for the floor subsystem
+	 * @param floorSocket socket used for transporting UDP
+	 * @return the list of requests
+	 */
 	private ArrayList<Request> requestList(DatagramSocket floorSocket){
 		byte[] data = {1};
 		DatagramPacket sendPacket;

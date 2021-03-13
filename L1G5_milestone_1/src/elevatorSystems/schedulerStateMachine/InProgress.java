@@ -26,6 +26,13 @@ public class InProgress extends SchedulerState {
 		this.scheduler = scheduler;
 	}
 
+	/**
+	 * When a elevator requests a new task form the scheduler, based on the location of the elevator
+	 * and what request it was doing before, it will send a new destination and motor direction to the elevtor
+	 *  @param currLocation current location of the elevator
+	 *  @param id is what elevator is requesting a task
+	 *  @return an entry(key-value pair) containing the floor to go to and the direction that floor is 
+	 */
 	@Override
 	public synchronized Entry<Integer,Direction> requestTask(int id, int currLocation) {
 		if(scheduler.getInProgressBucket(id) == null ) { // get a new bucket
@@ -52,7 +59,7 @@ public class InProgress extends SchedulerState {
 		
 		Integer destination = scheduler.getInProgressBucket(id).getNextDestination();
 		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
-		System.out.println("Scheduler: Sends " + Thread.currentThread().getName() + " to move " + direction + " to floor " + destination);
+		System.out.println("Scheduler: Sends Elevator " + id + " to move " + direction + " to floor " + destination);
 		return Map.entry(destination, direction);
 	}
 }

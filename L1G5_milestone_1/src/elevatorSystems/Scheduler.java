@@ -157,7 +157,7 @@ public class Scheduler implements Runnable {
 		if(completedRequests.isEmpty()) { //floorSubsystem wait until there are completed requests
 			return null;
 		}
-		System.out.println("Scheduler: Sends completed request to " + Thread.currentThread().getName() );
+		System.out.println("Scheduler: Sends completed request to Floor Subsystem" );
 		return completedRequests.remove(0);
 	}
 	
