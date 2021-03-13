@@ -159,7 +159,7 @@ public class Elevator{
 	
 	/**
 	 * Reads the response that was sent to and 
-	 * recreates it to be a request for the elevator to read
+	 * recreates it to be a RPC request for the elevator to read
 	 * @param receivePacket
 	 * @return recreated request that the elevator can read
 	 */
