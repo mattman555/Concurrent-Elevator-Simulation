@@ -157,6 +157,11 @@ public class ElevatorSM implements Runnable{
 		return current;
 	}
 	
+	/**
+	 * Sends an packet with a ElevatorRPCRequest type get request, asking for information of where to 
+	 * go next, Then waits for a responce and reads the response of the filled in class variables
+	 * @return the new destination and motor directoion of the elevator
+	 */
 	private Entry<Integer,Direction> requestTask(){
 		DatagramPacket requestPacket = this.elevator.generatePacket(RPCRequestType.GET_REQUEST);
 		try {

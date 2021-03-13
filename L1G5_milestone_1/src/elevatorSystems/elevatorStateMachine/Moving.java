@@ -65,6 +65,11 @@ public class Moving extends ElevatorState {
 		
 	}
 	
+	/**
+	 * trys to recive a packet from scheduler to see if the elevator can open its doors or not
+	 * @param sendReceiveSocket Socket used to pass UDP
+	 * @return true if it gets to packet to open the doors, false if it does not
+	 */
 	private boolean receivePacket(DatagramSocket sendReceiveSocket) {
 		byte data[] = new byte[1];
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);

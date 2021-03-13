@@ -57,7 +57,7 @@ public class SortedRequests extends SchedulerState {
 		
 		Integer destination = scheduler.getInProgressBucket(id).getNextDestination();
 		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
-		System.out.println("Scheduler: Sends " + Thread.currentThread().getName() + " to move " + direction + " to floor " + destination);
+		System.out.println("Scheduler: Sends Elevator " + id  + " to move " + direction + " to floor " + destination);
 		return Map.entry(destination, direction);
 	}
 	
