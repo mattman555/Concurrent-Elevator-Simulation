@@ -27,7 +27,7 @@ public class UpdateLamps extends ElevatorState {
 	 */
 	@Override
 	public void action(ArrayList<Integer> lamps) {
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Updating lamps");
+		System.out.println("Elevator " + elevator.getId() + ": Updating lamps");
 		int location = this.elevator.getElevatorLocation();
 		for(Integer i : lamps) {
 			this.elevator.getLamp().put(i, true);
@@ -42,11 +42,11 @@ public class UpdateLamps extends ElevatorState {
 	 */
 	@Override
 	public void toggleDoors(DatagramSocket sendReceiveSocket) {
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Update Lamps to Doors Closed");
+		System.out.println("Elevator " + elevator.getId() + ": Transition from Update Lamps to Doors Closed");
 		DatagramPacket togglePacket = this.elevator.generatePacket(RPCRequestType.TOGGLE_DOORS);
 		try {
 	         sendReceiveSocket.send(togglePacket);
-	         elevator.getLogger().println("Packet sent to the schduler with a request to open the doors");
+	         System.out.println("Packet sent to the schduler with a request to open the doors");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -59,7 +59,7 @@ public class UpdateLamps extends ElevatorState {
 	    try {
 	         // Block until a datagram is received via sendReceiveSocket.  
 	         sendReceiveSocket.receive(receivePacket);
-	         elevator.getLogger().println("Packet recieved from the schduler with the response to request to open the doors");
+	         System.out.println("Packet recieved from the schduler with the response to request to open the doors");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);

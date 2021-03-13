@@ -30,15 +30,13 @@ public class FloorSubsystem implements Runnable{
 	private Hashtable<String, Boolean> lamp;
 	private final String FILENAME = "TestFile.txt";
 	DatagramSocket schedulerSocket, elevatorSocket;
-	private Logger logger;
 	/**
 	 * Constructor for the floor subsystem set all the fields
 	 */
-	public FloorSubsystem(int maxFloors, Logger logger) {
+	public FloorSubsystem(int maxFloors) {
 		this.requests = new ArrayList<Request>();
 		this.MAX_FLOORS = maxFloors;
 		this.lamp = new Hashtable<String, Boolean>();
-		this.logger = logger;
 		try {
 			this.schedulerSocket = new DatagramSocket(14001);
 			this.elevatorSocket = new DatagramSocket(14002);
@@ -92,9 +90,9 @@ public class FloorSubsystem implements Runnable{
 	private void removeRequests(ArrayList<Request> completedRequests) {
 		if(completedRequests == null)
 			return;
-		logger.println(Thread.currentThread().getName() + ": Receives " + completedRequests.size() + " completed Requests from Scheduler" );
+		System.out.println(Thread.currentThread().getName() + ": Receives " + completedRequests.size() + " completed Requests from Scheduler" );
 		for(Request completedRequest : completedRequests) {
-			logger.println("Floor subsystem Completed: " + completedRequest.toString());
+			System.out.println("Floor subsystem Completed: " + completedRequest.toString());
 			for(int i = 0; i < this.requests.size(); i++) { //iterate through and remove the completed ones
 				if(this.requests.get(i).equals(completedRequest)) {
 					this.requests.remove(i);
@@ -122,7 +120,7 @@ public class FloorSubsystem implements Runnable{
 					requests.add(request);
 				line = reader.readLine();
 			}
-			logger.println("All requests read from file and validated");
+			System.out.println("All requests read from file and validated");
 			this.requests = requests;
 			reader.close();
 		} catch (IOException e) {
@@ -150,7 +148,7 @@ public class FloorSubsystem implements Runnable{
 		try {
 	         // Block until a datagram is received via socket.  
 			schedulerSocket.receive(receivePacket);
-			logger.println("Packet recieved with a request for the list of requests");
+			System.out.println("Packet recieved with a request for the list of requests");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
@@ -171,7 +169,7 @@ public class FloorSubsystem implements Runnable{
 		try {
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
 			schedulerSocket.send(sendPacket);
-			logger.println("Packet sent with the list of requests");
+			System.out.println("Packet sent with the list of requests");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -186,7 +184,7 @@ public class FloorSubsystem implements Runnable{
 	         // Block until a datagram is received via schedulerSocket.
 			schedulerSocket.setSoTimeout(200);
 			schedulerSocket.receive(receivePacket);
-			logger.println("Packet recieved with the list of completed requests");
+			System.out.println("Packet recieved with the list of completed requests");
 	    } catch(SocketTimeoutException e) {
 	    	return null;
 		}catch(IOException e) {
@@ -211,7 +209,7 @@ public class FloorSubsystem implements Runnable{
 		}
 		byte[] sendData = {(byte) this.requests.size()};
 		sendAck(sendData, schedulerSocket, receivePacket.getAddress(), receivePacket.getPort());
-		logger.println("Packet sent with acknowledgement of the update of the list of requests");
+		System.out.println("Packet sent with acknowledgement of the update of the list of requests");
 		return completedRequests;
 		
 	}
@@ -272,15 +270,13 @@ public class FloorSubsystem implements Runnable{
 		}
 		schedulerSocket.close();
 		elevatorSocket.close();
-		logger.println("Floor subsystem: All requests completed.");
+		System.out.println("Floor subsystem: All requests completed.");
 	}
 
 	public static void main(String[] args) {
-		Logger logger = new Logger("3303Output.txt");
-		FloorSubsystem floorSubsystem = new FloorSubsystem(7, logger);
+		FloorSubsystem floorSubsystem = new FloorSubsystem(7);
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
 		floorSubsystemThread.start();
-		logger.close();
 	}
 	
 }

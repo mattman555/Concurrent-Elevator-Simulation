@@ -60,7 +60,7 @@ public class UnsortedRequests extends SchedulerState {
 				scheduler.getRequests().remove(r); //remove requests
 			}
 		}
-		scheduler.getLogger().println("Scheduler sorted requests");
+		System.out.println("Scheduler sorted requests");
 
 	}
 	

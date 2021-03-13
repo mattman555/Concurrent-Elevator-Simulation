@@ -20,6 +20,6 @@ public class End extends ElevatorState {
 	 */
 	@Override
 	public void exit() {
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": All requests processed Transition to Final state");
+		System.out.println("Elevator " + elevator.getId() + ": All requests processed Transition to Final state");
 	}
 }

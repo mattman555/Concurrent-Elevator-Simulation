@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
-import elevatorSystems.Logger;
 
 /**
  * @author Matthew Harris 101073502
@@ -240,16 +239,14 @@ public class ElevatorSM implements Runnable{
 		}
 	}
 	public static void main(String[] args) {
-		Logger logger = new Logger("3303Output.txt");
-		Elevator elevator1 = new Elevator(logger, 1);
-		Elevator elevator2 = new Elevator(logger, 2);
-		Elevator elevator3 = new Elevator(logger, 3);
+		Elevator elevator1 = new Elevator(1);
+		Elevator elevator2 = new Elevator(2);
+		Elevator elevator3 = new Elevator(3);
 		Thread elevatorThread1 = new Thread(new ElevatorSM(elevator1),"Elevator 1");
 		Thread elevatorThread2 = new Thread(new ElevatorSM(elevator2),"Elevator 2");
 		Thread elevatorThread3 = new Thread(new ElevatorSM(elevator3),"Elevator 3");
 		elevatorThread1.start();
 		elevatorThread2.start();
 		elevatorThread3.start();
-		logger.close();
 	}
 }

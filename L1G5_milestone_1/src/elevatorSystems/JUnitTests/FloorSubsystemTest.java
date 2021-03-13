@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import elevatorSystems.Direction;
 import elevatorSystems.FloorSubsystem;
-import elevatorSystems.Logger;
-import elevatorSystems.Scheduler;
 
 /**
  * @author Matthew Harris 101073502
@@ -16,13 +14,12 @@ import elevatorSystems.Scheduler;
  */
 public class FloorSubsystemTest {
 	private FloorSubsystem floorSubsystemMethods;
-	private Scheduler scheduler;
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@org.junit.Before
 	public void setUp() throws Exception {
-		floorSubsystemMethods = new FloorSubsystem(7,new Logger("fsTest.txt"));
+		floorSubsystemMethods = new FloorSubsystem(7);
 	}
 
 	/**
@@ -30,7 +27,7 @@ public class FloorSubsystemTest {
 	 */
 	@org.junit.Test
 	public void testFloorSubsystem() {
-		assertNotNull(new FloorSubsystem(7,new Logger("fsTest.txt")));
+		assertNotNull(new FloorSubsystem(7));
 	}
 
 	/**

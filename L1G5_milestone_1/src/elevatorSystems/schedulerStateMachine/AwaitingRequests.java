@@ -44,11 +44,11 @@ public class AwaitingRequests extends SchedulerState {
 		ArrayList<Request> requests = requestList(floorSocket);	
 		if(requests == null)
 			return false;
-		scheduler.getLogger().println("Scheduler received list of requests.");
+		System.out.println("Scheduler received list of requests.");
 		for(Request request : requests) {
 			this.scheduler.addRequest(request);
 		}
-		scheduler.getLogger().println("Scheduler transitions from awaiting requests to unsorted requests.");
+		System.out.println("Scheduler transitions from awaiting requests to unsorted requests.");
 
 		return true;
 	}
@@ -59,7 +59,7 @@ public class AwaitingRequests extends SchedulerState {
 		try {
 			sendPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), Scheduler.FLOOR_SUB_PORT);
 			floorSocket.send(sendPacket);
-			scheduler.getLogger().println("Packet Sent to Floor subsystem requesting list of requests");
+			System.out.println("Packet Sent to Floor subsystem requesting list of requests");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -71,7 +71,7 @@ public class AwaitingRequests extends SchedulerState {
 	    try {
 	         // Block until a datagram is received via floorSocket.  
 	    	floorSocket.receive(receivePacket);
-	    	scheduler.getLogger().println("Packet recieved from Floor subsystem with list of requests");
+	    	System.out.println("Packet recieved from Floor subsystem with list of requests");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
