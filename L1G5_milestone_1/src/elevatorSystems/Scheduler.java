@@ -26,12 +26,11 @@ public class Scheduler implements Runnable {
 	private ArrayList<Request> completedRequests;
 	public static final int FLOOR_SUB_PORT = 16;
 	private DatagramSocket elevatorSocket, floorSocket;
-	private Logger logger;
 	
 	/**
 	 * Constructor for the scheduler class
 	 */
-	public Scheduler(Logger logger) {
+	public Scheduler() {
 		SchedulerState[] statearr =
 			{new AwaitingRequests(this), 
 			 new UnsortedRequests(this), 
@@ -44,7 +43,6 @@ public class Scheduler implements Runnable {
 		this.requestBuckets = new ArrayList<>();
 		this.completedRequests = new ArrayList<>();
 		this.inProgressBuckets = new Hashtable<>();
-		this.logger = logger;
 		try {
 			elevatorSocket = new DatagramSocket(14000);
 			floorSocket = new DatagramSocket();
@@ -53,11 +51,6 @@ public class Scheduler implements Runnable {
 			System.exit(1);
 		}
 	}
-	
-	public Logger getLogger() {
-		return this.logger;
-	}
-	
 	
 	/**
 	 * Gets the requests
@@ -154,7 +147,7 @@ public class Scheduler implements Runnable {
 	 */
 	public  void addRequest(Request request) {
 		this.requests.add(request);
-		logger.println("Scheduler: Gets Request for floor " + request.getFloor() + " from floor subsystem");
+		System.out.println("Scheduler: Gets Request for floor " + request.getFloor() + " from floor subsystem");
 	}
 	
 	/**
@@ -165,7 +158,7 @@ public class Scheduler implements Runnable {
 		if(completedRequests.isEmpty()) { //floorSubsystem wait until there are completed requests
 			return null;
 		}
-		logger.println("Scheduler: Sends completed request to " + Thread.currentThread().getName() );
+		System.out.println("Scheduler: Sends completed request to " + Thread.currentThread().getName() );
 		return completedRequests.remove(0);
 	}
 	
@@ -175,7 +168,7 @@ public class Scheduler implements Runnable {
 	 */
 	public void getRequestedLamps(ElevatorRPCRequest request, InetAddress address, int port){
 		int id = request.getId();
-		logger.println("Scheduler: Sends Elevator " + id + " requested car lamps");
+		System.out.println("Scheduler: Sends Elevator " + id + " requested car lamps");
 		request.setLamps(inProgressBuckets.get(id).getElevatorFloorLamps());
 		sendRPCRequest(request, address, port);
 	}
@@ -186,7 +179,7 @@ public class Scheduler implements Runnable {
 	public void toggleDoors(ElevatorRPCRequest request, InetAddress address, int port) {
 	    request.setDoor(!request.getIsDoorOpen()); //change the doors state
 	    sendRPCRequest(request, address, port);
-	    logger.println("Scheduler: Toggling Elevator " + request.getId() + " Doors");
+	    System.out.println("Scheduler: Toggling Elevator " + request.getId() + " Doors");
 	    
 	   
 	}
@@ -196,9 +189,9 @@ public class Scheduler implements Runnable {
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 		try {
 	         // Block until a datagram is received via elevatorSocket.  
-			logger.println("waiting for a new request packet");
+			System.out.println("waiting for a new request packet");
 			elevatorSocket.receive(receivePacket);
-			logger.println("Packet recieved with a request for a new destination");
+			System.out.println("Packet recieved with a request for a new destination");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
@@ -249,7 +242,7 @@ public class Scheduler implements Runnable {
 		try {
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), Scheduler.FLOOR_SUB_PORT);
 			floorSocket.send(sendPacket);
-			logger.println("Packet sent to floor subsystem with the list of completed requests");
+			System.out.println("Packet sent to floor subsystem with the list of completed requests");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -262,7 +255,7 @@ public class Scheduler implements Runnable {
 	    try {
 	         // Block until an acknowledgment is received via floorSocket.  
 	    	floorSocket.receive(receivePacket);
-	    	logger.println("Packet recieved from floor subsystem with acknowledgement of the reciept of the list");
+	    	System.out.println("Packet recieved from floor subsystem with acknowledgement of the reciept of the list");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
@@ -271,7 +264,7 @@ public class Scheduler implements Runnable {
 	    if(remaining == 0) {
 	    	floorSocket.close();
 	    	elevatorSocket.close();
-	    	logger.println("Completed all requests");
+	    	System.out.println("Completed all requests");
 	    	System.exit(2);
 	    }
 	    completedRequests.clear(); //remove those completed requests		
@@ -292,7 +285,7 @@ public class Scheduler implements Runnable {
 		DatagramPacket sendPacket = new DatagramPacket(response, response.length, address, port);
 		try {
 			elevatorSocket.send(sendPacket);
-			logger.println("Packet sent to elevator with its new destination");
+			System.out.println("Packet sent to elevator with its new destination");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -315,7 +308,7 @@ public class Scheduler implements Runnable {
 					break;
 				case 1:
 					//Unsorted requests
-					logger.println("Scheduler: Sorting requests");
+					System.out.println("Scheduler: Sorting requests");
 					this.sortRequests();
 					break;
 				case 2:
@@ -335,11 +328,9 @@ public class Scheduler implements Runnable {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Logger logger = new Logger("3303Output.txt");
-		Scheduler scheduler = new Scheduler(logger);
+		Scheduler scheduler = new Scheduler();
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
 		schedulerThread.start();
-		logger.close();
 
 		
 	}

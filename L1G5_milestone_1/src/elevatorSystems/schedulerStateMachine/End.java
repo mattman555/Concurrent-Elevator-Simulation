@@ -22,7 +22,7 @@ public class End extends SchedulerState {
 	 */
 	@Override
 	public void exit() {
-		scheduler.getLogger().println("No more requests, Terminating");
+		System.out.println("No more requests, Terminating");
 		System.exit(1);
 	}
 }

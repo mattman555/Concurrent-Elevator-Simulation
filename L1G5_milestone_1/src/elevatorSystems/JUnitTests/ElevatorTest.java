@@ -3,7 +3,6 @@ package elevatorSystems.JUnitTests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import elevatorSystems.Elevator;
-import elevatorSystems.Logger;
 import elevatorSystems.Scheduler;
 /**
  * 
@@ -13,11 +12,10 @@ import elevatorSystems.Scheduler;
 public class ElevatorTest {
 	
 	private Elevator elevatorMethods;
-	private Scheduler scheduler;
 	
 	@org.junit.Before
 	public void setUp() throws Exception {
-		elevatorMethods = new Elevator(new Logger("elevatorTestOutput.txt"),1);
+		elevatorMethods = new Elevator(1);
 	}
 
 	/**

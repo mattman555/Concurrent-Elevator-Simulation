@@ -30,7 +30,7 @@ public class DoorsClosed extends ElevatorState {
 	 */
 	@Override
 	public void validRequest(Entry<Integer,Direction> destination) {
-		elevator.getLogger().println("Elevator " + elevator.getId() +": Transition from Doors Closed to Moving Up");
+		System.out.println("Elevator " + elevator.getId() +": Transition from Doors Closed to Moving Up");
 		this.elevator.setFloorDestination(destination.getKey()); //set the floor number to go to
 		this.elevator.setMotor(destination.getValue());			 //the direction of the motor to get to that floor
 	}
@@ -40,15 +40,15 @@ public class DoorsClosed extends ElevatorState {
 	 */
 	@Override
 	public void arrivesAtDestination(DatagramSocket sendReceiveSocket) {
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Doors Closed to Arrived");
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Arrived at: " + this.elevator.getElevatorLocation());
+		System.out.println("Elevator " + elevator.getId() + ": Transition from Doors Closed to Arrived");
+		System.out.println("Elevator " + elevator.getId() + ": Arrived at: " + this.elevator.getElevatorLocation());
 		
 		DatagramPacket sendPacket = this.elevator.generatePacket(RPCRequestType.SET_LAMPS);
 		boolean received = false;
 		while(!received){
 			try {
 		         sendReceiveSocket.send(sendPacket);
-		         elevator.getLogger().println("Packet sent to the schduler with a request to open the doors");
+		         System.out.println("Packet sent to the schduler with a request to open the doors");
 		    }
 			catch (IOException e) {
 		         e.printStackTrace();
@@ -65,7 +65,7 @@ public class DoorsClosed extends ElevatorState {
     		// Block until a datagram is received via sendReceiveSocket.  
     		sendReceiveSocket.setSoTimeout(500);
     		sendReceiveSocket.receive(receivePacket); 
-    		elevator.getLogger().println("Packet recieved from the schduler with the response the request to open the doors");
+    		System.out.println("Packet recieved from the schduler with the response the request to open the doors");
     		if(receivePacket.getLength() == 1 && receivePacket.getData()[0] == 1) 
     			return true; //return true if receive a packet back with correct data
     		return false;
@@ -83,6 +83,6 @@ public class DoorsClosed extends ElevatorState {
 	 */
 	@Override
 	public void invalidRequest() {
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Doors Closed to End");
+		System.out.println("Elevator " + elevator.getId() + ": Transition from Doors Closed to End");
 	}
 }

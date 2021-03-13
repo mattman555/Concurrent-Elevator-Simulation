@@ -30,7 +30,7 @@ public class Moving extends ElevatorState {
 	 */
 	@Override
 	public void activity(Direction direction) {
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Moving " + direction.toString().toLowerCase() + " on floor " + this.elevator.getElevatorLocation());
+		System.out.println("Elevator " + elevator.getId() + ": Moving " + direction.toString().toLowerCase() + " on floor " + this.elevator.getElevatorLocation());
 		try {
 			Thread.sleep(TIME_BETWEEN_FLOORS);
 		} catch (InterruptedException e) {}
@@ -47,14 +47,14 @@ public class Moving extends ElevatorState {
 	 */
 	@Override
 	public void arrivesAtDestination(DatagramSocket sendReceiveSocket) {
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Transition from Moving to Arrived");
-		elevator.getLogger().println("Elevator " + elevator.getId() + ": Arrived at: " + this.elevator.getElevatorLocation());
+		System.out.println("Elevator " + elevator.getId() + ": Transition from Moving to Arrived");
+		System.out.println("Elevator " + elevator.getId() + ": Arrived at: " + this.elevator.getElevatorLocation());
 		DatagramPacket sendPacket = this.elevator.generatePacket(RPCRequestType.SET_LAMPS);
 		boolean received = false;
 		while(!received){
 			try {
 		         sendReceiveSocket.send(sendPacket);
-		         elevator.getLogger().println("Packet sent to the schduler with a request to open the doors");
+		         System.out.println("Packet sent to the schduler with a request to open the doors");
 		    }
 			catch (IOException e) {
 		         e.printStackTrace();
@@ -72,7 +72,7 @@ public class Moving extends ElevatorState {
     		// Block until a datagram is received via sendReceiveSocket.  
     		sendReceiveSocket.setSoTimeout(5000);
     		sendReceiveSocket.receive(receivePacket); 
-    		elevator.getLogger().println("Packet recieved from the schduler with the response the request to open the doors");
+    		System.out.println("Packet recieved from the schduler with the response the request to open the doors");
     		if(receivePacket.getLength() == 1 && receivePacket.getData()[0] == 1) 
     			return true; //return true if receive a packet back with correct data
     		return false;

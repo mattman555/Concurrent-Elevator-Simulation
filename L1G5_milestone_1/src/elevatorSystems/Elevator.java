@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
@@ -31,7 +30,6 @@ public class Elevator{
 	private boolean isDoorOpen;
 	private Direction motor;
 	private Hashtable<Integer, Boolean> lamp;
-	private Logger logger;
 	private int id;
 	private static final int SCHEDULER_PORT = 14000;
 	private static final int FLOOR_SUB_PORT = 14002;
@@ -41,17 +39,12 @@ public class Elevator{
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator(Logger logger, int elevId) {
+	public Elevator( int elevId) {
 		this.elevatorLocation = 1;	
 		this.floorDestination = 1;
 		this.isDoorOpen = false;
 		this.lamp = new Hashtable<Integer, Boolean>();
-		this.logger = logger;
 		this.id = elevId;
-	}
-
-	public Logger getLogger() {
-		return this.logger;
 	}
 	
 	public int getId() {
@@ -99,7 +92,7 @@ public class Elevator{
 	 */
 	public void setIsDoorOpen(boolean isDoorOpen) {
 		this.isDoorOpen = isDoorOpen;
-		logger.println("Elevator " + this.getId()+" door is "+ (this.isDoorOpen ? "open" : "closed"));
+		System.out.println("Elevator " + this.getId()+" door is "+ (this.isDoorOpen ? "open" : "closed"));
 	}
 	
 	/**
