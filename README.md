@@ -6,8 +6,8 @@ Project Description
 ---------------------
 
 The system is designed in java to schedule and simulate a specified number of elevators. It will contain a controller for the elevator called "Scheduler" which will communicate through UDP with a "FloorSubsystem" containing all 
-information for a given number of floors and an "Elevator" which is the same but for individual elevators to simulate the functionality. It simulates a state machine for the elevator and the scheduler. New additions this 
-iteration include a logger file for print statements and adding the capability for multiple elevators with the use of UDP and individual main functions.
+information for a given number of floors and an "Elevator" which is the same but for individual elevators to simulate the functionality. The system simulates a state machine for the elevator's and the scheduler. New additions this 
+iteration include adding the capability for multiple elevators with the use of UDP and individual main functions.
 
 
 ---------------------
@@ -18,10 +18,37 @@ Iteration 3
 
 
 -------------------------------
-Breakdown for current iteration
+Breakdown
 -------------------------------
+ITERATION 3:
+  Nick - Majority of code for udp communications, helped with designing the udp communications, debugging issues with udp communications
+  Jay - Helped with designing udp communications, Documenting code
+  Matt - Added logging for the UDP communications, Documenting code, debugging issues with udp communications, helped with designing udp communications
+  Kevin - UML, Readme, Sequence diagrams, helped with designing udp communications
+  Ambar - 
+  This isn't strictly adhered to since everyone added methods and changes to other classes 
 
 
+
+ITERATION 2:
+  Everyone together - Outline of UML, Outline of State machine diagrams for both state machines
+  Nick - Majority of code for Scheduler State machine, Refactored Elevator state machine to use enums
+  Jay - Added more logging to the code, Testing for elevator state machine
+  Matt - Majority of code for Scheduler State machine, majority of code for elevator State machine
+  Kevin - Majority of UML, Outline of Scheduler State machine code, Readme
+  Ambar - Outline of Scheduler State machine code
+  This isn't strictly adhered to since everyone added methods and changes to other classes 
+
+
+
+ITERATION 1:
+  Everyone together - UML, Debugged final code as a group
+  Nick - RequestGroup.java, Scheduler.java, RequestTest.java
+  Jay - Elevator.java, SchedulerTest.java, ElevatorTest.java
+  Matt - FloorSubsytem.java, Request.java, FloorSubsystemTest.java, RequestGroupTest.java, Direction.java, TestSuite.java
+  Kevin - README, Sequence Diagrams
+  Ambar - 
+  This isn't strictly adhered to since everyone added methods and changes to other classes 
 
 
 -----------------------
@@ -30,7 +57,7 @@ How to run the system
 
 JDK used: Java SE 15
 
-The system is run by running the main() functions in order in each of FloorSubsystem.java, Scheduler.java, and ElevatorSM.java
+The system is run by running the main() functions in the order: FloorSubsystem.java, Scheduler.java, and ElevatorSM.java
 
 
 --------------------------
@@ -41,7 +68,7 @@ Files from previous iteration (.java) -----> Direction, Elevator, ElevatorTest, 
 					     Arrived, AwaitingRequests, DoorsClosed, DoorsOpen, ElevatorSM, ElevatorState, ElevatorStates, End, End, InProgress, Moving, SchedulerState, SortedRequests, 
 					     UnsortedRequests, UpdateLamps
 
-Files from current iteration (.java) ------> ElevatorRPCRequests.java, RPCRequestType.java, 3303Output.txt
+Files from current iteration (.java) ------> ElevatorRPCRequests.java, RPCRequestType.java
 
 
 --------------------------------
@@ -131,8 +158,6 @@ UpdateLamps.java: A class for the UpdateLamps state for the elevator state machi
 
 New Files Created: 
 
-ElevatorRPCRequests.java: A class for remote procedure calls in the form of requests using UDP.
+ElevatorRPCRequests.java: A serializable class for sending information in remote procedure calls.
 
 RPCRequestType.java : An enumeration class for the different types of remote procedure call request types.
-
-3303Output.txt: A text file for the print statements for a central display of events.
