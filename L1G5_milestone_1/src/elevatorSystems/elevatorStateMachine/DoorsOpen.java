@@ -30,7 +30,7 @@ public class DoorsOpen extends ElevatorState {
 		DatagramPacket lampsPacket = this.elevator.generatePacket(RPCRequestType.GET_LAMPS);
 		try {
 	         sendReceiveSocket.send(lampsPacket);
-	         System.out.println("sent getlamps");
+	         elevator.getLogger().println("Packet sent to the schduler with request for what state the lamps need to be");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -43,6 +43,7 @@ public class DoorsOpen extends ElevatorState {
 	    try {
 	         // Block until a datagram is received via sendReceiveSocket.  
 	         sendReceiveSocket.receive(receivePacket);
+	         elevator.getLogger().println("Packet sent to the schduler with what state the lamps need to be");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);

@@ -48,6 +48,7 @@ public class DoorsClosed extends ElevatorState {
 		while(!received){
 			try {
 		         sendReceiveSocket.send(sendPacket);
+		         elevator.getLogger().println("Packet sent to the schduler with a request to open the doors");
 		    }
 			catch (IOException e) {
 		         e.printStackTrace();
@@ -64,6 +65,7 @@ public class DoorsClosed extends ElevatorState {
     		// Block until a datagram is received via sendReceiveSocket.  
     		sendReceiveSocket.setSoTimeout(500);
     		sendReceiveSocket.receive(receivePacket); 
+    		elevator.getLogger().println("Packet recieved from the schduler with the response the request to open the doors");
     		if(receivePacket.getLength() == 1 && receivePacket.getData()[0] == 1) 
     			return true; //return true if receive a packet back with correct data
     		return false;
