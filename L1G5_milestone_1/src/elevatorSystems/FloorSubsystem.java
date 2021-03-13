@@ -128,6 +128,10 @@ public class FloorSubsystem implements Runnable{
 		}
 	}
 	
+	/**
+	 * returns the list of requests that were read from the file
+	 * @return the list of requests that were read from the file
+	 */
 	public ArrayList<Request> getListOfRequests(){
 		if(this.requests.isEmpty())
 			return null;
@@ -142,6 +146,9 @@ public class FloorSubsystem implements Runnable{
 		requests.add(request);
 	}
 	
+	/**
+	 * respond too a request for the requests from the schduler
+	 */
 	private void respondWithRequests() {
 		byte data[] = new byte[1];
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
@@ -177,6 +184,11 @@ public class FloorSubsystem implements Runnable{
 	    }
 	}
 	
+	/**
+	 * get the list of completed requests from the schdulers packet
+	 * and makes a list of the requests that are complete
+	 * @return the new list of completed requests
+	 */
 	private ArrayList<Request> processCompletedRequests(){
 		byte data[] = new byte[1000];
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
@@ -214,7 +226,9 @@ public class FloorSubsystem implements Runnable{
 		
 	}
 	
-
+	/**
+	 * Receives packet from the elevators and updates the lamps accordingly
+	 */
 	private void changeFloorLamps() {
 		byte data[] = new byte[1000];
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
@@ -246,6 +260,13 @@ public class FloorSubsystem implements Runnable{
 		sendAck(sendData, elevatorSocket, receivePacket.getAddress(), receivePacket.getPort());
 	}
 	
+	/**
+	 * send the acknowledgement packet to a thread that sent a request packet
+	 * @param data the contents of the packet
+	 * @param socket the socket that it is sent from
+	 * @param address the IP address to send the acknowledgement too
+	 * @param port the port to send the acknowledgement too
+	 */
 	private void sendAck(byte[] data, DatagramSocket socket, InetAddress address, int port) {
 		try {
 			DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, port);

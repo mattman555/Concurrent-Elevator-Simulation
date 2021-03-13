@@ -72,6 +72,11 @@ public class Request implements Serializable{
 		return carButton;
 	}
 	
+	/**
+	 * checks that the request is the same as another
+	 * @param req2 the request to compare against
+	 * @return whether the 2 requests are the same in all data
+	 */
 	public boolean equals(Request req2) {
 		boolean time = (this.time[0] == req2.time[0]) && (this.time[1] == req2.time[1]) && (this.time[2] == req2.time[2]) && (this.time[3] == req2.time[3]);
 		boolean buttons = this.carButton == req2.carButton;
