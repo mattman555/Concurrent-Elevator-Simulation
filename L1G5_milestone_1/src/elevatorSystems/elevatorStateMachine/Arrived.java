@@ -26,8 +26,8 @@ public class Arrived extends ElevatorState {
 	public void toggleDoors(DatagramSocket sendReceiveSocket) {
 		DatagramPacket togglePacket = this.elevator.generatePacket(RPCRequestType.TOGGLE_DOORS);
 		try {
-			System.out.println("Sent new toggle doors request");
 	         sendReceiveSocket.send(togglePacket);
+	         elevator.getLogger().println("Packet sent to the schduler with a request to open the doors");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -41,7 +41,7 @@ public class Arrived extends ElevatorState {
 	         // Block until a datagram is received via sendReceiveSocket.
 	    	sendReceiveSocket.setSoTimeout(0);
 	         sendReceiveSocket.receive(receivePacket);
-	         System.out.println("received response for toggle doors request");
+	         elevator.getLogger().println("Packet recieved from the schduler with the response to request to open the doors");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);

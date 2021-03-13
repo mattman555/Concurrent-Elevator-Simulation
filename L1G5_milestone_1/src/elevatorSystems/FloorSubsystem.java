@@ -122,6 +122,7 @@ public class FloorSubsystem implements Runnable{
 					requests.add(request);
 				line = reader.readLine();
 			}
+			logger.println("All requests read from file and validated");
 			this.requests = requests;
 			reader.close();
 		} catch (IOException e) {
@@ -149,6 +150,7 @@ public class FloorSubsystem implements Runnable{
 		try {
 	         // Block until a datagram is received via socket.  
 			schedulerSocket.receive(receivePacket);
+			logger.println("Packet recieved with a request for the list of requests");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
@@ -169,6 +171,7 @@ public class FloorSubsystem implements Runnable{
 		try {
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
 			schedulerSocket.send(sendPacket);
+			logger.println("Packet sent with the list of requests");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -183,6 +186,7 @@ public class FloorSubsystem implements Runnable{
 	         // Block until a datagram is received via schedulerSocket.
 			schedulerSocket.setSoTimeout(200);
 			schedulerSocket.receive(receivePacket);
+			logger.println("Packet recieved with the list of completed requests");
 	    } catch(SocketTimeoutException e) {
 	    	return null;
 		}catch(IOException e) {
@@ -207,7 +211,7 @@ public class FloorSubsystem implements Runnable{
 		}
 		byte[] sendData = {(byte) this.requests.size()};
 		sendAck(sendData, schedulerSocket, receivePacket.getAddress(), receivePacket.getPort());
-		
+		logger.println("Packet sent with acknowledgement of the update of the list of requests");
 		return completedRequests;
 		
 	}

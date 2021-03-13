@@ -196,9 +196,9 @@ public class Scheduler implements Runnable {
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 		try {
 	         // Block until a datagram is received via elevatorSocket.  
-			System.out.println("waiting for something new");
+			logger.println("waiting for a new request packet");
 			elevatorSocket.receive(receivePacket);
-			System.out.println("received something new");
+			logger.println("Packet recieved with a request for a new destination");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
@@ -224,10 +224,8 @@ public class Scheduler implements Runnable {
 			case GET_REQUEST:
 				requestTask(request, receivePacket.getAddress(),receivePacket.getPort());
 				sendCompletedRequests();
-				System.out.println("sent completed requests");
 				break;
 			case TOGGLE_DOORS:
-				System.out.println("New toggle doors case");
 				toggleDoors(request, receivePacket.getAddress(),receivePacket.getPort());
 				break;
 			default:
@@ -251,6 +249,7 @@ public class Scheduler implements Runnable {
 		try {
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), Scheduler.FLOOR_SUB_PORT);
 			floorSocket.send(sendPacket);
+			logger.println("Packet sent to floor subsystem with the list of completed requests");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
@@ -263,6 +262,7 @@ public class Scheduler implements Runnable {
 	    try {
 	         // Block until an acknowledgment is received via floorSocket.  
 	    	floorSocket.receive(receivePacket);
+	    	logger.println("Packet recieved from floor subsystem with acknowledgement of the reciept of the list");
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	System.exit(1);
@@ -271,7 +271,7 @@ public class Scheduler implements Runnable {
 	    if(remaining == 0) {
 	    	floorSocket.close();
 	    	elevatorSocket.close();
-	    	System.out.println("Completed all requests");
+	    	logger.println("Completed all requests");
 	    	System.exit(2);
 	    }
 	    completedRequests.clear(); //remove those completed requests		
@@ -292,6 +292,7 @@ public class Scheduler implements Runnable {
 		DatagramPacket sendPacket = new DatagramPacket(response, response.length, address, port);
 		try {
 			elevatorSocket.send(sendPacket);
+			logger.println("Packet sent to elevator with its new destination");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();
