@@ -40,8 +40,8 @@ public class FloorSubsystem implements Runnable{
 		this.lamp = new Hashtable<String, Boolean>();
 		this.logger = logger;
 		try {
-			this.schedulerSocket = new DatagramSocket(16);
-			this.elevatorSocket = new DatagramSocket(156);
+			this.schedulerSocket = new DatagramSocket(14001);
+			this.elevatorSocket = new DatagramSocket(14002);
 		} catch (SocketException e) {
 			e.printStackTrace();
 			System.exit(1);
