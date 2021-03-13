@@ -1,3 +1,13 @@
+ITERATION 3:
+  Nick - Majority of code for udp communications, helped with designing the udp communications, debugging issues with udp communications
+  Jay - Helped with designing udp communications, Documenting code
+  Matt - Added logging for the UDP communications, Documenting code, debugging issues with udp communications, helped with designing udp communications
+  Kevin - UML, Readme, Sequence diagrams, helped with designing udp communications
+  Ambar - 
+  This isn't strictly adhered to since everyone added methods and changes to other classes 
+
+
+
 ITERATION 2:
   Everyone together - Outline of UML, Outline of State machine diagrams for both state machines
   Nick - Majority of code for Scheduler State machine, Refactored Elevator state machine to use enums
