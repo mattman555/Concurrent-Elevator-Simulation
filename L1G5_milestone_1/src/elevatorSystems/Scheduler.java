@@ -46,7 +46,7 @@ public class Scheduler implements Runnable {
 		this.inProgressBuckets = new Hashtable<>();
 		this.logger = logger;
 		try {
-			elevatorSocket = new DatagramSocket(12);
+			elevatorSocket = new DatagramSocket(14000);
 			floorSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			e.printStackTrace();

@@ -33,8 +33,8 @@ public class Elevator{
 	private Hashtable<Integer, Boolean> lamp;
 	private Logger logger;
 	private int id;
-	private static final int SCHEDULER_PORT = 12;
-	private static final int FLOOR_SUB_PORT = 156;
+	private static final int SCHEDULER_PORT = 14000;
+	private static final int FLOOR_SUB_PORT = 14002;
 	
 	/**
 	 * Constructor, creating a base elevator starting
