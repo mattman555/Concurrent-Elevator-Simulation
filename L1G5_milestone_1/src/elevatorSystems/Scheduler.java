@@ -13,7 +13,6 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
-import elevatorSystems.elevatorStateMachine.ElevatorSM;
 import elevatorSystems.schedulerStateMachine.*;
 
 public class Scheduler implements Runnable {
@@ -24,7 +23,7 @@ public class Scheduler implements Runnable {
 	private ArrayList<RequestGroup> requestBuckets;
 	private Hashtable<Integer, RequestGroup> inProgressBuckets;
 	private ArrayList<Request> completedRequests;
-	public static final int FLOOR_SUB_PORT = 16;
+	public static final int FLOOR_SUB_PORT = 14001;
 	private DatagramSocket elevatorSocket, floorSocket;
 	
 	/**
