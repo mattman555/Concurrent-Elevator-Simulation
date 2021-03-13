@@ -5,16 +5,23 @@ Group 5 SYSC 3303 Elevator Project
 Project Description
 ---------------------
 
-The system is designed in java to schedule and simulate a specified number of elevators(currently 1 for iteration 2). It will contain a controller for the elevator called "Scheduler" which will communicate with 
-a "FloorSubsystem" containing all information for a given number of floors and an "ElevatorSubsystem" which is the same but for individual elevators to simulate the functionality. The Scheduler is also multi-threaded 
-as to handle as many elevators as required at the same time. New additions include simulating a state machine for the elevator subsystem and scheduler.
+The system is designed in java to schedule and simulate a specified number of elevators. It will contain a controller for the elevator called "Scheduler" which will communicate through UDP with a "FloorSubsystem" containing all 
+information for a given number of floors and an "Elevator" which is the same but for individual elevators to simulate the functionality. It simulates a state machine for the elevator and the scheduler. New additions this 
+iteration include a logger file for print statements and adding the capability for multiple elevators with the use of UDP and individual main functions.
 
 
 ---------------------
 Iteration Number
 ---------------------
 
-Iteration 2
+Iteration 3
+
+
+-------------------------------
+Breakdown for current iteration
+-------------------------------
+
+
 
 
 -----------------------
@@ -23,7 +30,7 @@ How to run the system
 
 JDK used: Java SE 15
 
-The system is run by running the main() function in Scheduler.java
+The system is run by running the main() functions in order in each of FloorSubsystem.java, Scheduler.java, and ElevatorSM.java
 
 
 --------------------------
@@ -31,8 +38,10 @@ Important Files Included
 --------------------------
 
 Files from previous iteration (.java) -----> Direction, Elevator, ElevatorTest, FloorSubsystem, FloorSubsystemTest, Request, RequestTest, RequestGroup, RequestGroupTest, Scheduler, SchedulerTest
+					     Arrived, AwaitingRequests, DoorsClosed, DoorsOpen, ElevatorSM, ElevatorState, ElevatorStates, End, End, InProgress, Moving, SchedulerState, SortedRequests, 
+					     UnsortedRequests, UpdateLamps
 
-Files from current iteration (.java) ------> Arrived, AwaitingRequests, DoorsClosed, DoorsOpen, ElevatorSM, ElevatorState, ElevatorStates, End, InProgress, Moving, SchedulerState, SortedRequests, UnsortedRequests, UpdateLamps
+Files from current iteration (.java) ------> ElevatorRPCRequests.java, RPCRequestType.java, 3303Output.txt
 
 
 --------------------------------
@@ -90,11 +99,6 @@ TestSuite.java: A class that combines all the test classes.
 
 TestSuiteRunner.java: A class that runs the test suite.
 
-
-
-New Files Created: 
-
-
 Arrived.java: A class for the Arrived state for the elevator state machine.
 
 AwaitingRequests.java: A class for the AwaitingRequests state for the scheduler state machine.
@@ -123,3 +127,12 @@ UnsortedRequests.java: A class for the UnsortedRequests state for the scheduler 
 
 UpdateLamps.java: A class for the UpdateLamps state for the elevator state machine.
 
+
+
+New Files Created: 
+
+ElevatorRPCRequests.java: A class for remote procedure calls in the form of requests using UDP.
+
+RPCRequestType.java : An enumeration class for the different types of remote procedure call request types.
+
+3303Output.txt: A text file for the print statements for a central display of events.
