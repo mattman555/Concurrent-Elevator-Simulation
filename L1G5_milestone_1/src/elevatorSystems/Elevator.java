@@ -111,6 +111,11 @@ public class Elevator{
 		this.elevatorLocation = location;
 	}
 	
+	/**
+	 * makes a udp packet to send for the elevator
+	 * @param requestType the type of request the packet is for
+	 * @return the packet with it's destination and data
+	 */
 	public DatagramPacket generatePacket(RPCRequestType requestType) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		ObjectOutputStream oStream;
@@ -152,6 +157,12 @@ public class Elevator{
 		return null; //never called, needed for structure
 	}
 	
+	/**
+	 * Reads the response that was sent to and 
+	 * recreates it to be a RPC request for the elevator to read
+	 * @param receivePacket
+	 * @return recreated request that the elevator can read
+	 */
 	public ElevatorRPCRequest readResponse(DatagramPacket receivePacket) {
 		ByteArrayInputStream stream = new ByteArrayInputStream(receivePacket.getData());
         ObjectInputStream oStream;

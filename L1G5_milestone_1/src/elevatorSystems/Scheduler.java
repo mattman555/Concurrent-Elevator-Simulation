@@ -182,7 +182,11 @@ public class Scheduler implements Runnable {
 	    
 	   
 	}
-
+	
+	/**
+	 * Receives and processes the different type of request packet
+	 * the scheduler recieves
+	 */
 	private void receiveRequest() {
 		byte data[] = new byte[1000];
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
@@ -225,6 +229,10 @@ public class Scheduler implements Runnable {
 		}
 	}
 	
+	/**
+	 * sends a packet with the list of completed 
+	 * requests to the floor subsystems
+	 */
 	private void sendCompletedRequests() {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {

@@ -36,7 +36,8 @@ public class DoorsClosed extends ElevatorState {
 	}
 	
 	/**
-	 * When the elevator reaches the required floor, turn the floor lamp for destination to off
+	 * When the elevator reaches the required floor, send a packet 
+	 * to the floor subsystem to turn the floor lamp for destination off
 	 */
 	@Override
 	public void arrivesAtDestination(DatagramSocket sendReceiveSocket) {

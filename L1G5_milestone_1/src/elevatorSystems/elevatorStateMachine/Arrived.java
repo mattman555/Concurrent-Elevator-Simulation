@@ -20,7 +20,8 @@ public class Arrived extends ElevatorState {
 	}
 
 	/**
-	 * Change the state of the elevator doors
+	 * Change the state of the elevator doors by sending a packet to the
+	 * Scheduler to ask
 	 */
 	@Override
 	public void toggleDoors(DatagramSocket sendReceiveSocket) {

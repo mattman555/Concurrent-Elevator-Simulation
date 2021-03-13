@@ -21,7 +21,8 @@ public class DoorsOpen extends ElevatorState {
 	}
 
 	/**
-	 * Get all the car lamps that need to be turned on 
+	 * Get all the car lamps that need to be turned on from a udp packet
+	 * from the scheduler
 	 * @return list of all lamps to be turned on
 	 */
 	@Override
