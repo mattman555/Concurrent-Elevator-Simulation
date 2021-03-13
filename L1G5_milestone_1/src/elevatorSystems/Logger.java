@@ -26,10 +26,12 @@ public class Logger {
 	}
 	public synchronized void print(String s) {
 		writer.append(s);
+		System.out.print(s);
 	}
 	
 	public synchronized void println(String s) {
 		writer.append(s + "\n");
+		System.out.println(s);
 	}
 	
 

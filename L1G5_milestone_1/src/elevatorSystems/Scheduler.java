@@ -338,6 +338,7 @@ public class Scheduler implements Runnable {
 		Scheduler scheduler = new Scheduler(logger);
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
 		schedulerThread.start();
+		logger.close();
 
 		
 	}

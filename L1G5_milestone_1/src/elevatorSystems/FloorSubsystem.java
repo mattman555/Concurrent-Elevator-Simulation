@@ -276,6 +276,7 @@ public class FloorSubsystem implements Runnable{
 		FloorSubsystem floorSubsystem = new FloorSubsystem(7, logger);
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
 		floorSubsystemThread.start();
+		logger.close();
 	}
 	
 }
