@@ -54,7 +54,7 @@ public class Moving extends ElevatorState {
 		while(!received){
 			try {
 		         sendReceiveSocket.send(sendPacket);
-		         System.out.println("Packet sent to the schduler with a request to open the doors");
+		         System.out.println("Packet sent to the floor subsystem with a request to update the floors lamps");
 		    }
 			catch (IOException e) {
 		         e.printStackTrace();
@@ -66,9 +66,9 @@ public class Moving extends ElevatorState {
 	}
 	
 	/**
-	 * trys to recive a packet from scheduler to see if the elevator can open its doors or not
+	 * Tries to receive a packet from floor subsystem to see if the floor subsystem has updated its lamps
 	 * @param sendReceiveSocket Socket used to pass UDP
-	 * @return true if it gets to packet to open the doors, false if it does not
+	 * @return true if it gets to packet that it updated its lamps, false if it does not
 	 */
 	private boolean receivePacket(DatagramSocket sendReceiveSocket) {
 		byte data[] = new byte[1];
@@ -77,7 +77,7 @@ public class Moving extends ElevatorState {
     		// Block until a datagram is received via sendReceiveSocket.  
     		sendReceiveSocket.setSoTimeout(5000);
     		sendReceiveSocket.receive(receivePacket); 
-    		System.out.println("Packet recieved from the schduler with the response the request to open the doors");
+    		System.out.println("Packet received from the floor subsystem with acknowlegement to update its floor lamps");
     		if(receivePacket.getLength() == 1 && receivePacket.getData()[0] == 1) 
     			return true; //return true if receive a packet back with correct data
     		return false;
