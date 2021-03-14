@@ -49,7 +49,7 @@ public class DoorsClosed extends ElevatorState {
 		while(!received){
 			try {
 		         sendReceiveSocket.send(sendPacket);
-		         System.out.println("Packet sent to the schduler with a request to open the doors");
+		         System.out.println("Packet sent to the scheduler with a request to open the doors");
 		    }
 			catch (IOException e) {
 		         e.printStackTrace();
