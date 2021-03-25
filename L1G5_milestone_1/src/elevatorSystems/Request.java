@@ -19,7 +19,7 @@ public class Request implements Serializable{
 	private int floor;
 	private Direction floorButton;
 	private int carButton;
-	private int errorType;
+	private int errorCode;
 	
 	/**
 	 * Constructor for a new Request
@@ -39,7 +39,7 @@ public class Request implements Serializable{
 		this.floor = floor;
 		this.floorButton = Direction.stringToDirection(floorButton);
 		this.carButton = carButton;
-		this.errorType = errorType;
+		this.errorCode = errorType;
 	}
 
 	/**
@@ -77,15 +77,15 @@ public class Request implements Serializable{
 	/**
 	 * @return the errorType
 	 */
-	public int getErrorType() {
-		return errorType;
+	public int getErrorCode() {
+		return errorCode;
 	}
 
 	/**
-	 * @param errorType the errorType to set
+	 * @param errorCode the errorType to set
 	 */
-	public void setErrorType(int errorType) {
-		this.errorType = errorType;
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class Request implements Serializable{
 		boolean buttons = this.carButton == req2.carButton;
 		boolean floor = this.floor == req2.floor;
 		boolean direction = this.floorButton == req2.floorButton;
-		boolean errorType = this.errorType == req2.errorType;
+		boolean errorType = this.errorCode == req2.errorCode;
 		return (time && buttons && floor && direction && errorType);
 		
 	}
@@ -107,7 +107,7 @@ public class Request implements Serializable{
 	 */
 	public String toString() {
 		String time = Integer.toString(this.time[0]) + ":" + Integer.toString(this.time[1]) + ":"  + Integer.toString(this.time[2]) + "." + Integer.toString(this.time[3]);
-		return ("Request{Time: " + time + " | Floor: " + this.floor + " | Directional button: " + this.floorButton + " | Destination: " + this.carButton + " ErrorType: "+this.errorType+"}");
+		return ("Request{Time: " + time + " | Floor: " + this.floor + " | Directional button: " + this.floorButton + " | Destination: " + this.carButton + "| ErrorCode: "+this.errorCode+"}");
 		
 	}
 }

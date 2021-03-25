@@ -117,7 +117,7 @@ public class Scheduler implements Runnable {
 	public void requestTask(ElevatorRPCRequest request, InetAddress address, int port) {	
 		int curr = current;
 		Entry<Integer,Direction> entry = states[curr].requestTask(request.getId(), request.getCurrentLocation());
-		Integer errorCode = this.inProgressBuckets.get(request.getId()).getErrorCode(entry.getKey()); //get the error code for the destination floor
+		int errorCode = this.inProgressBuckets.get(request.getId()).getErrorCode(entry.getKey()); //get the error code for the destination floor
 		request.setDestination(entry.getKey(), entry.getValue(), errorCode); //modify the request
 		sendRPCRequest(request, address, port); //send the modified request back
 		
@@ -129,7 +129,7 @@ public class Scheduler implements Runnable {
 	 */
 	public void getListOfRequests() {
 		boolean gotRequests = states[current].getListOfRequests(floorSocket);
-		nextState( gotRequests ? 1 : 0); //if scheduler got the requests we go to a new state.
+		nextState(gotRequests ? 1 : 0); //if scheduler got the requests we go to a new state.
 	}
 	
 	/**

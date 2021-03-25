@@ -20,7 +20,7 @@ public class ElevatorRPCRequest implements Serializable{
 	private boolean isDoorOpen;
 	private int currentLocation;
 	private int id;
-	private Integer errorCode;
+	private int errorCode;
 	private Direction motorDirection;
 	private int destination;
 	private ArrayList<Integer> lamps;
@@ -134,7 +134,7 @@ public class ElevatorRPCRequest implements Serializable{
 	 * @param direction the direction that floor is in compared to the current elevator location
 	 * @param errorCode the error code for that request, either 0,1,2, or 3
 	 */
-	public void setDestination(int destFloor, Direction direction, Integer errorCode) { //needed because map.entry is not serializable
+	public void setDestination(int destFloor, Direction direction, int errorCode) { //needed because map.entry is not serializable
 		this.destination = destFloor;
 		this.motorDirection = direction;
 		this.errorCode = errorCode;
