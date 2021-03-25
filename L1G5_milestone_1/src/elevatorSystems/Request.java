@@ -19,6 +19,7 @@ public class Request implements Serializable{
 	private int floor;
 	private Direction floorButton;
 	private int carButton;
+	private int errorType;
 	
 	/**
 	 * Constructor for a new Request
@@ -27,7 +28,7 @@ public class Request implements Serializable{
 	 * @param floorButton the Direction the request wants to go
 	 * @param carButton the requested destination
 	 */
-	public Request(String time, int floor, String floorButton, int carButton) {
+	public Request(String time, int floor, String floorButton, int carButton, int errorType) {
 		this.time = new int[4];
 		String[] timeArr = time.split(":");
 		this.time[0] = Integer.parseInt(timeArr[0]);
@@ -38,6 +39,7 @@ public class Request implements Serializable{
 		this.floor = floor;
 		this.floorButton = Direction.stringToDirection(floorButton);
 		this.carButton = carButton;
+		this.errorType = errorType;
 	}
 
 	/**
@@ -71,7 +73,21 @@ public class Request implements Serializable{
 	public int getCarButton() {
 		return carButton;
 	}
-	
+
+	/**
+	 * @return the errorType
+	 */
+	public int getErrorType() {
+		return errorType;
+	}
+
+	/**
+	 * @param errorType the errorType to set
+	 */
+	public void setErrorType(int errorType) {
+		this.errorType = errorType;
+	}
+
 	/**
 	 * checks that the request is the same as another
 	 * @param req2 the request to compare against
@@ -82,7 +98,8 @@ public class Request implements Serializable{
 		boolean buttons = this.carButton == req2.carButton;
 		boolean floor = this.floor == req2.floor;
 		boolean direction = this.floorButton == req2.floorButton;
-		return (time && buttons && floor && direction);
+		boolean errorType = this.errorType == req2.errorType;
+		return (time && buttons && floor && direction && errorType);
 		
 	}
 	/**
@@ -90,8 +107,7 @@ public class Request implements Serializable{
 	 */
 	public String toString() {
 		String time = Integer.toString(this.time[0]) + ":" + Integer.toString(this.time[1]) + ":"  + Integer.toString(this.time[2]) + "." + Integer.toString(this.time[3]);
-		return ("Request{Time: " + time + " | Floor: " + this.floor + " | Directional button: " + this.floorButton + " | Destination: " + this.carButton + "}");
+		return ("Request{Time: " + time + " | Floor: " + this.floor + " | Directional button: " + this.floorButton + " | Destination: " + this.carButton + " ErrorType: "+this.errorType+"}");
 		
 	}
-
 }

@@ -28,7 +28,7 @@ public class InProgress extends SchedulerState {
 
 	/**
 	 * When a elevator requests a new task form the scheduler, based on the location of the elevator
-	 * and what request it was doing before, it will send a new destination and motor direction to the elevtor
+	 * and what request it was doing before, it will send a new destination and motor direction to the elevator
 	 *  @param currLocation current location of the elevator
 	 *  @param id is what elevator is requesting a task
 	 *  @return an entry(key-value pair) containing the floor to go to and the direction that floor is 
@@ -40,7 +40,7 @@ public class InProgress extends SchedulerState {
 		}
 		else { // at a destination floor, a request may have been completed
 			scheduler.getInProgressBucket(id).removeElevatorFloorLamp(currLocation); //turn off floor lamp
-			ArrayList<Request> removable = new ArrayList<Request>(); //dont want to remove them while iterating over them
+			ArrayList<Request> removable = new ArrayList<Request>(); //don't want to remove them while iterating over them
 			for(Request request: scheduler.getInProgressBucket(id).getRequests()) {
 				if(request.getCarButton() == currLocation) {
 					removable.add(request);

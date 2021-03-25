@@ -86,4 +86,12 @@ public class DoorsClosed extends ElevatorState {
 	public void invalidRequest() {
 		System.out.println("Elevator " + elevator.getId() + ": Transition from Doors Closed to End");
 	}
+	
+	/**
+	 * Error class type 2 occurs, end the elevator
+	 */
+	@Override
+	public void shutdown() {
+		System.out.println("Elevator " + elevator.getId() + ": Has Shutdown");
+	}
 }

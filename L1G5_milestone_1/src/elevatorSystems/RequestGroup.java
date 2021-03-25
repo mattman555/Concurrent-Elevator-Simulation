@@ -2,6 +2,7 @@ package elevatorSystems;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @author Nick Coutts
@@ -11,6 +12,7 @@ public class RequestGroup {
 	private ArrayList<Request> requests;
 	private ArrayList<Integer> elevFloorLamps;
 	private ArrayList<Integer> route;
+	private HashMap<Integer,Integer> errorLookup;
 	
 	/**
 	 * Constructor for a request group, meant to be used for similar requests
@@ -18,8 +20,9 @@ public class RequestGroup {
 	 */
 	public RequestGroup(ArrayList<Request> requests) {
 		this.requests = requests;
-		elevFloorLamps = setElevatorFloorLamps();
-		route = setFloorRoute();
+		this.elevFloorLamps = setElevatorFloorLamps();
+		this.route = setFloorRoute();
+		this.errorLookup = createErrorLookup();
 	}
 	
 	/**
@@ -55,6 +58,27 @@ public class RequestGroup {
 	}
 	
 	/**
+	 * Generates the error lookup map with each used floor from the requests and mapping it with the highest error from that floor.
+	 * @return a HashMap mapping the floors to the highest error code for that floor
+	 */
+	private HashMap<Integer,Integer> createErrorLookup() {
+		 HashMap<Integer,Integer> errors = new HashMap<Integer,Integer>();
+		 for(int i = 0; i < requests.size(); i++) { //iterate through the requests 
+				Request request = requests.get(i);
+				
+				if(!errors.containsKey(request.getFloor())) {
+					errors.put(request.getFloor(), 0); // floor to pick someone up, always no error
+				}
+				//already present with smaller error code replace with higher error code, or not present
+				if((errors.containsKey(request.getCarButton()) && (errors.get(request.getCarButton()) < request.getErrorType())) || !errors.containsKey(request.getCarButton())) {
+					errors.put(request.getCarButton(), request.getErrorType());
+				}
+			}
+		return errors;
+		
+	}
+	
+	/**
 	 * Gets the next destination that needs to be visited to fulfill a request
 	 * @return an Integer representing the next destination
 	 */
@@ -65,6 +89,14 @@ public class RequestGroup {
 			return null;
 		}
 		
+	}
+	/**
+	 * Gets the error code of the given floor
+	 * @param the floor you want the error code of
+	 * @return an Integer representing the highest error code of that floor, or null if floor is null or floor isnt a floor handled by this group
+	 */
+	public Integer getErrorCode(Integer floor) {
+		return errorLookup.get(floor);
 	}
 	
 	/**

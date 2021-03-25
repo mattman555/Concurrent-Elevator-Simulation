@@ -23,9 +23,9 @@ public class RequestGroupTest {
 	@org.junit.Before
 	public void setUp() throws Exception {
 		requests = new ArrayList<Request>();
-		request1 = new Request("10:30:30.0", 2, "UP", 5);
-		request2 = new Request("10:31:30.0", 2, "UP", 3);
-		request3 = new Request("10:32:30.0", 2, "UP", 4);
+		request1 = new Request("10:30:30.0", 2, "UP", 5, 0);
+		request2 = new Request("10:31:30.0", 2, "UP", 3, 0);
+		request3 = new Request("10:32:30.0", 2, "UP", 4, 0);
 		requests.add(request1);
 		requests.add(request2);
 		requests.add(request3);

@@ -52,6 +52,11 @@ public class Arrived extends ElevatorState {
 		System.out.println("Elevator " + elevator.getId() +": Transition from Arrived to Doors Open");
 	}
 	
+	@Override
+	public void doorStuckError() {
+		System.out.println("Doors on Elevator " + this.elevator.getId() + " Stuck");
+	}
+	
 		
 	
 }
