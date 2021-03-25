@@ -111,7 +111,6 @@ public class Scheduler implements Runnable {
 		int curr = current;
 		Entry<Integer,Direction> entry = states[curr].requestTask(request.getId(), request.getCurrentLocation());
 		int errorCode = this.inProgressBuckets.get(request.getId()).getErrorCode(entry.getKey()); //get the error code for the destination floor
-		System.out.println("+++" + errorCode + "+++");
 		request.setDestination(entry.getKey(), entry.getValue(), errorCode); //modify the request
 		sendRPCRequest(request, address, port); //send the modified request back
 		
