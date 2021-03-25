@@ -26,6 +26,7 @@ public class ElevatorSM implements Runnable{
 	private Hashtable<ElevatorStates, ElevatorState> states;
 	private Hashtable<ElevatorStates, List<ElevatorStates>> transitions;
 	private static final int INVALID_FLOOR = 10000;
+	private Integer errorCode;
 	private Elevator elevator;
 	private DatagramSocket sendReceiveSocket;
 ;
@@ -50,6 +51,7 @@ public class ElevatorSM implements Runnable{
 		this.transitions.put(ElevatorStates.DOORS_CLOSED,  List.of(ElevatorStates.ARRIVED, ElevatorStates.MOVING, ElevatorStates.END));
 		this.transitions.put(ElevatorStates.MOVING, List.of(ElevatorStates.ARRIVED));
 		this.transitions.put(ElevatorStates.ARRIVED, List.of(ElevatorStates.DOORS_OPEN));
+		this.transitions.put(ElevatorStates.DOOR_STUCK, List.of(ElevatorStates.ARRIVED));
 		this.transitions.put(ElevatorStates.DOORS_OPEN, List.of(ElevatorStates.UPDATE_LAMPS));
 		this.transitions.put(ElevatorStates.UPDATE_LAMPS, List.of(ElevatorStates.DOORS_CLOSED));
 	}
@@ -63,6 +65,7 @@ public class ElevatorSM implements Runnable{
 		this.states.put(ElevatorStates.MOVING,  new Moving(this.elevator));
 		this.states.put(ElevatorStates.ARRIVED,  new Arrived(this.elevator));
 		this.states.put(ElevatorStates.DOORS_OPEN, new DoorsOpen(this.elevator));
+		this.states.put(ElevatorStates.DOOR_STUCK, new DoorStuck(this.elevator));
 		this.states.put(ElevatorStates.UPDATE_LAMPS, new UpdateLamps(this.elevator));
 		this.states.put(ElevatorStates.END, new End(this.elevator));
 	}
@@ -115,6 +118,14 @@ public class ElevatorSM implements Runnable{
 	}
 	
 	/**
+	 * When a error shutdown occurs, switch to the END state
+	 */
+	public void shutdown() {
+		states.get(current).shutdown();
+		nextState(ElevatorStates.END);
+	}
+	
+	/**
 	 * When the elevator arrives at the required destination
 	 * switch to arrived state
 	 */
@@ -147,6 +158,27 @@ public class ElevatorSM implements Runnable{
 	 */
 	public void exit() {
 		states.get(current).exit();
+	}
+	
+	/**
+	 * exit state to terminate the state machine
+	 */
+	public void errorExit() {
+		states.get(current).errorExit();
+	}
+	
+	/**
+	 * If an type 1 error occurs, the doors are stuck transition to DoorStuck state
+	 * @param next the state to go to after
+	 */
+	public void doorStuckError(ElevatorStates next) {
+		states.get(current).doorStuckError();
+		nextState(next);
+	}
+	
+	public void doorWait(ElevatorStates next) {
+		states.get(current).doorWait();
+		nextState(next);
 	}
 	
 	/**
@@ -183,6 +215,7 @@ public class ElevatorSM implements Runnable{
 	    	System.exit(1);
 	    }
 	    ElevatorRPCRequest request = this.elevator.readResponse(receivePacket);
+	    errorCode = request.getErrorCode();
 	    return Map.entry(request.getDestination(), request.getMotorDirection());
 		
 	}
@@ -217,6 +250,9 @@ public class ElevatorSM implements Runnable{
 				else if(destination.getValue() == Direction.STATIONARY) {
 					this.arrivesAtDestination();
 				}
+				else if (errorCode == 2) {
+					this.shutdown();
+				}
 				break;
 			case MOVING:
 				if(destinationFloor == this.elevator.getElevatorLocation()) {
@@ -227,7 +263,15 @@ public class ElevatorSM implements Runnable{
 				}
 				break;
 			case ARRIVED:
+				if (errorCode == 1) {
+					errorCode = 0;
+					this.doorStuckError(ElevatorStates.DOOR_STUCK);
+					break;
+				}
 				this.toggleDoors(ElevatorStates.DOORS_OPEN);
+				break;
+			case DOOR_STUCK:
+				this.doorWait(ElevatorStates.ARRIVED);
 				break;
 			case DOORS_OPEN:
 				lamps = this.getLamps();
@@ -237,6 +281,12 @@ public class ElevatorSM implements Runnable{
 				this.toggleDoors(ElevatorStates.DOORS_CLOSED);
 				break;
 			case END:
+				if (errorCode == 2) {
+					errorCode = 0;
+					this.errorExit();
+					sendReceiveSocket.close();
+					return;
+				}
 				this.exit();
 				sendReceiveSocket.close();
 				return;
