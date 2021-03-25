@@ -39,7 +39,7 @@ public class Elevator{
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator( int elevId) {
+	public Elevator(int elevId) {
 		this.elevatorLocation = 1;	
 		this.floorDestination = 1;
 		this.isDoorOpen = false;

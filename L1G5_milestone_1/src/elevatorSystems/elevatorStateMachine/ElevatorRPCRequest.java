@@ -8,8 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 /**
  * @authors Matthew Harris, Nick Coutts, Jay McCracken, Kevin Belanger
@@ -22,6 +20,7 @@ public class ElevatorRPCRequest implements Serializable{
 	private boolean isDoorOpen;
 	private int currentLocation;
 	private int id;
+	private Integer errorCode;
 	private Direction motorDirection;
 	private int destination;
 	private ArrayList<Integer> lamps;
@@ -62,7 +61,7 @@ public class ElevatorRPCRequest implements Serializable{
 	 * constructor for a request that tells the floor subsystem to change the
 	 * floor lamps
 	 * @param currentLocation the current location of the elevator making the request
-	 * @param motorDirection the direction the elevaotr is going
+	 * @param motorDirection the direction the elevator is going
 	 */
 	public ElevatorRPCRequest(int currentLocation, Direction motorDirection) {
 		this.requestType = RPCRequestType.SET_LAMPS;
@@ -131,15 +130,24 @@ public class ElevatorRPCRequest implements Serializable{
 	/**
 	 * sets the variables for the integer destination and the direction
 	 * of the elevator
-	 * @param destination the map entry containing the floor number and direction
+	 * @param destFloor the destination floor
+	 * @param direction the direction that floor is in compared to the current elevator location
+	 * @param errorCode the error code for that request, either 0,1,2, or 3
 	 */
-	public void setDestination(Entry<Integer, Direction> destination) { //needed becuase map.entry is not serializable
-		this.destination = destination.getKey();
-		this.motorDirection = destination.getValue();
+	public void setDestination(int destFloor, Direction direction, Integer errorCode) { //needed because map.entry is not serializable
+		this.destination = destFloor;
+		this.motorDirection = direction;
+		this.errorCode = errorCode;
+	}
+	/**
+	 * @return the error code
+	 */
+	public Integer getErrorCode() {
+		return this.errorCode;
 	}
 	
 	/**
-	 * @return the direction the elevator is travelling
+	 * @return the direction the elevator is traveling
 	 */
 	public Direction getMotorDirection() {
 		return motorDirection;
