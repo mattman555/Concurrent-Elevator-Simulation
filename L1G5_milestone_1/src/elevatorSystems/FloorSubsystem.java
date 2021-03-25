@@ -75,7 +75,9 @@ public class FloorSubsystem implements Runnable{
 			if(request.getFloor() > 0 && request.getFloor()<=MAX_FLOORS) {
 				if(request.getFloorButton().equals(Direction.UP) || request.getFloorButton().equals(Direction.DOWN)) {
 					if(request.getCarButton() > 0 && request.getCarButton() <= MAX_FLOORS && request.getCarButton() != request.getFloor()) {
-						return true;
+						if(request.getErrorType()>=0 && request.getErrorType()<=2) {
+							return true;	
+						}
 					}
 				}
 			}
@@ -115,7 +117,7 @@ public class FloorSubsystem implements Runnable{
 			ArrayList<Request> requests = new ArrayList<>();
 			while (line != null) {
 				String[] lineArr = line.split(" "); 
-				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3])); 
+				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3]), Integer.parseInt(lineArr[4])); 
 				if(validateRequest(request)) 
 					requests.add(request);
 				line = reader.readLine();

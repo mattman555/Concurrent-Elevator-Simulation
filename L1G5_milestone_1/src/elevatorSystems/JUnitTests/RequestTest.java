@@ -15,7 +15,7 @@ public class RequestTest {
 
 	@org.junit.Before
 	public void setUp() throws Exception {
-		request = new Request("11:20:03.000",3,"DOWN",1);
+		request = new Request("11:20:03.000",3,"DOWN",1,0);
 	}
 
 	/**
