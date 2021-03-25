@@ -30,7 +30,7 @@ public class Moving extends ElevatorState {
 	 */
 	@Override
 	public void activity(Direction direction) {
-		System.out.println("Elevator " + elevator.getId() + ": Moving " + direction.toString().toLowerCase() + " on floor " + this.elevator.getElevatorLocation());
+		System.out.println("Elevator " + elevator.getId() + ": Moving " + direction.toString().toLowerCase() + " from floor " + this.elevator.getElevatorLocation());
 		try {
 			Thread.sleep(TIME_BETWEEN_FLOORS);
 		} catch (InterruptedException e) {}

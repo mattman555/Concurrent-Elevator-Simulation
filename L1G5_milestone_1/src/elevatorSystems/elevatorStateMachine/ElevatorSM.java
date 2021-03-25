@@ -174,7 +174,7 @@ public class ElevatorSM implements Runnable{
 	 * exit state to terminate the state machine
 	 */
 	public void errorExit() {
-		states.get(current).errorExit();
+		states.get(current).errorExit(sendReceiveSocket);
 	}
 	
 	/**
@@ -238,7 +238,7 @@ public class ElevatorSM implements Runnable{
 	 */
 	public static int[] readConfig(String filename) {
 		BufferedReader reader;
-		int [] values = {DEFAULT_NUM_ELEVATORS,DEFAULT_ELEV_TO_SCHEDULER_PORT,DEFAULT_ELEV_TO_FLOOR_PORT};
+		int [] values = {DEFAULT_NUM_ELEVATORS, DEFAULT_ELEV_TO_SCHEDULER_PORT, DEFAULT_ELEV_TO_FLOOR_PORT};
 		try {
 			reader = new BufferedReader(new FileReader(filename));
 			String line = reader.readLine();
@@ -260,11 +260,11 @@ public class ElevatorSM implements Runnable{
 				}
 				line = reader.readLine();
 			}
-			System.out.println("All configurations read from file");
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("All configurations read from file");
 		return values;
 	}
 	
@@ -290,6 +290,9 @@ public class ElevatorSM implements Runnable{
 				else if(destination.getKey() == INVALID_FLOOR) {//no more requests move to end
 					this.invalidRequest();
 				}
+				else if (errorCode == 2) {
+					this.shutdown();
+				}
 				else if(destination.getValue() == Direction.UP || destination.getValue() == Direction.DOWN) {
 					destinationFloor = destination.getKey();
 					destinationDirection = destination.getValue();
@@ -297,9 +300,6 @@ public class ElevatorSM implements Runnable{
 				}
 				else if(destination.getValue() == Direction.STATIONARY) {
 					this.arrivesAtDestination();
-				}
-				else if (errorCode == 2) {
-					this.shutdown();
 				}
 				break;
 			case MOVING:

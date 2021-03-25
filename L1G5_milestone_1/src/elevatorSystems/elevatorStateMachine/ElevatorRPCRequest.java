@@ -51,8 +51,8 @@ public class ElevatorRPCRequest implements Serializable{
 	 * constructor for a request to get the lamps that need to change
 	 * @param id the id of the elevator making the request
 	 */
-	public ElevatorRPCRequest(int id) {
-		this.requestType = RPCRequestType.GET_LAMPS;
+	public ElevatorRPCRequest(int id, RPCRequestType type) {
+		this.requestType = type;
 		this.id = id;
 		this.lamps = new ArrayList<>();
 	}

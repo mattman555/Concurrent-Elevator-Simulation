@@ -76,7 +76,7 @@ public abstract class ElevatorState {
 	/**
 	 * Default Method for the errorExit event
 	 */
-	public void errorExit() {
+	public void errorExit(DatagramSocket sendReceiveSocket) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");	
 	}
 	

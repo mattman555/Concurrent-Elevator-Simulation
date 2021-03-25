@@ -1,21 +1,16 @@
 package elevatorSystems.schedulerStateMachine;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import elevatorSystems.Direction;
-import elevatorSystems.FloorSubsystem;
 import elevatorSystems.Request;
 import elevatorSystems.Scheduler;
-import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
 
 /**
  * @author Ambar Mendez Jimenez 

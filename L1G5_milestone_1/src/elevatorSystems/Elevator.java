@@ -132,13 +132,17 @@ public class Elevator{
 					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.id));
 					break;
 				case GET_LAMPS:
-					oStream.writeObject(new ElevatorRPCRequest(this.id));
+					oStream.writeObject(new ElevatorRPCRequest(this.id, RPCRequestType.GET_LAMPS));
 					break;
 				case SET_LAMPS:
 					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.motor));
 					port = floorPort;
 					break;
+				case ELEVATOR_SHUTDOWN:
+					oStream.writeObject(new ElevatorRPCRequest(this.id, RPCRequestType.ELEVATOR_SHUTDOWN));
+					break;
 				default:
+					System.out.println("Invalid Request Type: " + requestType);
 					System.exit(1);	
 				
 			}
