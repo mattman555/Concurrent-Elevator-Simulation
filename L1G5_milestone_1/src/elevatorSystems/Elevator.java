@@ -31,15 +31,17 @@ public class Elevator{
 	private Direction motor;
 	private Hashtable<Integer, Boolean> lamp;
 	private int id;
-	private static final int SCHEDULER_PORT = 14000;
-	private static final int FLOOR_SUB_PORT = 14002;
+	private int schedulerPort;
+	private int floorPort;
 	
 	/**
 	 * Constructor, creating a base elevator starting
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator( int elevId) {
+	public Elevator(int elevId, int schedulerPort, int floorPort) {
+		this.schedulerPort = schedulerPort;
+		this.floorPort = floorPort;
 		this.elevatorLocation = 1;	
 		this.floorDestination = 1;
 		this.isDoorOpen = false;
@@ -119,7 +121,7 @@ public class Elevator{
 	public DatagramPacket generatePacket(RPCRequestType requestType) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		ObjectOutputStream oStream;
-		int port = SCHEDULER_PORT;
+		int port = schedulerPort;
 		try {
 			oStream = new ObjectOutputStream(stream);
 			switch(requestType) {
@@ -134,7 +136,7 @@ public class Elevator{
 					break;
 				case SET_LAMPS:
 					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.motor));
-					port = FLOOR_SUB_PORT;
+					port = floorPort;
 					break;
 				default:
 					System.exit(1);	

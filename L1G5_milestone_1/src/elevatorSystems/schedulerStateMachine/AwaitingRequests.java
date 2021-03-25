@@ -63,7 +63,7 @@ public class AwaitingRequests extends SchedulerState {
 		byte[] data = {1};
 		DatagramPacket sendPacket;
 		try {
-			sendPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), Scheduler.FLOOR_SUB_PORT);
+			sendPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), Scheduler.getSchedulerToFloorPort());
 			floorSocket.send(sendPacket);
 			System.out.println("Packet Sent to Floor subsystem requesting list of requests");
 	    }

@@ -1,5 +1,7 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -17,6 +19,7 @@ import elevatorSystems.Elevator;
  * @author Matthew Harris 101073502
  * @author Jay McCracken 101066860
  * @author Nick Coutts 101072875
+ * @author Kevin Belanger 101121709
  *
  *	The State machine for the elevator, switching states based on event
  */
@@ -25,12 +28,19 @@ public class ElevatorSM implements Runnable{
 	private ElevatorStates current;
 	private Hashtable<ElevatorStates, ElevatorState> states;
 	private Hashtable<ElevatorStates, List<ElevatorStates>> transitions;
+	private final static int DEFAULT_NUM_ELEVATORS = 4;
+	private final static int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
+	private final static int DEFAULT_ELEV_TO_FLOOR_PORT = 14002;
+	private int elevToSchedulerPort;
+	private int elevToFloorPort;
+	private final static String CONFIG = "Config.txt";
 	private static final int INVALID_FLOOR = 10000;
 	private Elevator elevator;
 	private DatagramSocket sendReceiveSocket;
 ;
 
 	public ElevatorSM(Elevator elevator) {
+		readConfig(CONFIG);
 		this.elevator =  elevator;
 		this.current = ElevatorStates.DOORS_CLOSED;
 		generateTransitionHashmap();
@@ -187,6 +197,44 @@ public class ElevatorSM implements Runnable{
 		
 	}
 	
+
+	/**
+	 * reads the config file line by line and generates the 
+	 * array of strings to be passed to other classes
+	 * @param filename the file to read with extension
+	 */
+	public static int[] readConfig(String filename) {
+		BufferedReader reader;
+		int [] values = {DEFAULT_NUM_ELEVATORS,DEFAULT_ELEV_TO_SCHEDULER_PORT,DEFAULT_ELEV_TO_FLOOR_PORT};
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] lineArr = line.split(" "); 
+				String config = lineArr[0]; 
+				switch(config) {
+					case "Num_elevators":
+						values[0] = Integer.parseInt(lineArr[1]);
+						break;
+					case "ElevToScheduler":
+						values[1] = Integer.parseInt(lineArr[1]);
+						break;
+					case "ElevToFloor":
+						values[2] = Integer.parseInt(lineArr[1]);
+						break;
+					default:
+						break;
+				}
+				line = reader.readLine();
+			}
+			System.out.println("All configurations read from file");
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return values;
+	}
+	
 	@Override
 	/**
 	 * The running of the elevator, travel to new floor, updating lamps
@@ -243,15 +291,15 @@ public class ElevatorSM implements Runnable{
 			}
 		}
 	}
+	
 	public static void main(String[] args) {
-		Elevator elevator1 = new Elevator(1);
-		Elevator elevator2 = new Elevator(2);
-		Elevator elevator3 = new Elevator(3);
-		Thread elevatorThread1 = new Thread(new ElevatorSM(elevator1),"Elevator 1");
-		Thread elevatorThread2 = new Thread(new ElevatorSM(elevator2),"Elevator 2");
-		Thread elevatorThread3 = new Thread(new ElevatorSM(elevator3),"Elevator 3");
-		elevatorThread1.start();
-		elevatorThread2.start();
-		elevatorThread3.start();
+		int[] values = readConfig(CONFIG);
+		int numElevators = values[0];
+		int schedulerPort = values[1];
+		int floorPort = values[2];
+		for (int i=1; i <= numElevators; i++) {
+			Thread elevatorThread = new Thread(new ElevatorSM(new Elevator(i,schedulerPort,floorPort)),"Elevator " + i);
+			elevatorThread.start();
+		}
 	}
 }
