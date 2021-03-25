@@ -1,4 +1,4 @@
-InputFile input.txt
+InputFile TestFile.txt
 Num_elevators 4
 Num_floors 22
 ElevToScheduler 14000
