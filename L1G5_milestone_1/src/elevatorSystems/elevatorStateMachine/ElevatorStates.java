@@ -11,6 +11,7 @@ public enum ElevatorStates {
 	MOVING,
 	ARRIVED,
 	DOORS_OPEN,
+	DOOR_STUCK,
 	UPDATE_LAMPS,
 	END	
 }
