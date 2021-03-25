@@ -70,8 +70,8 @@ public class RequestGroup {
 					errors.put(request.getFloor(), 0); // floor to pick someone up, always no error
 				}
 				//already present with smaller error code replace with higher error code, or not present
-				if((errors.containsKey(request.getCarButton()) && (errors.get(request.getCarButton()) < request.getErrorType())) || !errors.containsKey(request.getCarButton())) {
-					errors.put(request.getCarButton(), request.getErrorType());
+				if((errors.containsKey(request.getCarButton()) && (errors.get(request.getCarButton()) < request.getErrorCode())) || !errors.containsKey(request.getCarButton())) {
+					errors.put(request.getCarButton(), request.getErrorCode());
 				}
 			}
 		return errors;
@@ -95,8 +95,9 @@ public class RequestGroup {
 	 * @param the floor you want the error code of
 	 * @return an Integer representing the highest error code of that floor, or null if floor is null or floor isnt a floor handled by this group
 	 */
-	public Integer getErrorCode(Integer floor) {
-		return errorLookup.get(floor);
+	public int getErrorCode(Integer floor) {
+		Integer error = errorLookup.get(floor);
+		return (error == null ? -1 : error);
 	}
 	
 	/**
