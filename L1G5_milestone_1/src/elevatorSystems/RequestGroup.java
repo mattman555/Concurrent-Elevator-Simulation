@@ -74,7 +74,7 @@ public class RequestGroup {
 					errors.put(request.getCarButton(), request.getErrorType());
 				}
 			}
-		return errorLookup;
+		return errors;
 		
 	}
 	
