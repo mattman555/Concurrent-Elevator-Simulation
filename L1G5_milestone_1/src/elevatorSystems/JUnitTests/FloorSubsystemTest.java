@@ -19,7 +19,7 @@ public class FloorSubsystemTest {
 	 */
 	@org.junit.Before
 	public void setUp() throws Exception {
-		floorSubsystemMethods = new FloorSubsystem(7);
+		floorSubsystemMethods = new FloorSubsystem();
 	}
 
 	/**
@@ -27,7 +27,7 @@ public class FloorSubsystemTest {
 	 */
 	@org.junit.Test
 	public void testFloorSubsystem() {
-		assertNotNull(new FloorSubsystem(7));
+		assertNotNull(new FloorSubsystem());
 	}
 
 	/**

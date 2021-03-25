@@ -1,0 +1,6 @@
+InputFile input.txt
+Num_elevators 4
+Num_floors 22
+ElevToScheduler 14000
+SchedulerToFloor 14001
+ElevToFloor 14002
