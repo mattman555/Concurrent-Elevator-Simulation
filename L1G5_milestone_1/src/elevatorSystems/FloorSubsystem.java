@@ -115,7 +115,7 @@ public class FloorSubsystem implements Runnable{
 			ArrayList<Request> requests = new ArrayList<>();
 			while (line != null) {
 				String[] lineArr = line.split(" "); 
-				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3])); 
+				Request request = new Request(lineArr[0], Integer.parseInt(lineArr[1]), lineArr[2], Integer.parseInt(lineArr[3]), Integer.parseInt(lineArr[4])); 
 				if(validateRequest(request)) 
 					requests.add(request);
 				line = reader.readLine();
