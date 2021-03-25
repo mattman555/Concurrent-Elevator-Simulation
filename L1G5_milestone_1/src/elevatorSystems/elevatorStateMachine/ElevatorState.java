@@ -72,5 +72,34 @@ public abstract class ElevatorState {
 	public void exit() {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
+
+	/**
+	 * Default Method for the errorExit event
+	 */
+	public void errorExit() {
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");	
+	}
+	
+	/**
+	 * Default Method for the doorStuckError event
+	 */
+	public void doorStuckError() {
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");	
+	}
+	
+	/**
+	 * Default Method for the doorWaitevent
+	 */
+	public void doorWait() {
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");	
+	}
+	
+	/**
+	 * Default Method for the shutdown
+	 */
+	public void shutdown() {
+		throw new IllegalArgumentException("Elevator is in an Incorrect State");	
+	}
+	
 	
 }

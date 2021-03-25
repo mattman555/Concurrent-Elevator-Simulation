@@ -22,4 +22,12 @@ public class End extends ElevatorState {
 	public void exit() {
 		System.out.println("Elevator " + elevator.getId() + ": All requests processed Transition to Final state");
 	}
+	
+	/**
+	 * saying that it is in its final state
+	 */
+	@Override
+	public void errorExit() {
+		System.out.println("Elevator " + elevator.getId() + ": Has Shutdown, cannot be used");
+	}
 }

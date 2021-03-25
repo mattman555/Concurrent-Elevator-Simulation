@@ -21,25 +21,33 @@ import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
 
 /**
  * @author Matthew Harris 101073502
+ * @author Kevin Belanger 101121709
  *
  */
 public class FloorSubsystem implements Runnable{
 
 	private ArrayList<Request> requests;
-	private final int MAX_FLOORS;
 	private Hashtable<String, Boolean> lamp;
-	private final String FILENAME = "TestFile.txt";
-	DatagramSocket schedulerSocket, elevatorSocket;
+	private final String DEFAULT_FILENAME = "TestFile.txt";
+	private final int DEFAULT_NUM_FLOORS = 22;
+	private final int DEFAULT_SCHEDULER_TO_FLOOR_PORT = 14001;
+	private final int DEFAULT_ELEV_TO_FLOOR_PORT = 14002;
+	private String inputFilename;
+	private int numFloors;
+	private int schedulerToFloorPort;
+	private int elevToFloorPort;
+	private final String CONFIG = "Config.txt";
+	private DatagramSocket schedulerSocket, elevatorSocket;
 	/**
 	 * Constructor for the floor subsystem set all the fields
 	 */
-	public FloorSubsystem(int maxFloors) {
+	public FloorSubsystem() {
+		readConfig(CONFIG);
 		this.requests = new ArrayList<Request>();
-		this.MAX_FLOORS = maxFloors;
 		this.lamp = new Hashtable<String, Boolean>();
 		try {
-			this.schedulerSocket = new DatagramSocket(14001);
-			this.elevatorSocket = new DatagramSocket(14002);
+			this.schedulerSocket = new DatagramSocket(schedulerToFloorPort);
+			this.elevatorSocket = new DatagramSocket(elevToFloorPort);
 		} catch (SocketException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -72,9 +80,9 @@ public class FloorSubsystem implements Runnable{
 		int[] time = request.getTime();
 		//later change these into smaller checking methods
 		if((time[0] >= 0 && time[0] <= 24) && (time[1] >= 0 && time[1] <= 59) && (time[2] >= 0 && time[2] <= 59) && (time[3] >= 0 && time[3] <= 999)) { 
-			if(request.getFloor() > 0 && request.getFloor()<=MAX_FLOORS) {
+			if(request.getFloor() > 0 && request.getFloor()<=numFloors) {
 				if(request.getFloorButton().equals(Direction.UP) || request.getFloorButton().equals(Direction.DOWN)) {
-					if(request.getCarButton() > 0 && request.getCarButton() <= MAX_FLOORS && request.getCarButton() != request.getFloor()) {
+					if(request.getCarButton() > 0 && request.getCarButton() <= numFloors && request.getCarButton() != request.getFloor()) {
 						if(request.getErrorCode()>=0 && request.getErrorCode()<=2) {
 							return true;	
 						}
@@ -124,6 +132,48 @@ public class FloorSubsystem implements Runnable{
 			}
 			System.out.println("All requests read from file and validated");
 			this.requests = requests;
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * reads the config file line by line and generates the 
+	 * array of strings to be passed to other classes
+	 * @param filename the file to read with extension
+	 */
+	private void readConfig(String filename) {
+		BufferedReader reader;
+		this.inputFilename = DEFAULT_FILENAME; // setting default values in case they aren't present
+		this.numFloors = DEFAULT_NUM_FLOORS;
+		this.schedulerToFloorPort = DEFAULT_SCHEDULER_TO_FLOOR_PORT;
+		this.elevToFloorPort = DEFAULT_ELEV_TO_FLOOR_PORT;
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] lineArr = line.split(" "); 
+				String config = lineArr[0]; 
+				switch(config) {
+					case "InputFile":
+						this.inputFilename = lineArr[1];
+						break;
+					case "Num_Floors":
+						this.numFloors = Integer.parseInt(lineArr[1]);
+						break;
+					case "SchedulerToFloor":
+						this.schedulerToFloorPort = Integer.parseInt(lineArr[1]);
+						break;
+					case "ElevToFloor":
+						this.elevToFloorPort = Integer.parseInt(lineArr[1]);
+						break;
+					default:
+						break;
+				}
+				line = reader.readLine();
+			}
+			System.out.println("All configurations read from file");
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -285,7 +335,7 @@ public class FloorSubsystem implements Runnable{
 	 */
 	@Override
 	public void run() {
-		readFile(FILENAME);
+		readFile(inputFilename);
 		respondWithRequests();
 		while(requests.size()>0) {
 			processCompletedRequests();
@@ -297,7 +347,7 @@ public class FloorSubsystem implements Runnable{
 	}
 
 	public static void main(String[] args) {
-		FloorSubsystem floorSubsystem = new FloorSubsystem(7);
+		FloorSubsystem floorSubsystem = new FloorSubsystem();
 		Thread floorSubsystemThread = new Thread(floorSubsystem,"FloorSubsystem");
 		floorSubsystemThread.start();
 	}

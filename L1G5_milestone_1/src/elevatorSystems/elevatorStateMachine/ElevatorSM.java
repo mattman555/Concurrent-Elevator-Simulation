@@ -1,5 +1,7 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -17,6 +19,7 @@ import elevatorSystems.Elevator;
  * @author Matthew Harris 101073502
  * @author Jay McCracken 101066860
  * @author Nick Coutts 101072875
+ * @author Kevin Belanger 101121709
  *
  *	The State machine for the elevator, switching states based on event
  */
@@ -25,12 +28,20 @@ public class ElevatorSM implements Runnable{
 	private ElevatorStates current;
 	private Hashtable<ElevatorStates, ElevatorState> states;
 	private Hashtable<ElevatorStates, List<ElevatorStates>> transitions;
+	private final static int DEFAULT_NUM_ELEVATORS = 4;
+	private final static int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
+	private final static int DEFAULT_ELEV_TO_FLOOR_PORT = 14002;
+	private int elevToSchedulerPort;
+	private int elevToFloorPort;
+	private final static String CONFIG = "Config.txt";
 	private static final int INVALID_FLOOR = 10000;
+	private Integer errorCode;
 	private Elevator elevator;
 	private DatagramSocket sendReceiveSocket;
 ;
 
 	public ElevatorSM(Elevator elevator) {
+		readConfig(CONFIG);
 		this.elevator =  elevator;
 		this.current = ElevatorStates.DOORS_CLOSED;
 		generateTransitionHashmap();
@@ -50,6 +61,7 @@ public class ElevatorSM implements Runnable{
 		this.transitions.put(ElevatorStates.DOORS_CLOSED,  List.of(ElevatorStates.ARRIVED, ElevatorStates.MOVING, ElevatorStates.END));
 		this.transitions.put(ElevatorStates.MOVING, List.of(ElevatorStates.ARRIVED));
 		this.transitions.put(ElevatorStates.ARRIVED, List.of(ElevatorStates.DOORS_OPEN));
+		this.transitions.put(ElevatorStates.DOOR_STUCK, List.of(ElevatorStates.ARRIVED));
 		this.transitions.put(ElevatorStates.DOORS_OPEN, List.of(ElevatorStates.UPDATE_LAMPS));
 		this.transitions.put(ElevatorStates.UPDATE_LAMPS, List.of(ElevatorStates.DOORS_CLOSED));
 	}
@@ -63,6 +75,7 @@ public class ElevatorSM implements Runnable{
 		this.states.put(ElevatorStates.MOVING,  new Moving(this.elevator));
 		this.states.put(ElevatorStates.ARRIVED,  new Arrived(this.elevator));
 		this.states.put(ElevatorStates.DOORS_OPEN, new DoorsOpen(this.elevator));
+		this.states.put(ElevatorStates.DOOR_STUCK, new DoorStuck(this.elevator));
 		this.states.put(ElevatorStates.UPDATE_LAMPS, new UpdateLamps(this.elevator));
 		this.states.put(ElevatorStates.END, new End(this.elevator));
 	}
@@ -115,6 +128,14 @@ public class ElevatorSM implements Runnable{
 	}
 	
 	/**
+	 * When a error shutdown occurs, switch to the END state
+	 */
+	public void shutdown() {
+		states.get(current).shutdown();
+		nextState(ElevatorStates.END);
+	}
+	
+	/**
 	 * When the elevator arrives at the required destination
 	 * switch to arrived state
 	 */
@@ -147,6 +168,27 @@ public class ElevatorSM implements Runnable{
 	 */
 	public void exit() {
 		states.get(current).exit();
+	}
+	
+	/**
+	 * exit state to terminate the state machine
+	 */
+	public void errorExit() {
+		states.get(current).errorExit();
+	}
+	
+	/**
+	 * If an type 1 error occurs, the doors are stuck transition to DoorStuck state
+	 * @param next the state to go to after
+	 */
+	public void doorStuckError(ElevatorStates next) {
+		states.get(current).doorStuckError();
+		nextState(next);
+	}
+	
+	public void doorWait(ElevatorStates next) {
+		states.get(current).doorWait();
+		nextState(next);
 	}
 	
 	/**
@@ -183,8 +225,47 @@ public class ElevatorSM implements Runnable{
 	    	System.exit(1);
 	    }
 	    ElevatorRPCRequest request = this.elevator.readResponse(receivePacket);
+	    errorCode = request.getErrorCode();
 	    return Map.entry(request.getDestination(), request.getMotorDirection());
 		
+	}
+	
+
+	/**
+	 * reads the config file line by line and generates the 
+	 * array of strings to be passed to other classes
+	 * @param filename the file to read with extension
+	 */
+	public static int[] readConfig(String filename) {
+		BufferedReader reader;
+		int [] values = {DEFAULT_NUM_ELEVATORS,DEFAULT_ELEV_TO_SCHEDULER_PORT,DEFAULT_ELEV_TO_FLOOR_PORT};
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] lineArr = line.split(" "); 
+				String config = lineArr[0]; 
+				switch(config) {
+					case "Num_elevators":
+						values[0] = Integer.parseInt(lineArr[1]);
+						break;
+					case "ElevToScheduler":
+						values[1] = Integer.parseInt(lineArr[1]);
+						break;
+					case "ElevToFloor":
+						values[2] = Integer.parseInt(lineArr[1]);
+						break;
+					default:
+						break;
+				}
+				line = reader.readLine();
+			}
+			System.out.println("All configurations read from file");
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return values;
 	}
 	
 	@Override
@@ -217,6 +298,9 @@ public class ElevatorSM implements Runnable{
 				else if(destination.getValue() == Direction.STATIONARY) {
 					this.arrivesAtDestination();
 				}
+				else if (errorCode == 2) {
+					this.shutdown();
+				}
 				break;
 			case MOVING:
 				if(destinationFloor == this.elevator.getElevatorLocation()) {
@@ -227,7 +311,15 @@ public class ElevatorSM implements Runnable{
 				}
 				break;
 			case ARRIVED:
+				if (errorCode == 1) {
+					errorCode = 0;
+					this.doorStuckError(ElevatorStates.DOOR_STUCK);
+					break;
+				}
 				this.toggleDoors(ElevatorStates.DOORS_OPEN);
+				break;
+			case DOOR_STUCK:
+				this.doorWait(ElevatorStates.ARRIVED);
 				break;
 			case DOORS_OPEN:
 				lamps = this.getLamps();
@@ -237,21 +329,27 @@ public class ElevatorSM implements Runnable{
 				this.toggleDoors(ElevatorStates.DOORS_CLOSED);
 				break;
 			case END:
+				if (errorCode == 2) {
+					errorCode = 0;
+					this.errorExit();
+					sendReceiveSocket.close();
+					return;
+				}
 				this.exit();
 				sendReceiveSocket.close();
 				return;
 			}
 		}
 	}
+	
 	public static void main(String[] args) {
-		Elevator elevator1 = new Elevator(1);
-		Elevator elevator2 = new Elevator(2);
-		Elevator elevator3 = new Elevator(3);
-		Thread elevatorThread1 = new Thread(new ElevatorSM(elevator1),"Elevator 1");
-		Thread elevatorThread2 = new Thread(new ElevatorSM(elevator2),"Elevator 2");
-		Thread elevatorThread3 = new Thread(new ElevatorSM(elevator3),"Elevator 3");
-		elevatorThread1.start();
-		elevatorThread2.start();
-		elevatorThread3.start();
+		int[] values = readConfig(CONFIG);
+		int numElevators = values[0];
+		int schedulerPort = values[1];
+		int floorPort = values[2];
+		for (int i=1; i <= numElevators; i++) {
+			Thread elevatorThread = new Thread(new ElevatorSM(new Elevator(i,schedulerPort,floorPort)),"Elevator " + i);
+			elevatorThread.start();
+		}
 	}
 }

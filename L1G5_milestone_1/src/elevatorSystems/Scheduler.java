@@ -1,6 +1,8 @@
 package elevatorSystems;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,13 +25,18 @@ public class Scheduler implements Runnable {
 	private ArrayList<RequestGroup> requestBuckets;
 	private Hashtable<Integer, RequestGroup> inProgressBuckets;
 	private ArrayList<Request> completedRequests;
-	public static final int FLOOR_SUB_PORT = 14001;
+	private final int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
+	private final int DEFAULT_SCHEDULER_TO_FLOOR_PORT = 14001;
+	private static int schedulerToFloorPort;
+	private int elevToSchedulerPort;
+	private final String CONFIG = "Config.txt";
 	private DatagramSocket elevatorSocket, floorSocket;
 	
 	/**
 	 * Constructor for the scheduler class
 	 */
 	public Scheduler() {
+		readConfig(CONFIG);
 		SchedulerState[] statearr =
 			{new AwaitingRequests(this), 
 			 new UnsortedRequests(this), 
@@ -43,7 +50,7 @@ public class Scheduler implements Runnable {
 		this.completedRequests = new ArrayList<>();
 		this.inProgressBuckets = new Hashtable<>();
 		try {
-			elevatorSocket = new DatagramSocket(14000);
+			elevatorSocket = new DatagramSocket(elevToSchedulerPort);
 			floorSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -248,7 +255,7 @@ public class Scheduler implements Runnable {
 		
 		byte[] sendData = stream.toByteArray();
 		try {
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), Scheduler.FLOOR_SUB_PORT);
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), schedulerToFloorPort);
 			floorSocket.send(sendPacket);
 			System.out.println("Packet sent to floor subsystem with the list of completed requests");
 	    }
@@ -301,6 +308,48 @@ public class Scheduler implements Runnable {
 	    }
 	}
 	
+	/**
+	 * reads the config file line by line and generates the 
+	 * array of strings to be passed to other classes
+	 * @param filename the file to read with extension
+	 */
+	private void readConfig(String filename) {
+		BufferedReader reader;
+		this.elevToSchedulerPort = DEFAULT_ELEV_TO_SCHEDULER_PORT; // setting default values in case they aren't present
+		Scheduler.schedulerToFloorPort = DEFAULT_SCHEDULER_TO_FLOOR_PORT; 
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] lineArr = line.split(" "); 
+				String config = lineArr[0]; 
+				switch(config) {
+					case "ElevToSchedulerPort":
+						this.elevToSchedulerPort = Integer.parseInt(lineArr[1]);
+						break;
+					case "SchedulerToFloorPort":
+						Scheduler.schedulerToFloorPort = Integer.parseInt(lineArr[1]);
+						break;
+					default:
+						break;
+				}
+				line = reader.readLine();
+			}
+			System.out.println("All configurations read from file");
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Gets the schedulerToFloorPort
+	 * @return 
+	 * @return the schedulerToFloorPort number.
+	 */
+	public static int getSchedulerToFloorPort() {
+		return schedulerToFloorPort;
+	}
 	
 	@Override
 	/**
