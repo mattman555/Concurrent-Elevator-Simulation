@@ -110,6 +110,7 @@ public class FloorSubsystem implements Runnable{
 				}
 			}
 		}
+		System.out.println("Floor Subsystem: " + requests.size() + " remaining requests.");
 	}
 	
 	/**

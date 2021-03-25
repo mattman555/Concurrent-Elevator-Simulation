@@ -118,6 +118,7 @@ public class Scheduler implements Runnable {
 		int curr = current;
 		Entry<Integer,Direction> entry = states[curr].requestTask(request.getId(), request.getCurrentLocation());
 		int errorCode = this.inProgressBuckets.get(request.getId()).getErrorCode(entry.getKey()); //get the error code for the destination floor
+		System.out.println(entry.getKey()+ " " +  entry.getValue() + " " + errorCode);
 		request.setDestination(entry.getKey(), entry.getValue(), errorCode); //modify the request
 		sendRPCRequest(request, address, port); //send the modified request back
 		
@@ -152,7 +153,7 @@ public class Scheduler implements Runnable {
 	 * Adds a request to the requests list
 	 * @param request the request to be added
 	 */
-	public  void addRequest(Request request) {
+	public void addRequest(Request request) {
 		this.requests.add(request);
 		System.out.println("Scheduler: Gets Request for floor " + request.getFloor() + " from floor subsystem");
 	}
@@ -187,8 +188,14 @@ public class Scheduler implements Runnable {
 	    request.setDoor(!request.getIsDoorOpen()); //change the doors state
 	    sendRPCRequest(request, address, port);
 	    System.out.println("Scheduler: Toggling Elevator " + request.getId() + " Doors");
-	    
-	   
+	}
+	
+	public void shutdownElevator(ElevatorRPCRequest request) {
+		int id = request.getId();
+		ArrayList<Request> requests = inProgressBuckets.get(id).getRequests();
+		for(Request r : requests) {
+			completedRequests.add(r);
+		}
 	}
 	
 	/**
@@ -232,6 +239,8 @@ public class Scheduler implements Runnable {
 			case TOGGLE_DOORS:
 				toggleDoors(request, receivePacket.getAddress(),receivePacket.getPort());
 				break;
+			case ELEVATOR_SHUTDOWN:
+				shutdownElevator(request);
 			default:
 				break;
 		}
@@ -280,7 +289,7 @@ public class Scheduler implements Runnable {
 	    	floorSocket.close();
 	    	elevatorSocket.close();
 	    	System.out.println("Completed all requests");
-	    	System.exit(2);
+	    	System.exit(0);
 	    }
 	    completedRequests.clear(); //remove those completed requests		
 		

@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
-import elevatorSystems.FloorSubsystem;
 
 /**
  * @author Matthew Harris 101073502
@@ -92,6 +91,6 @@ public class DoorsClosed extends ElevatorState {
 	 */
 	@Override
 	public void shutdown() {
-		System.out.println("Elevator " + elevator.getId() + ": Has Shutdown");
+		System.out.println("Elevator " + elevator.getId() + ": is shutting down");
 	}
 }
