@@ -75,7 +75,9 @@ public class FloorSubsystem implements Runnable{
 			if(request.getFloor() > 0 && request.getFloor()<=MAX_FLOORS) {
 				if(request.getFloorButton().equals(Direction.UP) || request.getFloorButton().equals(Direction.DOWN)) {
 					if(request.getCarButton() > 0 && request.getCarButton() <= MAX_FLOORS && request.getCarButton() != request.getFloor()) {
-						return true;
+						if(request.getErrorType()>=0 && request.getErrorType()<=2) {
+							return true;	
+						}
 					}
 				}
 			}
