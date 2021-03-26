@@ -1,21 +1,16 @@
 package elevatorSystems.schedulerStateMachine;
 
-import elevatorSystems.Scheduler;
-
 /*
 * @author Nick Coutts
 * @author Matthew Harris
 */
 
 public class End extends SchedulerState {
-	private Scheduler scheduler;
 
 	/**
 	 * Constructor for the End class
 	 */
-	public End(Scheduler scheduler) {
-		this.scheduler = scheduler;
-	}
+	public End() {}
 	
 	/**
 	 * Method for the system to exit

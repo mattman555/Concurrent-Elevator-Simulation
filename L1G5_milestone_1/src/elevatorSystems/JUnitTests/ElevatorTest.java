@@ -15,7 +15,7 @@ public class ElevatorTest {
 	
 	@org.junit.Before
 	public void setUp() throws Exception {
-		elevatorMethods = new Elevator(1);
+		elevatorMethods = new Elevator(1,14000,14002);
 	}
 
 	/**

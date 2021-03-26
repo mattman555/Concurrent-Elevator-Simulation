@@ -42,7 +42,7 @@ public class Scheduler implements Runnable {
 			 new UnsortedRequests(this), 
 			 new SortedRequests(this), 
 			 new InProgress(this),
-			 new End(this)};
+			 new End()};
 		this.states = statearr;
 		this.current = 0;
 		this.requests = new ArrayList<Request>();
