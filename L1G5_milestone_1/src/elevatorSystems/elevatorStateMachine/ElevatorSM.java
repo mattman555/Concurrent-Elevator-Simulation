@@ -31,8 +31,6 @@ public class ElevatorSM implements Runnable{
 	private final static int DEFAULT_NUM_ELEVATORS = 4;
 	private final static int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
 	private final static int DEFAULT_ELEV_TO_FLOOR_PORT = 14002;
-	private int elevToSchedulerPort;
-	private int elevToFloorPort;
 	private final static String CONFIG = "Config.txt";
 	private static final int INVALID_FLOOR = 10000;
 	private Integer errorCode;
