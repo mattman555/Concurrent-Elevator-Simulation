@@ -184,6 +184,10 @@ public class ElevatorSM implements Runnable{
 		nextState(next);
 	}
 	
+	/**
+	 * Make the thread wait 5 seconds then transition back to arrived state
+	 * @param next
+	 */
 	public void doorWait(ElevatorStates next) {
 		states.get(current).doorWait();
 		nextState(next);
@@ -224,6 +228,7 @@ public class ElevatorSM implements Runnable{
 	    }
 	    ElevatorRPCRequest request = this.elevator.readResponse(receivePacket);
 	    errorCode = request.getErrorCode();
+	    System.out.println(errorCode);
 	    return Map.entry(request.getDestination(), request.getMotorDirection());
 		
 	}
@@ -309,7 +314,7 @@ public class ElevatorSM implements Runnable{
 				}
 				break;
 			case ARRIVED:
-				if (errorCode == 1) {
+				if (errorCode == 1) { //sending to doors stuck state to restart doors before continuing
 					errorCode = 0;
 					this.doorStuckError(ElevatorStates.DOOR_STUCK);
 					break;
@@ -327,7 +332,7 @@ public class ElevatorSM implements Runnable{
 				this.toggleDoors(ElevatorStates.DOORS_CLOSED);
 				break;
 			case END:
-				if (errorCode == 2) {
+				if (errorCode == 2) { //ending just on elevator when a shutdown error occurs
 					errorCode = 0;
 					this.errorExit();
 					sendReceiveSocket.close();
