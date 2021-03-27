@@ -44,7 +44,7 @@ public class End extends ElevatorState {
 		DatagramPacket sendPacket = this.elevator.generatePacket(RPCRequestType.ELEVATOR_SHUTDOWN);
 		try {
 	         sendReceiveSocket.send(sendPacket);
-	         System.out.println("Packet sent to the schduler with a notification this elevator has shutdown");
+	         System.out.println("Packet sent to the scheduler with a notification this elevator has shutdown");
 	    }
 		catch (IOException e) {
 	         e.printStackTrace();

@@ -66,7 +66,7 @@ public class AwaitingRequests extends SchedulerState {
 	         e.printStackTrace();
 	         System.exit(1);
 	    }
-		byte response[] = new byte[1000];
+		byte response[] = new byte[10000];
 	    DatagramPacket receivePacket = new DatagramPacket(response, response.length);
 
 	    try {
