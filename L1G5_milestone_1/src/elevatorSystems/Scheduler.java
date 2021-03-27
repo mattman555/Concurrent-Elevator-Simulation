@@ -23,6 +23,7 @@ public class Scheduler implements Runnable {
 	private int[][] transitions = {{0,1}, {1,2}, {3}, {3,4}};
 	private ArrayList<Request> requests;
 	private ArrayList<RequestGroup> requestBuckets;
+	public ArrayList<int[]> predictedTimes;
 	private Hashtable<Integer, RequestGroup> inProgressBuckets;
 	private ArrayList<Request> completedRequests;
 	private final int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
@@ -56,6 +57,7 @@ public class Scheduler implements Runnable {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		predictedTimes = new ArrayList<int[]>();
 	}
 	
 	/**
@@ -363,6 +365,61 @@ public class Scheduler implements Runnable {
 		return schedulerToFloorPort;
 	}
 	
+	private void calculateTime() {
+		System.out.println("##############################################");
+		final int timeTripFloors = 7000; //ms
+		final int openDoorsTime = 2000; //ms
+		final int closeDoorsTime = 9000; //ms
+		
+		for (Request r : requests) {
+			int [] t = r.getTime().clone();
+			int floors = Math.abs(r.getCarButton()-r.getFloor());
+			int totalTimeMs = openDoorsTime + closeDoorsTime + (timeTripFloors*floors);
+			int [] finishTime = countUp(t,totalTimeMs);
+			predictedTimes.add(finishTime);
+		}
+		
+		for(int i=0;i<predictedTimes.size();i++) {
+			System.out.println("Request: " + requests.get(i).toString() + " Will be completed at -> {" + predictedTimes.get(i)[0] + ":" + predictedTimes.get(i)[1] + ":" + predictedTimes.get(i)[2] + "." + predictedTimes.get(i)[3] + "}");
+		}
+	}
+	
+	public static int[] countUp(int[] time , int ms) { //This just count up the timer
+		
+		for (int i=0;i<ms;i++) {
+			boolean updec = time[3]<999;//decimals
+			boolean upseg = time[2]<59;//seconds;
+			boolean upmin = time[1]<59;//minutes
+			boolean uphr = time[0]<23;//hours
+			
+			if (updec) {
+				time[3]++;
+			}
+			else {
+				time[3]=0;
+				if (upseg) {
+					time[2]++;
+				}
+				else {
+					time[2]=0;
+					if (upmin) {
+						time[1]++;
+					}
+					else {
+						time[1]=0;
+						if (uphr) {
+							time[0]++;
+						}
+						else {
+							time[0]=0;
+						}
+					}
+				}
+			}
+		}
+		return time;
+	}
+	
 	@Override
 	/**
 	 * The running of the elevator, travel to new floor, updating lamps
@@ -376,11 +433,14 @@ public class Scheduler implements Runnable {
 					this.getListOfRequests();
 					break;
 				case 1:
+					//Predict finish time
+					calculateTime();
 					//Unsorted requests
 					System.out.println("Scheduler: Sorting requests");
 					this.sortRequests();
 					break;
 				case 2:
+					
 					//Sorted requests
 					receiveRequest();
 					break;
