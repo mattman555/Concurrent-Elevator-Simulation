@@ -203,10 +203,10 @@ public class ElevatorSM implements Runnable{
 	
 	/**
 	 * Sends an packet with a ElevatorRPCRequest type get request, asking for information of where to 
-	 * go next, Then waits for a responce and reads the response of the filled in class variables
-	 * @return the new destination and motor directoion of the elevator
+	 * go next, Then waits for a response and returns the received RPCRequest 
+	 * @return the new destination and motor direction of the elevator
 	 */
-	private Entry<Integer,Direction> requestTask(){
+	private ElevatorRPCRequest requestTask(){
 		DatagramPacket requestPacket = this.elevator.generatePacket(RPCRequestType.GET_REQUEST);
 		try {
 	         sendReceiveSocket.send(requestPacket);
@@ -226,11 +226,7 @@ public class ElevatorSM implements Runnable{
 	    	e.printStackTrace();
 	    	System.exit(1);
 	    }
-	    ElevatorRPCRequest request = this.elevator.readResponse(receivePacket);
-	    errorCode = request.getErrorCode();
-	    System.out.println(errorCode);
-	    return Map.entry(request.getDestination(), request.getMotorDirection());
-		
+	    return this.elevator.readResponse(receivePacket);	
 	}
 	
 
@@ -286,22 +282,25 @@ public class ElevatorSM implements Runnable{
 			switch(current) {
 			case DOORS_CLOSED:
 				//Get the request of the next floor with the motor direction from the scheduler
-				Entry<Integer,Direction> destination = requestTask();
-				if(destination == null) {
-					break;
-				}
-				else if(destination.getKey() == INVALID_FLOOR) {//no more requests move to end
+				ElevatorRPCRequest request = requestTask();
+				int destFloor = request.getDestination();
+				Direction motorDir = request.getMotorDirection();
+				errorCode = request.getErrorCode();
+				System.out.println("Elevator " + elevator.getId() + ": error code " + errorCode + " for next destination");
+				if(destFloor == INVALID_FLOOR) {//no more requests move to end
 					this.invalidRequest();
 				}
 				else if (errorCode == 2) {
 					this.shutdown();
 				}
-				else if(destination.getValue() == Direction.UP || destination.getValue() == Direction.DOWN) {
-					destinationFloor = destination.getKey();
-					destinationDirection = destination.getValue();
-					this.validRequest(destination);
+				else if(motorDir == Direction.UP || motorDir == Direction.DOWN) {
+					destinationFloor = destFloor;
+					destinationDirection = motorDir;
+					this.validRequest(Map.entry(destinationFloor, destinationDirection));
 				}
-				else if(destination.getValue() == Direction.STATIONARY) {
+				else if(motorDir == Direction.STATIONARY) {
+					destinationDirection = request.getRequestDirection();
+					elevator.setMotor(destinationDirection);
 					this.arrivesAtDestination();
 				}
 				break;

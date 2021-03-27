@@ -116,9 +116,10 @@ public class Scheduler implements Runnable {
 	 */
 	public void requestTask(ElevatorRPCRequest request, InetAddress address, int port) {	
 		int curr = current;
-		Entry<Integer,Direction> entry = states[curr].requestTask(request.getId(), request.getCurrentLocation());
+		Entry<Integer,Direction> entry = states[curr].requestTask(request.getId(), request.getCurrentLocation()); //the direction here is the relative direction of the floor destination
 		int errorCode = this.inProgressBuckets.get(request.getId()).getErrorCode(entry.getKey()); //get the error code for the destination floor
-		System.out.println(entry.getKey()+ " " +  entry.getValue() + " " + errorCode);
+		Direction dir = this.inProgressBuckets.get(request.getId()).getDirection();
+		request.setRequestDirection(dir);// sets the direction the request group is requesting to go
 		request.setDestination(entry.getKey(), entry.getValue(), errorCode); //modify the request
 		sendRPCRequest(request, address, port); //send the modified request back
 		
@@ -192,6 +193,7 @@ public class Scheduler implements Runnable {
 	
 	public void shutdownElevator(ElevatorRPCRequest request) {
 		int id = request.getId();
+		System.out.println("Elevator " + id + " has shutdown");
 		ArrayList<Request> requests = inProgressBuckets.get(id).getRequests();
 		for(Request r : requests) {
 			completedRequests.add(r);
@@ -207,7 +209,7 @@ public class Scheduler implements Runnable {
 	    DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 		try {
 	         // Block until a datagram is received via elevatorSocket.  
-			System.out.println("waiting for a new request packet");
+			System.out.println("Waiting for a new request packet");
 			elevatorSocket.receive(receivePacket);
 			System.out.println("Packet recieved with a request for a new destination");
 	    } catch(IOException e) {
@@ -241,6 +243,7 @@ public class Scheduler implements Runnable {
 				break;
 			case ELEVATOR_SHUTDOWN:
 				shutdownElevator(request);
+				sendCompletedRequests();
 			default:
 				break;
 		}

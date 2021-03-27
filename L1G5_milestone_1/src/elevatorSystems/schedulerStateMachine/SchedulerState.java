@@ -17,7 +17,7 @@ public abstract class SchedulerState {
 	 * default implementation of the requestTask method
 	 * @param currLocation current location of the elevator
 	 */
-	public Entry<Integer,Direction> requestTask(int id,int currLocation) {
+	public Entry<Integer,Direction> requestTask(int id, int currLocation) {
 		throw new IllegalArgumentException("Scheduler is in an Incorrect State");
 	}
 

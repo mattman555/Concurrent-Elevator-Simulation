@@ -56,8 +56,20 @@ public class SortedRequests extends SchedulerState {
 		}
 		
 		Integer destination = scheduler.getInProgressBucket(id).getNextDestination();
-		Direction direction = destination > currLocation ? Direction.UP : Direction.DOWN;
-		System.out.println("Scheduler: Sends Elevator " + id  + " to move " + direction + " to floor " + destination);
+		int errorCode = scheduler.getInProgressBucket(id).getErrorCode(destination);
+		Direction direction;
+		if(destination > currLocation) {
+			direction = Direction.UP;
+			System.out.println("Scheduler: Sends Elevator " + id + " to move " + direction + " to floor " + destination + " with error code " + errorCode);
+		}
+		else if (destination == currLocation) {
+			direction = Direction.STATIONARY;
+			System.out.println("Scheduler: Sends Elevator " + id + " to floor " + destination + " with error code " + errorCode + " and its already there");
+		}
+		else {
+			direction = Direction.DOWN;
+			System.out.println("Scheduler: Sends Elevator " + id + " to move " + direction + " to floor " + destination+ " with error code " + errorCode);
+		}
 		return Map.entry(destination, direction);
 	}
 	
