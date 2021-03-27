@@ -22,6 +22,7 @@ public class ElevatorRPCRequest implements Serializable{
 	private int id;
 	private int errorCode;
 	private Direction motorDirection;
+	private Direction requestDirection;
 	private int destination;
 	private ArrayList<Integer> lamps;
 	
@@ -151,6 +152,21 @@ public class ElevatorRPCRequest implements Serializable{
 	 */
 	public Direction getMotorDirection() {
 		return motorDirection;
+	}
+	/**
+	 * Gets the direction of the request
+	 * @return direction of the request
+	 */
+	public Direction getRequestDirection() {
+		return requestDirection;
+	}
+
+	/**
+	 * Sets the destination of the request
+	 * @param requestDirection sets the request direction to be this parameter
+	 */
+	public void setRequestDirection(Direction requestDirection) {
+		this.requestDirection = requestDirection;
 	}
 	
 	/**

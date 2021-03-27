@@ -61,8 +61,10 @@ public class FloorSubsystem implements Runnable{
 	 * @param on whether to turn the lamp on or off
 	 */
 	public void setFloorLamp(int floor, Direction direction, boolean on) {
-		String floorAndDirection = ((Integer)floor).toString() + direction.toString();
-		lamp.put(floorAndDirection, on);
+		if(direction != Direction.STATIONARY) {
+			String floorAndDirection = ((Integer)floor).toString() + direction.toString();
+			lamp.put(floorAndDirection, on);
+		}
 	}
 	/**
 	 *get the lamp hashtable
@@ -200,7 +202,7 @@ public class FloorSubsystem implements Runnable{
 	}
 	
 	/**
-	 * respond too a request for the requests from the schduler
+	 * respond too a request for the requests from the scheduler
 	 */
 	private void respondWithRequests() {
 		byte data[] = new byte[1];
@@ -238,7 +240,7 @@ public class FloorSubsystem implements Runnable{
 	}
 	
 	/**
-	 * get the list of completed requests from the schdulers packet
+	 * get the list of completed requests from the schedulers packet
 	 * and makes a list of the requests that are complete
 	 * @return the new list of completed requests
 	 */
@@ -307,7 +309,7 @@ public class FloorSubsystem implements Runnable{
 			e.printStackTrace();
 			System.exit(1);
 		}
-		System.out.println("changing lamps");
+		System.out.println("Floor Subsystem: Changing Lamps");
 		setFloorLamp(request.getCurrentLocation(), request.getMotorDirection(), false);
 		byte[] sendData = {1};
 		sendAck(sendData, elevatorSocket, receivePacket.getAddress(), receivePacket.getPort());

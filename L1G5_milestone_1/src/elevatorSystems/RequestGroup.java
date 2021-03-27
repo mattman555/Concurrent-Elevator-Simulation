@@ -13,13 +13,14 @@ public class RequestGroup {
 	private ArrayList<Integer> elevFloorLamps;
 	private ArrayList<Integer> route;
 	private HashMap<Integer,Integer> errorLookup;
-	
+	private Direction direction;
 	/**
 	 * Constructor for a request group, meant to be used for similar requests
 	 * @param requests the Requests that are to be part of a RequestGroup
 	 */
 	public RequestGroup(ArrayList<Request> requests) {
 		this.requests = requests;
+		this.direction = requests.get(0).getFloorButton();
 		this.elevFloorLamps = setElevatorFloorLamps();
 		this.route = setFloorRoute();
 		this.errorLookup = createErrorLookup();
@@ -53,7 +54,7 @@ public class RequestGroup {
 			if(!floors.contains(request.getCarButton())) //shouldn't add duplicate floors
 				floors.add(request.getCarButton());
 		}
-		bubbleSort(floors, requests.get(0).getFloorButton());
+		bubbleSort(floors, direction);
 		return floors;
 	}
 	
@@ -132,6 +133,13 @@ public class RequestGroup {
 	 */
 	public ArrayList<Integer> getElevatorFloorLamps() {
 		return elevFloorLamps;
+	}
+	/**
+	 * returns the direction of the request group.
+	 * @return
+	 */
+	public Direction getDirection() {
+		return this.direction;
 	}
 
 	/**
