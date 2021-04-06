@@ -1,4 +1,9 @@
 import javax.swing.*;
+
+import elevatorSystems.FloorSubsystem;
+import elevatorSystems.Scheduler;
+import elevatorSystems.elevatorStateMachine.ElevatorSM;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,14 +25,17 @@ public class guiFrame extends JFrame implements ActionListener{
     JTextField elevatorNumTextField = new JTextField();
     JTextField floorNumField = new JTextField();
     JButton confirmButton = new JButton("CONFIRM");
+    JButton runButton = new JButton("Run Program");
     BorderLayout layout = new BorderLayout();
     BorderLayout layout2 = new BorderLayout();
     GridLayout layoutGrid = new GridLayout(0,2);
+    FlowLayout layoutFlow = new FlowLayout();
     Color white = new Color(255, 255, 255);
     int numElevator;
     int numFloor;
     JLabel jlabels[];
     JLabel elevator1 = new JLabel("Elevator #1");
+    boolean readyToRun = false;
     
     guiFrame()
     {
@@ -41,6 +49,7 @@ public class guiFrame extends JFrame implements ActionListener{
         set.addActionListener(this);
         run.addActionListener(this);
         confirmButton.addActionListener(this);
+        runButton.addActionListener(this);
 
     }
     
@@ -76,7 +85,7 @@ public class guiFrame extends JFrame implements ActionListener{
 	   configLabel.setFont(new Font("Serif", Font.PLAIN, 24));
 	   configLabel.setHorizontalAlignment(getWidth()/2);
 	   
-	   containerRun.setBounds(50, 80, 300, 300);
+	   containerRun.setBounds(100, 80, 500, 500);
 	   
    }
    
@@ -98,45 +107,67 @@ public class guiFrame extends JFrame implements ActionListener{
        
        
        base.add(mb, BorderLayout.NORTH);
+       base.add(containerRun, BorderLayout.CENTER);
        base.add(containerSet, BorderLayout.CENTER);
+       changePanel(containerSet);
    }
 
 
    private void changePanel(JPanel panel) {
+	    panel.repaint();
 	    base.removeAll();
 	    base.add(mb, BorderLayout.NORTH);
 	    base.add(panel, BorderLayout.CENTER);
+	    if(readyToRun == true) {
+	    	base.add(runButton, BorderLayout.SOUTH);
+	    }
 	    base.doLayout();
 	    update(getGraphics());
 	}
    
    
-   private void elevatorSetUp(int i) {
+   public void elevatorSetUp() {
 	   layoutGrid.setColumns(numElevator);
-	   JLabel label = new JLabel("Elevator #" + i);
-//	   for(int i = 1; i != numElevator; i++) {
-//		   runElevator.add(new JLabel("Elevator #" + i));
-//	   }
-	   containerRun.add(label);
-	  // containerRun.add(runElevator, BorderLayout.CENTER);
+	   containerRun.removeAll();
+	   JLabel jlabels[] = new JLabel[numElevator];
+	   JPanel elevators[] = new JPanel[numElevator];
+	   
+	   for(int i = 0; i < jlabels.length; i++) {
+		   jlabels[i] = new JLabel("Elevator #:" + (i + 1));
+		   containerRun.add(jlabels[i]);
+	   }
+	   for(int i = 0; i < jlabels.length; i++) {
+		   elevators[i] = new JPanel();
+		   elevators[i].setLayout(layoutFlow);
+		   elevators[i].setBackground(Color.DARK_GRAY);
+		   containerRun.add(elevators[i]);
+	   }
+	   containerRun.doLayout();
+	   containerRun.revalidate();
+	   containerRun.repaint();
    }
    
    
    
-    @Override
+	@Override
     public void actionPerformed(ActionEvent e) {
     	if (e.getActionCommand().equals("Set")) {
+    		readyToRun = false;
     		changePanel(containerSet);
     	}
     	else if (e.getActionCommand().equals("Run")) {
-    		containerRun.setLayout(layoutGrid);
-    		containerRun.setBounds(50, 80, 300, 300);
-    		containerRun.add(new JButton("Button 1"));
+    		elevatorSetUp();
+    		readyToRun = true;
     		changePanel(containerRun);
     	}
     	else if (e.getActionCommand().equals("CONFIRM")) {
     		numElevator = Integer.parseInt(elevatorNumTextField.getText());
     		numFloor = Integer.parseInt(floorNumField.getText());
+    	}
+    	else if (e.getActionCommand().equals("Run Program")) {
+    		FloorSubsystem.main(null);
+    		Scheduler.main(null);
+    		ElevatorSM.main(null);
     	}
     }
 }
