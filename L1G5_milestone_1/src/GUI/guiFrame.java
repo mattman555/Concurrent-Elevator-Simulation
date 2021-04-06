@@ -1,5 +1,7 @@
+package GUI;
 import javax.swing.*;
 
+import elevatorSystems.Elevator;
 import elevatorSystems.FloorSubsystem;
 import elevatorSystems.Scheduler;
 import elevatorSystems.elevatorStateMachine.ElevatorSM;
@@ -29,13 +31,16 @@ public class guiFrame extends JFrame implements ActionListener{
     BorderLayout layout = new BorderLayout();
     BorderLayout layout2 = new BorderLayout();
     GridLayout layoutGrid = new GridLayout(0,2);
-    FlowLayout layoutFlow = new FlowLayout();
+    FlowLayout layoutFlow = new FlowLayout(FlowLayout.LEADING);
     Color white = new Color(255, 255, 255);
     int numElevator;
     int numFloor;
-    JLabel jlabels[];
-    JLabel elevator1 = new JLabel("Elevator #1");
     boolean readyToRun = false;
+    
+    JPanel elevators[];
+    JLabel jlabelsFloor[];
+	JLabel jlabelsError[];
+	JLabel jlabelsDirection[];
     
     guiFrame()
     {
@@ -129,24 +134,40 @@ public class guiFrame extends JFrame implements ActionListener{
    public void elevatorSetUp() {
 	   layoutGrid.setColumns(numElevator);
 	   containerRun.removeAll();
-	   JLabel jlabels[] = new JLabel[numElevator];
-	   JPanel elevators[] = new JPanel[numElevator];
+	   JLabel labels[] = new JLabel[numElevator];
+	   jlabelsFloor = new JLabel[numElevator];
+	   jlabelsError = new JLabel[numElevator];
+	   jlabelsDirection = new JLabel[numElevator];
+	   elevators = new JPanel[numElevator];
 	   
-	   for(int i = 0; i < jlabels.length; i++) {
-		   jlabels[i] = new JLabel("Elevator #:" + (i + 1));
-		   containerRun.add(jlabels[i]);
+	   for(int i = 0; i < labels.length; i++) {
+		   labels[i] = new JLabel("Elevator #:" + (i + 1));
+		//   labels[i].setFont(new Font("Serif", Font.PLAIN, 14));
+		   containerRun.add(labels[i]);
 	   }
-	   for(int i = 0; i < jlabels.length; i++) {
+	   for(int i = 0; i < labels.length; i++) {
 		   elevators[i] = new JPanel();
 		   elevators[i].setLayout(layoutFlow);
-		   elevators[i].setBackground(Color.DARK_GRAY);
+		 //  elevators[i].setBackground(Color.DARK_GRAY);
+		   jlabelsFloor[i] = new JLabel("Floor: 1" );
+		   jlabelsDirection[i] = new JLabel("Direction: Stationary" );
+		   jlabelsError[i] = new JLabel("Error: None" );
+		   elevators[i].add(jlabelsFloor[i]);
+		   elevators[i].add(jlabelsDirection[i]);
+		   elevators[i].add(jlabelsError[i]);
+		   elevators[i].doLayout();
 		   containerRun.add(elevators[i]);
+		   //containerRun.setAlignmentX(CENTER_ALIGNMENT);
 	   }
 	   containerRun.doLayout();
 	   containerRun.revalidate();
 	   containerRun.repaint();
    }
    
+   public void elevatorMove() {
+	   
+	   int elevator = Elevator.getId();
+   }
    
    
 	@Override
