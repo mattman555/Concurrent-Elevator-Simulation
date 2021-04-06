@@ -18,27 +18,27 @@ public class guiFrame extends JFrame implements ActionListener{
 	JPanel setElevator = new JPanel();
 	JPanel runElevator = new JPanel();
 	JMenuBar mb = new JMenuBar();
-    JMenu m1 = new JMenu("FILE");
-    JMenuItem set = new JMenuItem("Set");
-    JMenuItem run = new JMenuItem("Run");
+   	JMenu m1 = new JMenu("FILE");
+    	JMenuItem set = new JMenuItem("Set");
+    	JMenuItem run = new JMenuItem("Run");
 	JLabel configLabel = new JLabel("Configure the Elevator System");
-    JLabel elevatorNumLabel = new JLabel("Number of Elevators: ");
-    JLabel floorNumLabel = new JLabel("Number of Floors: ");
-    JTextField elevatorNumTextField = new JTextField();
-    JTextField floorNumField = new JTextField();
-    JButton confirmButton = new JButton("CONFIRM");
-    JButton runButton = new JButton("Run Program");
-    BorderLayout layout = new BorderLayout();
-    BorderLayout layout2 = new BorderLayout();
-    GridLayout layoutGrid = new GridLayout(0,2);
-    FlowLayout layoutFlow = new FlowLayout(FlowLayout.LEADING);
-    Color white = new Color(255, 255, 255);
-    int numElevator;
-    int numFloor;
-    boolean readyToRun = false;
+    	JLabel elevatorNumLabel = new JLabel("Number of Elevators: ");
+    	JLabel floorNumLabel = new JLabel("Number of Floors: ");
+    	JTextField elevatorNumTextField = new JTextField();
+    	JTextField floorNumField = new JTextField();
+    	JButton confirmButton = new JButton("CONFIRM");
+    	JButton runButton = new JButton("Run Program");
+    	BorderLayout layout = new BorderLayout();
+    	BorderLayout layout2 = new BorderLayout();
+    	GridLayout layoutGrid = new GridLayout(0,2);
+    	FlowLayout layoutFlow = new FlowLayout(FlowLayout.LEADING);
+    	Color white = new Color(255, 255, 255);
+    	int numElevator;
+    	int numFloor;
+   	boolean readyToRun = false;
     
-    JPanel elevators[];
-    JLabel jlabelsFloor[];
+	JPanel elevators[];
+    	JLabel jlabelsFloor[];
 	JLabel jlabelsError[];
 	JLabel jlabelsDirection[];
     
@@ -81,16 +81,16 @@ public class guiFrame extends JFrame implements ActionListener{
    public void setLocationAndSize()
    {
        //Setting location and Size of each components using setBounds() method.
-	   elevatorNumLabel.setBounds(70,150,200,30);
-	   floorNumLabel.setBounds(70,220,200,30);
-	   elevatorNumTextField.setBounds(250,150,150,30);
-	   floorNumField.setBounds(250,220,150,30);
-	   confirmButton.setBounds(200,300,100,30);
+	elevatorNumLabel.setBounds(70,150,200,30);
+	floorNumLabel.setBounds(70,220,200,30);
+	elevatorNumTextField.setBounds(250,150,150,30);
+	floorNumField.setBounds(250,220,150,30);
+	confirmButton.setBounds(200,300,100,30);
 	   
-	   configLabel.setFont(new Font("Serif", Font.PLAIN, 24));
-	   configLabel.setHorizontalAlignment(getWidth()/2);
+	configLabel.setFont(new Font("Serif", Font.PLAIN, 24));
+	configLabel.setHorizontalAlignment(getWidth()/2);
 	   
-	   containerRun.setBounds(100, 80, 500, 500);
+	containerRun.setBounds(100, 80, 500, 500);
 	   
    }
    
@@ -101,20 +101,18 @@ public class guiFrame extends JFrame implements ActionListener{
 	   mb.add(m1);
       //Adding each components to the Container
 	   setElevator.add(configLabel);
-       setElevator.add(elevatorNumLabel);
-       setElevator.add(floorNumLabel);
-       setElevator.add(elevatorNumTextField);
-       setElevator.add(floorNumField);
-       setElevator.add(confirmButton);
-       containerSet.add(configLabel, BorderLayout.NORTH);
-       containerSet.add(setElevator, BorderLayout.CENTER);
-       
-       
-       
-       base.add(mb, BorderLayout.NORTH);
-       base.add(containerRun, BorderLayout.CENTER);
-       base.add(containerSet, BorderLayout.CENTER);
-       changePanel(containerSet);
+	   setElevator.add(elevatorNumLabel);
+	   setElevator.add(floorNumLabel);
+	   setElevator.add(elevatorNumTextField);
+	   setElevator.add(floorNumField);
+	   setElevator.add(confirmButton);
+	   containerSet.add(configLabel, BorderLayout.NORTH);
+	   containerSet.add(setElevator, BorderLayout.CENTER);
+
+	   base.add(mb, BorderLayout.NORTH);
+	   base.add(containerRun, BorderLayout.CENTER);
+	   base.add(containerSet, BorderLayout.CENTER);
+	   changePanel(containerSet);
    }
 
 
