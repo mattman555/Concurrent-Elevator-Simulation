@@ -291,6 +291,12 @@ public class ElevatorSM implements Runnable{
 				break;
 			case DOORS_OPEN:
 				lamps = this.getLamps();
+				try {
+					Thread.sleep(timeToUnloadPassengers);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
 				break;
 			case UPDATE_LAMPS:
 				this.action(lamps);
