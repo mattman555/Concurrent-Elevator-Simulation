@@ -28,11 +28,14 @@ public class Scheduler implements Runnable {
 	private final String CONFIG = "Config.txt";
 	private DatagramSocket elevatorSocket, floorSocket;
 	private InetAddress floorIp;
-	
+	private long startTime;
+
 	/**
 	 * Constructor for the scheduler class
+	 * @param startTime 
 	 */
-	public Scheduler() {
+
+	public Scheduler(long startTime) {
 		ConfigReader configs = new ConfigReader(CONFIG);
 		this.schedulerToFloorPort = configs.getSchedulerToFloorPort();
 		this.elevToSchedulerPort = configs.getElevToSchedulerPort();
@@ -43,6 +46,7 @@ public class Scheduler implements Runnable {
 			 new SortedRequests(this), 
 			 new InProgress(this),
 			 new End()};
+		this.startTime = startTime;
 		this.states = statearr;
 		this.current = 0;
 		this.requests = new ArrayList<Request>();
@@ -244,14 +248,14 @@ public class Scheduler implements Runnable {
 				break;
 			case GET_REQUEST:
 				requestTask(request, receivePacket.getAddress(),receivePacket.getPort());
-				sendCompletedRequests();
+				sendCompletedRequests(startTime);
 				break;
 			case TOGGLE_DOORS:
 				toggleDoors(request, receivePacket.getAddress(),receivePacket.getPort());
 				break;
 			case ELEVATOR_SHUTDOWN:
 				shutdownElevator(request);
-				sendCompletedRequests();
+				sendCompletedRequests(startTime);
 			default:
 				break;
 		}
@@ -260,8 +264,9 @@ public class Scheduler implements Runnable {
 	/**
 	 * sends a packet with the list of completed 
 	 * requests to the floor subsystems
+	 * @param startTime 
 	 */
-	private void sendCompletedRequests() {
+	private void sendCompletedRequests(long startTime) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
 			ObjectOutputStream oStream = new ObjectOutputStream(stream);
@@ -297,9 +302,11 @@ public class Scheduler implements Runnable {
 	    }
 	    int remaining = receivePacket.getData()[0];
 	    if(remaining == 0) {
+	    	long endTime = System.currentTimeMillis();
+	    	long elapsedTime = endTime - startTime;  
+	    	System.out.println("The system completed all the requests in: " + (elapsedTime / 1000) + "." + (elapsedTime % 1000) + " seconds");
 	    	floorSocket.close();
 	    	elevatorSocket.close();
-	    	System.out.println("Completed all requests");
 	    	System.exit(0);
 	    }
 	    completedRequests.clear(); //remove those completed requests		
@@ -370,7 +377,8 @@ public class Scheduler implements Runnable {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Scheduler scheduler = new Scheduler();
+		long startTime = System.currentTimeMillis();
+		Scheduler scheduler = new Scheduler(startTime);
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
 		schedulerThread.start();	
 	}
