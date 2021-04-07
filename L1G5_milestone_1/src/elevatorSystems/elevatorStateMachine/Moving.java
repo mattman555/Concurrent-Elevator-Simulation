@@ -4,24 +4,24 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
-
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
-import elevatorSystems.FloorSubsystem;
 
 /**
  * @author Matthew Harris 101073502
  * @author Jay McCracken 101066860
+ * @author Nick Coutts 101072875
  *
  *	State of the elevator when transitioning between floors
  */
 public class Moving extends ElevatorState {
 
 	private Elevator elevator;
-	private static final int TIME_BETWEEN_FLOORS = 1000;
+	private int timeBetweenFloors;
 	
-	public Moving(Elevator elevator) {
+	public Moving(Elevator elevator, int timeBetweenFloors) {
 		this.elevator = elevator;
+		this.timeBetweenFloors = timeBetweenFloors;
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class Moving extends ElevatorState {
 	public void activity(Direction direction) {
 		System.out.println("Elevator " + elevator.getId() + ": Moving " + direction.toString().toLowerCase() + " from floor " + this.elevator.getElevatorLocation());
 		try {
-			Thread.sleep(TIME_BETWEEN_FLOORS);
+			Thread.sleep(this.timeBetweenFloors);
 		} catch (InterruptedException e) {}
 		if(direction == Direction.UP) {
 		this.elevator.setElevatorLocation(this.elevator.getElevatorLocation()+1);

@@ -1,10 +1,9 @@
 package elevatorSystems.elevatorStateMachine;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -12,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import elevatorSystems.ConfigReader;
 import elevatorSystems.Direction;
 import elevatorSystems.Elevator;
 
@@ -28,19 +28,19 @@ public class ElevatorSM implements Runnable{
 	private ElevatorStates current;
 	private Hashtable<ElevatorStates, ElevatorState> states;
 	private Hashtable<ElevatorStates, List<ElevatorStates>> transitions;
-	private final static int DEFAULT_NUM_ELEVATORS = 4;
-	private final static int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
-	private final static int DEFAULT_ELEV_TO_FLOOR_PORT = 14002;
 	private final static String CONFIG = "Config.txt";
 	private static final int INVALID_FLOOR = 10000;
+	private int timeBetweenFloors;
+	private int timeToUnloadPassengers;
 	private Integer errorCode;
 	private Elevator elevator;
 	private DatagramSocket sendReceiveSocket;
 ;
 
-	public ElevatorSM(Elevator elevator) {
-		readConfig(CONFIG);
+	public ElevatorSM(Elevator elevator, int timeBetweenFloors, int timeToUnloadPassengers) {
 		this.elevator =  elevator;
+		this.timeBetweenFloors = timeBetweenFloors;
+		this.timeToUnloadPassengers = timeToUnloadPassengers;
 		this.current = ElevatorStates.DOORS_CLOSED;
 		generateTransitionHashmap();
 		generateStateHashmap();
@@ -70,7 +70,7 @@ public class ElevatorSM implements Runnable{
 	private void generateStateHashmap() {
 		this.states = new Hashtable<>();
 		this.states.put(ElevatorStates.DOORS_CLOSED, new DoorsClosed(this.elevator));
-		this.states.put(ElevatorStates.MOVING,  new Moving(this.elevator));
+		this.states.put(ElevatorStates.MOVING,  new Moving(this.elevator, this.timeBetweenFloors));
 		this.states.put(ElevatorStates.ARRIVED,  new Arrived(this.elevator));
 		this.states.put(ElevatorStates.DOORS_OPEN, new DoorsOpen(this.elevator));
 		this.states.put(ElevatorStates.DOOR_STUCK, new DoorStuck(this.elevator));
@@ -229,44 +229,6 @@ public class ElevatorSM implements Runnable{
 	    return this.elevator.readResponse(receivePacket);	
 	}
 	
-
-	/**
-	 * reads the config file line by line and generates the 
-	 * array of strings to be passed to other classes
-	 * @param filename the file to read with extension
-	 */
-	public static int[] readConfig(String filename) {
-		BufferedReader reader;
-		int [] values = {DEFAULT_NUM_ELEVATORS, DEFAULT_ELEV_TO_SCHEDULER_PORT, DEFAULT_ELEV_TO_FLOOR_PORT};
-		try {
-			reader = new BufferedReader(new FileReader(filename));
-			String line = reader.readLine();
-			while (line != null) {
-				String[] lineArr = line.split(" "); 
-				String config = lineArr[0]; 
-				switch(config) {
-					case "Num_elevators":
-						values[0] = Integer.parseInt(lineArr[1]);
-						break;
-					case "ElevToScheduler":
-						values[1] = Integer.parseInt(lineArr[1]);
-						break;
-					case "ElevToFloor":
-						values[2] = Integer.parseInt(lineArr[1]);
-						break;
-					default:
-						break;
-				}
-				line = reader.readLine();
-			}
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("All configurations read from file");
-		return values;
-	}
-	
 	@Override
 	/**
 	 * The running of the elevator, travel to new floor, updating lamps
@@ -345,12 +307,16 @@ public class ElevatorSM implements Runnable{
 	}
 	
 	public static void main(String[] args) {
-		int[] values = readConfig(CONFIG);
-		int numElevators = values[0];
-		int schedulerPort = values[1];
-		int floorPort = values[2];
+		ConfigReader configs = new ConfigReader(CONFIG);
+		int numElevators = configs.getNumElevators();
+		int schedulerPort = configs.getElevToSchedulerPort();
+		int floorPort = configs.getElevToFloorPort();
+		InetAddress schedulerIp = configs.getSchedulerIp();
+		InetAddress floorIp = configs.getFloorIp();
+		int timeBetweenFloors = configs.getTimeBetweenFloors();
+		int timeToUnload = configs.getTimeToUnloadPassengers();
 		for (int i=1; i <= numElevators; i++) {
-			Thread elevatorThread = new Thread(new ElevatorSM(new Elevator(i,schedulerPort,floorPort)),"Elevator " + i);
+			Thread elevatorThread = new Thread(new ElevatorSM(new Elevator(i,schedulerPort,floorPort,schedulerIp,floorIp),timeBetweenFloors,timeToUnload),"Elevator " + i);
 			elevatorThread.start();
 		}
 	}

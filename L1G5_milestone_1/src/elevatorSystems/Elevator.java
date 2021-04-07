@@ -17,7 +17,9 @@ import elevatorSystems.elevatorStateMachine.RPCRequestType;
  * and floor destination from scheduler.
  * Keeps track on in car button lamps, turns on and off requested lamps.
  * 
- * @author Jay McCracken 101066860 and Matthew Harris 101073502
+ * @author Jay McCracken 101066860 
+ * @author Matthew Harris 101073502
+ * @author Nick Coutts 101072875
  * @version 4.00
  */
 public class Elevator{
@@ -33,13 +35,15 @@ public class Elevator{
 	private int id;
 	private int schedulerPort;
 	private int floorPort;
+	private InetAddress schedulerIp;
+	private InetAddress floorIp;
 	
 	/**
 	 * Constructor, creating a base elevator starting
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator(int elevId, int schedulerPort, int floorPort) {
+	public Elevator(int elevId, int schedulerPort, int floorPort, InetAddress schedulerIp, InetAddress floorIp) {
 		this.schedulerPort = schedulerPort;
 		this.floorPort = floorPort;
 		this.elevatorLocation = 1;	
@@ -47,6 +51,8 @@ public class Elevator{
 		this.isDoorOpen = false;
 		this.lamp = new Hashtable<Integer, Boolean>();
 		this.id = elevId;
+		this.schedulerIp = schedulerIp;
+		this.floorIp = floorIp;
 	}
 	
 	public int getId() {
@@ -122,24 +128,30 @@ public class Elevator{
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		ObjectOutputStream oStream;
 		int port = schedulerPort;
+		InetAddress sendToAddress = null; //have to initialize it to null, but it WILL be set in the switch
 		try {
 			oStream = new ObjectOutputStream(stream);
 			switch(requestType) {
 				case TOGGLE_DOORS:
 					oStream.writeObject(new ElevatorRPCRequest(this.isDoorOpen, this.id));
+					sendToAddress = this.schedulerIp;
 					break;
 				case GET_REQUEST:
 					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.id));
+					sendToAddress = this.schedulerIp;
 					break;
 				case GET_LAMPS:
 					oStream.writeObject(new ElevatorRPCRequest(this.id, RPCRequestType.GET_LAMPS));
+					sendToAddress = this.schedulerIp;
 					break;
 				case SET_LAMPS:
 					oStream.writeObject(new ElevatorRPCRequest(this.elevatorLocation, this.motor));
+					sendToAddress = this.floorIp;
 					port = floorPort;
 					break;
 				case ELEVATOR_SHUTDOWN:
 					oStream.writeObject(new ElevatorRPCRequest(this.id, RPCRequestType.ELEVATOR_SHUTDOWN));
+					sendToAddress = this.schedulerIp;
 					break;
 				default:
 					System.out.println("Invalid Request Type: " + requestType);
@@ -153,14 +165,7 @@ public class Elevator{
 		}
 		byte[] response = stream.toByteArray();
 		
-		try {
-			return new DatagramPacket(response, response.length, InetAddress.getLocalHost(), port);
-		}
-		catch(UnknownHostException e){
-			e.printStackTrace();
-			System.exit(1);
-		}
-		return null; //never called, needed for structure
+		return new DatagramPacket(response, response.length, sendToAddress, port);
 	}
 	
 	/**
