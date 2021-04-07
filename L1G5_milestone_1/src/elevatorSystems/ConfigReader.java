@@ -90,7 +90,6 @@ public class ConfigReader {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		printAll();
 	}
 
 	public String getInputFile() {
@@ -139,19 +138,6 @@ public class ConfigReader {
 	public int getTimeToUnloadPassengers() {
 		return timeToUnloadPassengers;
 	}
-	private void printAll() {
-		System.out.println(inputFile);
-		System.out.println(this.numElevators);
-		System.out.println(this.numFloors);
-		System.out.println(this.elevToSchedulerPort);
-		System.out.println(this.schedulerToFloorPort);
-		System.out.println(this.elevToFloorPort);
-		System.out.println(this.schedulerIp);
-		System.out.println(this.floorIp);
-		System.out.println(this.timeBetweenFloors);
-		System.out.println(this.timeToUnloadPassengers);
-	}
-	
 
 	private void setDefaultValues() {
 		this.inputFile = DEFAULT_INPUT_FILENAME;
