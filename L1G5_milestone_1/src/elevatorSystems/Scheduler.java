@@ -266,7 +266,7 @@ public class Scheduler implements Runnable {
 	 * requests to the floor subsystems
 	 * @param startTime 
 	 */
-	private void sendCompletedRequests(long startTime) {
+	private void sendCompletedRequests() {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
 			ObjectOutputStream oStream = new ObjectOutputStream(stream);
