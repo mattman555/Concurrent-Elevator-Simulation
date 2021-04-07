@@ -167,8 +167,8 @@ public class ElevatorSM implements Runnable{
 	/**
 	 * exit state to terminate the state machine
 	 */
-	public void exit() {
-		states.get(current).exit();
+	public void exit(DatagramSocket socket) {
+		states.get(current).exit(socket);
 	}
 	
 	/**
@@ -304,7 +304,7 @@ public class ElevatorSM implements Runnable{
 					sendSocket.close();
 					return;
 				}
-				this.exit();
+				this.exit(sendSocket);
 				sendReceiveSocket.close();
 				sendSocket.close();
 				return;

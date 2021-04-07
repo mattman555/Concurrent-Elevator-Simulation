@@ -1,6 +1,8 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
@@ -23,8 +25,25 @@ public class End extends ElevatorState {
 	 * saying that it is in its final state
 	 */
 	@Override
-	public void exit() {
+	public void exit(DatagramSocket sendSocket) {
 		System.out.println("Elevator " + elevator.getId() + ": All requests processed Transition to Final state");
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		ObjectOutputStream oStream;
+		try {
+			oStream = new ObjectOutputStream(stream);
+			oStream.writeObject(new ElevatorInfo(this.elevator.getId(), this.elevator.getElevatorLocation(),this.elevator.getMotor().toString(),this.elevator.getErrorCode()));
+			stream.close();
+			oStream.close();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		byte[] message = stream.toByteArray();
+		DatagramPacket sendPacket = new DatagramPacket(message, message.length,this.elevator.getGuiIp(),this.elevator.getGuiPort());
+		try {
+			sendSocket.send(sendPacket);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
