@@ -1,6 +1,10 @@
 InputFile TestFile.txt
 Num_elevators 4
 Num_floors 22
-ElevToScheduler 14000
-SchedulerToFloor 14001
-ElevToFloor 14002
+ElevToSchedulerPort 14000
+SchedulerToFloorPort 14001
+ElevToFloorPort 14002
+SchedulerIP localhost
+FloorIP localhost
+timeBetweenFloors 1000
+timeToUnloadPassengers 1000

@@ -1,8 +1,6 @@
 package elevatorSystems;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,18 +23,20 @@ public class Scheduler implements Runnable {
 	private ArrayList<RequestGroup> requestBuckets;
 	private Hashtable<Integer, RequestGroup> inProgressBuckets;
 	private ArrayList<Request> completedRequests;
-	private final int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
-	private final int DEFAULT_SCHEDULER_TO_FLOOR_PORT = 14001;
-	private static int schedulerToFloorPort;
+	private int schedulerToFloorPort;
 	private int elevToSchedulerPort;
 	private final String CONFIG = "Config.txt";
 	private DatagramSocket elevatorSocket, floorSocket;
+	private InetAddress floorIp;
 	
 	/**
 	 * Constructor for the scheduler class
 	 */
 	public Scheduler() {
-		readConfig(CONFIG);
+		ConfigReader configs = new ConfigReader(CONFIG);
+		this.schedulerToFloorPort = configs.getSchedulerToFloorPort();
+		this.elevToSchedulerPort = configs.getElevToSchedulerPort();
+		this.floorIp = configs.getFloorIp();
 		SchedulerState[] statearr =
 			{new AwaitingRequests(this), 
 			 new UnsortedRequests(this), 
@@ -96,6 +96,14 @@ public class Scheduler implements Runnable {
 	 */
 	public ArrayList<Request> getCompletedRequests() {
 		return completedRequests;
+	}
+	
+	/**
+	 * Gets the Floor subsystem's IP address
+	 * @return the floor subsystem's IP address
+	 */
+	public InetAddress getFloorIP() {
+		return this.floorIp;
 	}
 
 	/**
@@ -267,7 +275,7 @@ public class Scheduler implements Runnable {
 		
 		byte[] sendData = stream.toByteArray();
 		try {
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLocalHost(), schedulerToFloorPort);
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, floorIp, schedulerToFloorPort);
 			floorSocket.send(sendPacket);
 			System.out.println("Packet sent to floor subsystem with the list of completed requests");
 	    }
@@ -321,46 +329,12 @@ public class Scheduler implements Runnable {
 	}
 	
 	/**
-	 * reads the config file line by line and generates the 
-	 * array of strings to be passed to other classes
-	 * @param filename the file to read with extension
-	 */
-	private void readConfig(String filename) {
-		BufferedReader reader;
-		this.elevToSchedulerPort = DEFAULT_ELEV_TO_SCHEDULER_PORT; // setting default values in case they aren't present
-		Scheduler.schedulerToFloorPort = DEFAULT_SCHEDULER_TO_FLOOR_PORT; 
-		try {
-			reader = new BufferedReader(new FileReader(filename));
-			String line = reader.readLine();
-			while (line != null) {
-				String[] lineArr = line.split(" "); 
-				String config = lineArr[0]; 
-				switch(config) {
-					case "ElevToSchedulerPort":
-						this.elevToSchedulerPort = Integer.parseInt(lineArr[1]);
-						break;
-					case "SchedulerToFloorPort":
-						Scheduler.schedulerToFloorPort = Integer.parseInt(lineArr[1]);
-						break;
-					default:
-						break;
-				}
-				line = reader.readLine();
-			}
-			System.out.println("All configurations read from file");
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Gets the schedulerToFloorPort
 	 * @return 
 	 * @return the schedulerToFloorPort number.
 	 */
-	public static int getSchedulerToFloorPort() {
-		return schedulerToFloorPort;
+	public int getSchedulerToFloorPort() {
+		return this.schedulerToFloorPort;
 	}
 	
 	@Override
@@ -368,7 +342,6 @@ public class Scheduler implements Runnable {
 	 * The running of the elevator, travel to new floor, updating lamps
 	 */
 	public void run() {		
-		
 		while (true) {
 			switch(current) {
 				case 0:
@@ -401,5 +374,7 @@ public class Scheduler implements Runnable {
 		Thread schedulerThread = new Thread(scheduler,"Scheduler");
 		schedulerThread.start();	
 	}
+
+	
 	
 }
