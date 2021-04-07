@@ -248,14 +248,14 @@ public class Scheduler implements Runnable {
 				break;
 			case GET_REQUEST:
 				requestTask(request, receivePacket.getAddress(),receivePacket.getPort());
-				sendCompletedRequests(startTime);
+				sendCompletedRequests();
 				break;
 			case TOGGLE_DOORS:
 				toggleDoors(request, receivePacket.getAddress(),receivePacket.getPort());
 				break;
 			case ELEVATOR_SHUTDOWN:
 				shutdownElevator(request);
-				sendCompletedRequests(startTime);
+				sendCompletedRequests();
 			default:
 				break;
 		}
