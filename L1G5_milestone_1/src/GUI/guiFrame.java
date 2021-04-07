@@ -164,7 +164,7 @@ public class guiFrame extends JFrame implements ActionListener{
    
    public void elevatorMove() {
 	   
-	   int elevator = Elevator.getId();
+	   //int elevator = Elevator.getId();
    }
    
    

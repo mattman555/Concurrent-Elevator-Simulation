@@ -1,6 +1,8 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
@@ -90,7 +92,24 @@ public class DoorsClosed extends ElevatorState {
 	 * Error class type 2 occurs, end the elevator
 	 */
 	@Override
-	public void shutdown() {
+	public void shutdown(DatagramSocket sendSocket) {
 		System.out.println("Elevator " + elevator.getId() + ": is shutting down");
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		ObjectOutputStream oStream;
+		try {
+			oStream = new ObjectOutputStream(stream);
+			oStream.writeObject(new ElevatorInfo(this.elevator.getId(), this.elevator.getElevatorLocation(),this.elevator.getMotor().toString(),this.elevator.getErrorCode()));
+			stream.close();
+			oStream.close();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		byte[] message = stream.toByteArray();
+		DatagramPacket sendPacket = new DatagramPacket(message, message.length,this.elevator.getGuiIp(),this.elevator.getGuiPort());
+		try {
+			sendSocket.send(sendPacket);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

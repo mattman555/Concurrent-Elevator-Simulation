@@ -17,16 +17,19 @@ public class ConfigReader {
 	private int elevToSchedulerPort;
 	private int schedulerToFloorPort;
 	private int elevToFloorPort;
+	private int guiPort;
 	private int timeBetweenFloors;
 	private int timeToUnloadPassengers;
 	private InetAddress schedulerIp;
 	private InetAddress floorIp;
+	private InetAddress guiIp;
 	private static final String DEFAULT_INPUT_FILENAME = "TestFile.txt";
 	private static final int DEFAULT_NUM_ELEVATORS = 4;
 	private static final int DEFAULT_NUM_FLOORS = 22;
 	private static final int DEFAULT_ELEV_TO_SCHEDULER_PORT = 14000;
 	private static final int DEFAULT_SCHEDULER_TO_FLOOR_PORT = 14001;
 	private static final int DEFAULT_ELEV_TO_FLOOR_PORT = 14002;
+	private static final int DEFAULT_GUI_PORT = 14003;
 	private static final int DEFAULT_TIME_BETWEEN_FLOORS = 1000;
 	private static final int DEFAULT_TIME_TO_UNLOAD_PASSENGERS = 1000;
 	
@@ -65,6 +68,9 @@ public class ConfigReader {
 					case "ElevToFloorPort":
 						this.elevToFloorPort = Integer.parseInt(lineArr[1]);
 						break;
+					case "GUIPort":
+						this.guiPort = Integer.parseInt(lineArr[1]);
+						break;
 					case "SchedulerIP":
 						if(!lineArr[1].equals("localhost")) //If it is localhost the used IP is InetAddress.getLocalHost()
 							schedulerIp = InetAddress.getByName(lineArr[1]);
@@ -72,6 +78,10 @@ public class ConfigReader {
 					case "FloorIP":
 						if(!lineArr[1].equals("localhost"))
 							this.floorIp = InetAddress.getByName(lineArr[1]);
+						break;
+					case "guiIP":
+						if(!lineArr[1].equals("localhost"))
+							this.guiIp = InetAddress.getByName(lineArr[1]);
 						break;
 					case "timeBetweenFloors":
 						this.timeBetweenFloors = Integer.parseInt(lineArr[1]);
@@ -120,8 +130,15 @@ public class ConfigReader {
 	public int getElevToFloorPort() {
 		return elevToFloorPort;
 	}
-
-
+	
+	public int getGUIPort() {
+		return guiPort;
+	}
+	
+	public InetAddress getGUIIP() {
+		return guiIp;
+	}
+	
 	public InetAddress getSchedulerIp() {
 		return schedulerIp;
 	}
@@ -148,9 +165,11 @@ public class ConfigReader {
 		this.elevToFloorPort = DEFAULT_ELEV_TO_FLOOR_PORT;
 		this.timeBetweenFloors = DEFAULT_TIME_BETWEEN_FLOORS;
 		this.timeToUnloadPassengers = DEFAULT_TIME_TO_UNLOAD_PASSENGERS;
+		this.guiPort = DEFAULT_GUI_PORT;
 		try {
 			this.schedulerIp = InetAddress.getLocalHost();
 			this.floorIp = InetAddress.getLocalHost();
+			this.guiIp = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			System.exit(1);
