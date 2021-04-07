@@ -193,7 +193,7 @@ public class ConfigReader {
 	
 	/**
 	 * Gets the time to wait after reaching a new floor to unload passengers in milliseconds from the config file, or a default value
-	 * @return the time to wait between floors in milliseconds
+	 * @return the time to wait to unload passengers in milliseconds
 	 */
 	public int getTimeToUnloadPassengers() {
 		return timeToUnloadPassengers;
