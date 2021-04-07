@@ -19,28 +19,28 @@ public class guiFrame extends JFrame implements ActionListener{
 	JPanel runElevator = new JPanel();
 	JMenuBar mb = new JMenuBar();
    	JMenu m1 = new JMenu("FILE");
-    	JMenuItem set = new JMenuItem("Set");
-    	JMenuItem run = new JMenuItem("Run");
+    JMenuItem set = new JMenuItem("Set");
+    JMenuItem run = new JMenuItem("Run");
 	JLabel configLabel = new JLabel("Configure the Elevator System");
-    	JLabel elevatorNumLabel = new JLabel("Number of Elevators: ");
-    	JLabel floorNumLabel = new JLabel("Number of Floors: ");
-    	JTextField elevatorNumTextField = new JTextField();
-    	JTextField floorNumField = new JTextField();
-    	JButton confirmButton = new JButton("CONFIRM");
-    	JButton runButton = new JButton("Run Program");
-    	BorderLayout layout = new BorderLayout();
-    	BorderLayout layout2 = new BorderLayout();
-    	GridLayout layoutGrid = new GridLayout(0,2);
-    	FlowLayout layoutFlow = new FlowLayout(FlowLayout.LEADING);
-    	Color white = new Color(255, 255, 255);
-    	int numElevator;
-    	int numFloor;
-   	boolean readyToRun = false;
+    JLabel elevatorNumLabel = new JLabel("Number of Elevators: ");
+    JLabel floorNumLabel = new JLabel("Number of Floors: ");
+    JTextField elevatorNumTextField = new JTextField();
+    JTextField floorNumField = new JTextField();
+    JButton confirmButton = new JButton("CONFIRM");
+    JButton runButton = new JButton("Run Program");
+    BorderLayout layout = new BorderLayout();
+    BorderLayout layout2 = new BorderLayout();
+    GridLayout layoutGrid = new GridLayout(0,2);
+    FlowLayout layoutFlow = new FlowLayout(FlowLayout.LEADING);
+    Color white = new Color(255, 255, 255);
+    public static int numElevator;
+    public int numFloor;
+   	public boolean readyToRun = false;
     
 	JPanel elevators[];
-    	JLabel jlabelsFloor[];
-	JLabel jlabelsError[];
-	JLabel jlabelsDirection[];
+    JTextArea jlabelsFloor[];
+	JTextArea jlabelsError[];
+	JTextArea jlabelsDirection[];
     
     guiFrame()
     {
@@ -130,26 +130,29 @@ public class guiFrame extends JFrame implements ActionListener{
    
    
    public void elevatorSetUp() {
-	   layoutGrid.setColumns(numElevator);
+	   layoutGrid.setColumns(2);
 	   containerRun.removeAll();
 	   JLabel labels[] = new JLabel[numElevator];
-	   jlabelsFloor = new JLabel[numElevator];
-	   jlabelsError = new JLabel[numElevator];
-	   jlabelsDirection = new JLabel[numElevator];
+	   jlabelsFloor = new JTextArea[numElevator];
+	   jlabelsError = new JTextArea[numElevator];
+	   jlabelsDirection = new JTextArea[numElevator];
 	   elevators = new JPanel[numElevator];
-	   
+
 	   for(int i = 0; i < labels.length; i++) {
 		   labels[i] = new JLabel("Elevator #:" + (i + 1));
-		//   labels[i].setFont(new Font("Serif", Font.PLAIN, 14));
+		   labels[i].setFont(new Font("Serif", Font.PLAIN, 20));
 		   containerRun.add(labels[i]);
-	   }
-	   for(int i = 0; i < labels.length; i++) {
 		   elevators[i] = new JPanel();
-		   elevators[i].setLayout(layoutFlow);
+		   elevators[i].setLayout(layoutGrid);
 		 //  elevators[i].setBackground(Color.DARK_GRAY);
-		   jlabelsFloor[i] = new JLabel("Floor: 1" );
-		   jlabelsDirection[i] = new JLabel("Direction: Stationary" );
-		   jlabelsError[i] = new JLabel("Error: None" );
+		   jlabelsFloor[i] = new JTextArea("Floor: 1" );
+		   jlabelsFloor[i].setBackground(UIManager.getColor("Label.background"));
+		   jlabelsDirection[i] = new JTextArea("Direction: Stationary" );
+		   jlabelsDirection[i].setBackground(UIManager.getColor("Label.background"));
+		   jlabelsError[i] = new JTextArea("Error: None" );
+		   jlabelsError[i].setWrapStyleWord(true);
+		   jlabelsError[i].setLineWrap(true);
+		   jlabelsError[i].setBackground(UIManager.getColor("Label.background"));
 		   elevators[i].add(jlabelsFloor[i]);
 		   elevators[i].add(jlabelsDirection[i]);
 		   elevators[i].add(jlabelsError[i]);
