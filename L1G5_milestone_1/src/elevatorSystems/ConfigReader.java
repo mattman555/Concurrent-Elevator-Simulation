@@ -102,60 +102,106 @@ public class ConfigReader {
 		}
 	}
 
+	/**
+	 * Gets the input file
+	 * @return the input file
+	 */
 	public String getInputFile() {
 		return inputFile;
 	}
 
-
+	/**
+	 * Gets the number of elevators specified in the config file, or a default value
+	 * @return the number of elevators
+	 */
 	public int getNumElevators() {
 		return numElevators;
 	}
 
 
+	/**
+	 * Gets the number of floors specified in the config file, or a default value
+	 * @return the number of floors
+	 */
 	public int getNumFloors() {
 		return numFloors;
 	}
 
-
+	/**
+	 * Gets the port for transferring data from elevator to scheduler from the config file, or a default value
+	 * @return the port for transferring data from elevator to schedule
+	 */
 	public int getElevToSchedulerPort() {
 		return elevToSchedulerPort;
 	}
 
-
+	/**
+	 * Gets the port for transferring data from elevator to scheduler from the config file, or a default value
+	 * @return the port for transferring data from elevator to schedule
+	 */
 	public int getSchedulerToFloorPort() {
 		return schedulerToFloorPort;
 	}
 
-
+	/**
+	 * Gets the port for transferring data from elevator to floor subsystem from the config file, or a default value
+	 * @return the port for transferring data from elevator to floor subsystem
+	 */
 	public int getElevToFloorPort() {
 		return elevToFloorPort;
 	}
 	
+	/**
+	 * Gets the port number of the GUI subsystem from the config file, or a default value
+	 * @return the port for transferring data to the GUI subsystem
+	 */
 	public int getGUIPort() {
 		return guiPort;
 	}
 	
+	/**
+	 * Gets the InetAddress of the GUI subsystem from the config file, or a default value
+	 * @return the InetAddress for transferring data to the GUI subsystem
+	 */
 	public InetAddress getGUIIP() {
 		return guiIp;
 	}
 	
+	/**
+	 * Gets the InetAddress of the Scheduler from the config file, or a default value
+	 * @return the InetAddress for transferring data to the Scheduler
+	 */
 	public InetAddress getSchedulerIp() {
 		return schedulerIp;
 	}
 
-
+	/**
+	 * Gets the InetAddress of the floor subsystem from the config file, or a default value
+	 * @return the InetAddress for transferring data to the floor subsystem
+	 */
 	public InetAddress getFloorIp() {
 		return floorIp;
 	}
 	
+	/**
+	 * Gets the time to wait between floors in milliseconds from the config file, or a default value
+	 * @return the time to wait between floors in milliseconds
+	 */
 	public int getTimeBetweenFloors() {
 		return timeBetweenFloors;
 	}
-
+	
+	/**
+	 * Gets the time to wait after reaching a new floor to unload passengers in milliseconds from the config file, or a default value
+	 * @return the time to wait between floors in milliseconds
+	 */
 	public int getTimeToUnloadPassengers() {
 		return timeToUnloadPassengers;
 	}
 
+	/**
+	 * Method that sets all the instance variables to default values
+	 */
 	private void setDefaultValues() {
 		this.inputFile = DEFAULT_INPUT_FILENAME;
 		this.numElevators = DEFAULT_NUM_ELEVATORS;
