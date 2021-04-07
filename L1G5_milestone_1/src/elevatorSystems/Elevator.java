@@ -35,17 +35,21 @@ public class Elevator{
 	private int id;
 	private int schedulerPort;
 	private int floorPort;
+	private int guiPort;
+	private int errorCode;
 	private InetAddress schedulerIp;
 	private InetAddress floorIp;
+	private InetAddress guiIp;
 	
 	/**
 	 * Constructor, creating a base elevator starting
 	 * on floor 1 with no lamps turned on and door closed
 	 * connected to a scheduler object
 	 */
-	public Elevator(int elevId, int schedulerPort, int floorPort, InetAddress schedulerIp, InetAddress floorIp) {
+	public Elevator(int elevId, int schedulerPort, int floorPort, InetAddress schedulerIp, InetAddress floorIp, int guiPort, InetAddress guiIp) {
 		this.schedulerPort = schedulerPort;
 		this.floorPort = floorPort;
+		this.guiPort = guiPort;
 		this.elevatorLocation = 1;	
 		this.floorDestination = 1;
 		this.isDoorOpen = false;
@@ -53,11 +57,21 @@ public class Elevator{
 		this.id = elevId;
 		this.schedulerIp = schedulerIp;
 		this.floorIp = floorIp;
+		this.guiIp = guiIp;
+		this.errorCode = 0;
 	}
 	
 	public int getId() {
 		return this.id;
 	}
+	
+	public int getErrorCode() {
+		return errorCode;
+	}
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
+	}
+	
 	public int getFloorDestination() {
 		return floorDestination;
 	}
@@ -111,6 +125,19 @@ public class Elevator{
 		return this.isDoorOpen;
 	}
 	
+	/**
+	 * @return the guiPort the port the gui is on
+	 */
+	public int getGuiPort() {
+		return guiPort;
+	}
+	/**
+	 * @return the guiIp the ip of the gui
+	 */
+	public InetAddress getGuiIp() {
+		return guiIp;
+	}
+
 	/**
 	 * updating the elevators current location
 	 * @param location is the floor that the elevator just stopped on

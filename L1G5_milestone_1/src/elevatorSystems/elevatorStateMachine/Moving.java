@@ -1,6 +1,8 @@
 package elevatorSystems.elevatorStateMachine;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
@@ -29,16 +31,50 @@ public class Moving extends ElevatorState {
 	 * @param direction, If the elevator is going UP or DOWN
 	 */
 	@Override
-	public void activity(Direction direction) {
+	public void activity(Direction direction, DatagramSocket sendSocket) {
 		System.out.println("Elevator " + elevator.getId() + ": Moving " + direction.toString().toLowerCase() + " from floor " + this.elevator.getElevatorLocation());
 		try {
 			Thread.sleep(this.timeBetweenFloors);
 		} catch (InterruptedException e) {}
 		if(direction == Direction.UP) {
-		this.elevator.setElevatorLocation(this.elevator.getElevatorLocation()+1);
+			this.elevator.setElevatorLocation(this.elevator.getElevatorLocation()+1);
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			ObjectOutputStream oStream;
+			try {
+				oStream = new ObjectOutputStream(stream);
+				oStream.writeObject(new ElevatorInfo(this.elevator.getId(), this.elevator.getElevatorLocation(),direction.toString(),this.elevator.getErrorCode()));
+				stream.close();
+				oStream.close();
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+			byte[] message = stream.toByteArray();
+			DatagramPacket sendPacket = new DatagramPacket(message, message.length,this.elevator.getGuiIp(),this.elevator.getGuiPort());
+			try {
+				sendSocket.send(sendPacket);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		else if(direction == Direction.DOWN) {
 			this.elevator.setElevatorLocation(this.elevator.getElevatorLocation()-1);
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			ObjectOutputStream oStream;
+			try {
+				oStream = new ObjectOutputStream(stream);
+				oStream.writeObject(new ElevatorInfo(this.elevator.getId(), this.elevator.getElevatorLocation(),direction.toString(),this.elevator.getErrorCode()));
+				stream.close();
+				oStream.close();
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+			byte[] message = stream.toByteArray();
+			DatagramPacket sendPacket = new DatagramPacket(message, message.length,this.elevator.getGuiIp(),this.elevator.getGuiPort());
+			try {
+				sendSocket.send(sendPacket);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

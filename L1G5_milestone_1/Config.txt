@@ -4,7 +4,9 @@ Num_floors 22
 ElevToSchedulerPort 14000
 SchedulerToFloorPort 14001
 ElevToFloorPort 14002
+GUIPort 14003
 SchedulerIP localhost
 FloorIP localhost
+guiIP localhost
 timeBetweenFloors 1000
 timeToUnloadPassengers 1000

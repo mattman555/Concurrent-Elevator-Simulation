@@ -17,7 +17,7 @@ public abstract class ElevatorState {
 	 * Default Method for the activity event
 	 * @param direction the elevator should move
 	 */
-	public void activity(Direction direction) {
+	public void activity(Direction direction, DatagramSocket socket) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");
 	}
 	
@@ -89,15 +89,16 @@ public abstract class ElevatorState {
 	
 	/**
 	 * Default Method for the doorWaitevent
+	 * @param socket 
 	 */
-	public void doorWait() {
+	public void doorWait(DatagramSocket socket) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");	
 	}
 	
 	/**
 	 * Default Method for the shutdown
 	 */
-	public void shutdown() {
+	public void shutdown(DatagramSocket socket) {
 		throw new IllegalArgumentException("Elevator is in an Incorrect State");	
 	}
 	

@@ -32,9 +32,10 @@ public class ElevatorSM implements Runnable{
 	private static final int INVALID_FLOOR = 10000;
 	private int timeBetweenFloors;
 	private int timeToUnloadPassengers;
-	private Integer errorCode;
+	private int errorCode;
 	private Elevator elevator;
 	private DatagramSocket sendReceiveSocket;
+	private DatagramSocket sendSocket;
 ;
 
 	public ElevatorSM(Elevator elevator, int timeBetweenFloors, int timeToUnloadPassengers) {
@@ -46,6 +47,7 @@ public class ElevatorSM implements Runnable{
 		generateStateHashmap();
 		try {
 			sendReceiveSocket = new DatagramSocket();
+			sendSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -81,6 +83,7 @@ public class ElevatorSM implements Runnable{
 	public Elevator getElevator() {
 		return this.elevator;
 	}
+	
 	/**
 	 * Moving the elevator to the next state if it can
 	 * @param nextState the state it tries to switch to
@@ -94,8 +97,8 @@ public class ElevatorSM implements Runnable{
 	 * The movement of the elevator to the next floor by 1 based on the direction given
 	 * @param direction, If the elevator is going UP or DOWN
 	 */
-	public void activity(Direction direction) {
-		states.get(current).activity(direction);
+	public void activity(Direction direction, DatagramSocket socket) {
+		states.get(current).activity(direction, socket);
 	}
 	
 	/**
@@ -128,8 +131,8 @@ public class ElevatorSM implements Runnable{
 	/**
 	 * When a error shutdown occurs, switch to the END state
 	 */
-	public void shutdown() {
-		states.get(current).shutdown();
+	public void shutdown(DatagramSocket socket) {
+		states.get(current).shutdown(socket);
 		nextState(ElevatorStates.END);
 	}
 	
@@ -188,8 +191,8 @@ public class ElevatorSM implements Runnable{
 	 * Make the thread wait 5 seconds then transition back to arrived state
 	 * @param next
 	 */
-	public void doorWait(ElevatorStates next) {
-		states.get(current).doorWait();
+	public void doorWait(ElevatorStates next, DatagramSocket socket) {
+		states.get(current).doorWait(socket);
 		nextState(next);
 	}
 	
@@ -248,12 +251,13 @@ public class ElevatorSM implements Runnable{
 				int destFloor = request.getDestination();
 				Direction motorDir = request.getMotorDirection();
 				errorCode = request.getErrorCode();
+				this.elevator.setErrorCode(errorCode);
 				System.out.println("Elevator " + elevator.getId() + ": error code " + errorCode + " for next destination");
 				if(destFloor == INVALID_FLOOR) {//no more requests move to end
 					this.invalidRequest();
 				}
 				else if (errorCode == 2) {
-					this.shutdown();
+					this.shutdown(sendSocket);
 				}
 				else if(motorDir == Direction.UP || motorDir == Direction.DOWN) {
 					destinationFloor = destFloor;
@@ -271,7 +275,7 @@ public class ElevatorSM implements Runnable{
 					this.arrivesAtDestination();
 				}
 				else if(destinationFloor > this.elevator.getElevatorLocation() || destinationFloor < this.elevator.getElevatorLocation()) {
-					this.activity(destinationDirection);
+					this.activity(destinationDirection,sendSocket);
 				}
 				break;
 			case ARRIVED:
@@ -283,7 +287,7 @@ public class ElevatorSM implements Runnable{
 				this.toggleDoors(ElevatorStates.DOORS_OPEN);
 				break;
 			case DOOR_STUCK:
-				this.doorWait(ElevatorStates.ARRIVED);
+				this.doorWait(ElevatorStates.ARRIVED,sendSocket);
 				break;
 			case DOORS_OPEN:
 				lamps = this.getLamps();
@@ -297,10 +301,12 @@ public class ElevatorSM implements Runnable{
 					errorCode = 0;
 					this.errorExit();
 					sendReceiveSocket.close();
+					sendSocket.close();
 					return;
 				}
 				this.exit();
 				sendReceiveSocket.close();
+				sendSocket.close();
 				return;
 			}
 		}
@@ -311,12 +317,14 @@ public class ElevatorSM implements Runnable{
 		int numElevators = configs.getNumElevators();
 		int schedulerPort = configs.getElevToSchedulerPort();
 		int floorPort = configs.getElevToFloorPort();
+		int guiPort = configs.getGUIPort();
 		InetAddress schedulerIp = configs.getSchedulerIp();
 		InetAddress floorIp = configs.getFloorIp();
+		InetAddress guiIp = configs.getGUIIP();
 		int timeBetweenFloors = configs.getTimeBetweenFloors();
 		int timeToUnload = configs.getTimeToUnloadPassengers();
 		for (int i=1; i <= numElevators; i++) {
-			Thread elevatorThread = new Thread(new ElevatorSM(new Elevator(i,schedulerPort,floorPort,schedulerIp,floorIp),timeBetweenFloors,timeToUnload),"Elevator " + i);
+			Thread elevatorThread = new Thread(new ElevatorSM(new Elevator(i,schedulerPort,floorPort,schedulerIp,floorIp,guiPort,guiIp),timeBetweenFloors,timeToUnload),"Elevator " + i);
 			elevatorThread.start();
 		}
 	}
