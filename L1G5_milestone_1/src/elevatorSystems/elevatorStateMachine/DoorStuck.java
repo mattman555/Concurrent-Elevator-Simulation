@@ -33,7 +33,7 @@ public class DoorStuck extends ElevatorState {
 		ObjectOutputStream oStream;
 		try {
 			oStream = new ObjectOutputStream(stream);
-			oStream.writeObject(new ElevatorInfo(this.elevator.getId(), this.elevator.getElevatorLocation(),this.elevator.getMotor().toString(),this.elevator.getErrorCode()));
+			oStream.writeObject(new ElevatorInfo(this.elevator.getId(), this.elevator.getElevatorLocation(),this.elevator.getMotor().toString(),this.elevator.getErrorCode(),this.elevator.getLamp()));
 			stream.close();
 			oStream.close();
 		}catch (IOException e) {
