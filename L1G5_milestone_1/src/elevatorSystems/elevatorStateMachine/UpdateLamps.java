@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
+import java.util.Set;
 
 import elevatorSystems.Elevator;
 
@@ -33,6 +34,8 @@ public class UpdateLamps extends ElevatorState {
 			this.elevator.getLamp().put(i, true);
 		}
 		this.elevator.getLamp().put(location, false);
+		this.elevator.getLamp().remove(location);
+
 		System.out.println("Elevator " + elevator.getId() + ": Car Lamps: " + this.elevator.getLamp());
 	}
 	

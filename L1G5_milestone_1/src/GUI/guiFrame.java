@@ -41,6 +41,7 @@ public class guiFrame extends JFrame implements ActionListener{
     JTextArea jlabelsFloor[];
 	JTextArea jlabelsError[];
 	JTextArea jlabelsDirection[];
+	JTextArea lamps[];
     
     guiFrame()
     {
@@ -116,7 +117,7 @@ public class guiFrame extends JFrame implements ActionListener{
    }
 
 
-   private void changePanel(JPanel panel) {
+   public void changePanel(JPanel panel) {
 	    panel.repaint();
 	    base.removeAll();
 	    base.add(mb, BorderLayout.NORTH);
@@ -136,6 +137,7 @@ public class guiFrame extends JFrame implements ActionListener{
 	   jlabelsFloor = new JTextArea[numElevator];
 	   jlabelsError = new JTextArea[numElevator];
 	   jlabelsDirection = new JTextArea[numElevator];
+	   lamps = new JTextArea[numElevator];
 	   elevators = new JPanel[numElevator];
 
 	   for(int i = 0; i < labels.length; i++) {
@@ -153,9 +155,14 @@ public class guiFrame extends JFrame implements ActionListener{
 		   jlabelsError[i].setWrapStyleWord(true);
 		   jlabelsError[i].setLineWrap(true);
 		   jlabelsError[i].setBackground(UIManager.getColor("Label.background"));
+		   lamps[i] = new JTextArea("Car Lamps:" );
+		   lamps[i].setWrapStyleWord(true);
+		   lamps[i].setLineWrap(true);
+		   lamps[i].setBackground(UIManager.getColor("Label.background"));
 		   elevators[i].add(jlabelsFloor[i]);
 		   elevators[i].add(jlabelsDirection[i]);
 		   elevators[i].add(jlabelsError[i]);
+		   elevators[i].add(lamps[i]);
 		   elevators[i].doLayout();
 		   containerRun.add(elevators[i]);
 		   //containerRun.setAlignmentX(CENTER_ALIGNMENT);
