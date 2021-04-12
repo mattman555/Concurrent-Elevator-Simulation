@@ -8,5 +8,5 @@ GUIPort 14003
 SchedulerIP localhost
 FloorIP localhost
 guiIP localhost
-timeBetweenFloors 1000
-timeToUnloadPassengers 1000
+timeBetweenFloors 3000
+timeToUnloadPassengers 3000

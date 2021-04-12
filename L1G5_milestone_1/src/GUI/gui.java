@@ -1,17 +1,22 @@
 package GUI;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.Hashtable;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import elevatorSystems.ConfigReader;
 import elevatorSystems.Direction;
+import elevatorSystems.FloorSubsystem;
 import elevatorSystems.elevatorStateMachine.ElevatorInfo;
 import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
 
@@ -64,14 +69,14 @@ public class gui {
     			e.printStackTrace();
     			System.exit(1);
     		}
-    		update(request.getElevatorId(),request.getElevatorLocation(),request.getDirection(),request.getErrorCode());
+    		update(request.getElevatorId(),request.getElevatorLocation(),request.getDirection(),request.getErrorCode(), request.getLamps());
         } while(elevatorsTotal > elevatorsFinished);
         
         receiveSocket.close();
     }
     
     
-    public static void update(int elevId, int floor, String d, int error) {
+    public static void update(int elevId, int floor, String d, int error, Hashtable<Integer, Boolean> lamps) {
     	//frame.elevators[elevId-1].removeAll();
     	frame.jlabelsFloor[elevId-1].setText("Floor: " + floor);
     	frame.jlabelsDirection[elevId-1].setText("Direction: " + d);
@@ -87,6 +92,11 @@ public class gui {
     		frame.jlabelsDirection[elevId-1].removeAll();
     	}
     	
+    	
+    	frame.lamps[elevId-1].setText("Car Lamps: " + lamps);
+    	frame.readyToRun = false;
+    	frame.changePanel(frame.containerRun);
+    	frame.base.doLayout();
     	frame.doLayout();
     	frame.revalidate();
     	frame.repaint();
