@@ -1,7 +1,4 @@
 package GUI;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,26 +6,19 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Hashtable;
-import java.util.Set;
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import elevatorSystems.ConfigReader;
-import elevatorSystems.Direction;
-import elevatorSystems.FloorSubsystem;
 import elevatorSystems.elevatorStateMachine.ElevatorInfo;
-import elevatorSystems.elevatorStateMachine.ElevatorRPCRequest;
 
 public class gui {
 	
-	static guiFrame frame = new guiFrame();
+	private static guiFrame frame = new guiFrame();
 	private final static String CONFIG = "Config.txt";
-	static int guiPort;
+	private static int guiPort;
 	private static DatagramSocket receiveSocket;
-	static int elevatorsTotal;
-	static int elevatorsFinished = 0;
-	static ElevatorInfo request;
+	private static int elevatorsTotal;
+	private static int elevatorsFinished = 0;
+	private static ElevatorInfo request;
 	
 	
     public static void main(String[] a){

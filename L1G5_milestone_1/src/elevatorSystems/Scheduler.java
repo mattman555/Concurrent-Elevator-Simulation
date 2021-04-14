@@ -29,6 +29,7 @@ public class Scheduler implements Runnable {
 	private DatagramSocket elevatorSocket, floorSocket;
 	private InetAddress floorIp;
 	private long startTime;
+	private int remaining;
 
 	/**
 	 * Constructor for the scheduler class
@@ -40,6 +41,7 @@ public class Scheduler implements Runnable {
 		this.schedulerToFloorPort = configs.getSchedulerToFloorPort();
 		this.elevToSchedulerPort = configs.getElevToSchedulerPort();
 		this.floorIp = configs.getFloorIp();
+		remaining = 100; //not actually 100 remaining, will be set to the correct amount after receiving the list from floor subsystem
 		SchedulerState[] statearr =
 			{new AwaitingRequests(this), 
 			 new UnsortedRequests(this), 
@@ -264,7 +266,6 @@ public class Scheduler implements Runnable {
 	/**
 	 * sends a packet with the list of completed 
 	 * requests to the floor subsystems
-	 * @param startTime 
 	 */
 	private void sendCompletedRequests() {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -301,14 +302,7 @@ public class Scheduler implements Runnable {
 	    	System.exit(1);
 	    }
 	    int remaining = receivePacket.getData()[0];
-	    if(remaining == 0) {
-	    	long endTime = System.currentTimeMillis();
-	    	long elapsedTime = endTime - startTime;  
-	    	System.out.println("The system completed all the requests in: " + (elapsedTime / 1000) + "." + (elapsedTime % 1000) + " seconds");
-	    	floorSocket.close();
-	    	elevatorSocket.close();
-	    	System.exit(0);
-	    }
+	    this.remaining = remaining;
 	    completedRequests.clear(); //remove those completed requests		
 		
 	}
@@ -349,7 +343,7 @@ public class Scheduler implements Runnable {
 	 * The running of the elevator, travel to new floor, updating lamps
 	 */
 	public void run() {		
-		while (true) {
+		while (remaining > 0) {
 			switch(current) {
 				case 0:
 					//Scheduler waiting for requests
@@ -370,6 +364,12 @@ public class Scheduler implements Runnable {
 					break;
 			}
 		}
+		long endTime = System.currentTimeMillis();
+    	long elapsedTime = endTime - startTime;  
+    	System.out.println("The system completed all the requests in: " + (elapsedTime / 1000) + "." + (elapsedTime % 1000) + " seconds");
+		floorSocket.close();
+    	elevatorSocket.close();
+		
 	}
 	
 	/**

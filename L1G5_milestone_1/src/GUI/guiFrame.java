@@ -1,13 +1,11 @@
 package GUI;
-import javax.swing.*;
 
-import elevatorSystems.Elevator;
 import elevatorSystems.FloorSubsystem;
 import elevatorSystems.Scheduler;
 import elevatorSystems.elevatorStateMachine.ElevatorSM;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -17,36 +15,36 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class guiFrame extends JFrame implements ActionListener{
-	Container base = getContentPane();
-	JPanel containerSet = new JPanel();
-	JPanel containerRun = new JPanel();
-	JPanel setElevator = new JPanel();
-	JPanel runElevator = new JPanel();
-	JMenuBar mb = new JMenuBar();
-   	JMenu m1 = new JMenu("FILE");
-    JMenuItem set = new JMenuItem("Set");
-    JMenuItem run = new JMenuItem("Run");
-	JLabel configLabel = new JLabel("Configure the Elevator System");
-    JLabel elevatorNumLabel = new JLabel("Number of Elevators: ");
-    JLabel floorNumLabel = new JLabel("Number of Floors: ");
-    JTextField elevatorNumTextField = new JTextField();
-    JTextField floorNumField = new JTextField();
-    JButton confirmButton = new JButton("CONFIRM");
-    JButton runButton = new JButton("Run Program");
-    BorderLayout layout = new BorderLayout();
-    BorderLayout layout2 = new BorderLayout();
-    GridLayout layoutGrid = new GridLayout(0,2);
-    FlowLayout layoutFlow = new FlowLayout(FlowLayout.LEADING);
-    Color white = new Color(255, 255, 255);
+	public Container base = getContentPane();
+    private JPanel containerSet = new JPanel();
+	public JPanel containerRun = new JPanel();
+	private JPanel setElevator = new JPanel();
+	private JPanel runElevator = new JPanel();
+	private JMenuBar mb = new JMenuBar();
+   	private JMenu m1 = new JMenu("FILE");
+    private JMenuItem set = new JMenuItem("Set");
+    private JMenuItem run = new JMenuItem("Run");
+	private JLabel configLabel = new JLabel("Configure the Elevator System");
+    private JLabel elevatorNumLabel = new JLabel("Number of Elevators: ");
+    private JLabel floorNumLabel = new JLabel("Number of Floors: ");
+    private JTextField elevatorNumTextField = new JTextField();
+    private JTextField floorNumField = new JTextField();
+    private JButton confirmButton = new JButton("CONFIRM");
+    private JButton runButton = new JButton("Run Program");
+    private BorderLayout layout = new BorderLayout();
+    private BorderLayout layout2 = new BorderLayout();
+    private GridLayout layoutGrid = new GridLayout(0,2);
+    private FlowLayout layoutFlow = new FlowLayout(FlowLayout.LEADING);
+    private Color white = new Color(255, 255, 255);
     public static int numElevator;
     public int numFloor;
    	public boolean readyToRun = false;
     
-	JPanel elevators[];
-    JTextArea jlabelsFloor[];
-	JTextArea jlabelsError[];
-	JTextArea jlabelsDirection[];
-	JTextArea lamps[];
+	public JPanel elevators[];
+    public JTextArea jlabelsFloor[];
+	public JTextArea jlabelsError[];
+	public JTextArea jlabelsDirection[];
+	public JTextArea lamps[];
     
     guiFrame()
     {
