@@ -10,6 +10,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class guiFrame extends JFrame implements ActionListener{
 	Container base = getContentPane();
@@ -192,6 +197,37 @@ public class guiFrame extends JFrame implements ActionListener{
     	else if (e.getActionCommand().equals("CONFIRM")) {
     		numElevator = Integer.parseInt(elevatorNumTextField.getText());
     		numFloor = Integer.parseInt(floorNumField.getText());
+    		try {
+    		      File config = new File("Config.txt");
+    		      File temp = new File("temp.txt");
+    		      temp.createNewFile();
+    		      FileWriter myWriter = new FileWriter("temp.txt");
+    		      Scanner myReader = new Scanner(config);
+    		      while (myReader.hasNextLine()) {
+    		        String data = myReader.nextLine();
+    		        String[] lineArr = data.split(" ");
+    		        if(lineArr[0].equals("Num_elevators")) {
+    		        	lineArr[1] = Integer.toString(numElevator);
+    		        	myWriter.write(lineArr[0]+" "+lineArr[1]+"\n");
+    		        }
+    		        else if(lineArr[0].equals("Num_floors")){
+    		        	lineArr[1] = Integer.toString(numFloor);
+    		        	myWriter.write(lineArr[0]+" "+lineArr[1]+"\n");
+    		        }
+    		        else {
+    		        	myWriter.write(data+"\n");
+    		        }
+    		      }
+    		      myWriter.close();
+    		      myReader.close();
+    		      config.delete();
+    		      temp.renameTo(config);
+    		    } catch (FileNotFoundException e1) {
+    		      System.out.println("An error occurred.");
+    		      e1.printStackTrace();
+    		    } catch (IOException e1) {
+					e1.printStackTrace();
+				}
     	}
     	else if (e.getActionCommand().equals("Run Program")) {
     		FloorSubsystem.main(null);
