@@ -14,7 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class guiFrame extends JFrame implements ActionListener{
+public class GuiFrame extends JFrame implements ActionListener{
 	public Container base = getContentPane();
     private JPanel containerSet = new JPanel();
 	public JPanel containerRun = new JPanel();
@@ -46,7 +46,7 @@ public class guiFrame extends JFrame implements ActionListener{
 	public JTextArea jlabelsDirection[];
 	public JTextArea lamps[];
     
-    guiFrame()
+    public GuiFrame()
     {
        //Calling methods inside constructor.
         setLayoutManager();
