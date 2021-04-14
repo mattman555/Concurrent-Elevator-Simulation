@@ -10,9 +10,9 @@ import javax.swing.JFrame;
 import elevatorSystems.ConfigReader;
 import elevatorSystems.elevatorStateMachine.ElevatorInfo;
 
-public class gui {
+public class Gui {
 	
-	private static guiFrame frame = new guiFrame();
+	private static GuiFrame frame = new GuiFrame();
 	private final static String CONFIG = "Config.txt";
 	private static int guiPort;
 	private static DatagramSocket receiveSocket;
