@@ -1,4 +1,4 @@
-package GUI;
+package elevatorSystems.GUI;
 
 import elevatorSystems.FloorSubsystem;
 import elevatorSystems.Scheduler;
